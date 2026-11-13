@@ -13,6 +13,7 @@
   aureon.defender settings --apply FILE     (used by the dashboard through the admin prompt)
 """
 import argparse
+import os
 import json
 import sys
 import threading
@@ -42,13 +43,16 @@ def main(argv=None):
     sub.add_parser("run")
     sub.add_parser("engine")
     a = sub.add_parser("agent"); a.add_argument("--open", action="store_true"); a.add_argument("--no-widget", action="store_true")
-    sub.add_parser("open")
+    op = sub.add_parser("open"); op.add_argument("--url")
     s = sub.add_parser("scan"); s.add_argument("path"); s.add_argument("--json", action="store_true")
     sub.add_parser("status")
     sub.add_parser("update")
     st = sub.add_parser("studio"); st.add_argument("action", choices=["list", "preset", "restore"]); st.add_argument("name", nargs="?")
     q = sub.add_parser("quarantine"); q.add_argument("action", choices=["list", "restore", "delete"]); q.add_argument("id", nargs="?")
     se = sub.add_parser("settings"); se.add_argument("--apply")
+    lk = sub.add_parser("leaks"); lk.add_argument("action", choices=["list", "fix"]); lk.add_argument("id", nargs="?")
+    dv = sub.add_parser("devices"); dv.add_argument("action", choices=["list", "sweep", "clear"])
+    sub.add_parser("native-host")
     args = ap.parse_args(argv)
     cmd = args.cmd or "open"
 
@@ -59,13 +63,24 @@ def main(argv=None):
         from .install import uninstall
         return uninstall(args.purge)
     if cmd == "engine":
-        from .engine import Engine
-        Engine().run()
+        import traceback
+        from .core import log
+        log(f"engine starting (user {os.environ.get('USERNAME')})")
+        try:
+            from .engine import Engine
+            eng = Engine()
+            log("engine initialised")
+            eng.run()
+        except Exception:
+            log("engine crashed:\n" + traceback.format_exc())
+            raise
         return 0
     if cmd == "agent":
         from .agent import run_agent
         run_agent(with_widget=not args.no_widget, open_ui=args.open)
         return 0
+    if cmd == "open" and getattr(args, "url", None):
+        pass
     if cmd in ("run", "open"):
         from .agent import engine_alive, open_dashboard, run_agent
         from .core import user_dir
@@ -134,6 +149,34 @@ def main(argv=None):
             print("restored to", v.restore(args.id))
         else:
             v.delete(args.id)
+        return 0
+    if cmd == "native-host":
+        from .noah import native_host_loop
+        native_host_loop()
+        return 0
+    if cmd == "leaks":
+        from .leaks import audit, fix, fix_machine, MACHINE_SAFE
+        if args.action == "list":
+            for r in audit():
+                print(f"{'ok  ' if r['ok'] else 'LEAK'} {r['title']:<42} {'' if r['ok'] else r['fix']}")
+            return 0
+        (fix_machine if args.id in MACHINE_SAFE else fix)(args.id)
+        print(f"fixed {args.id}")
+        return 0
+    if cmd == "devices":
+        from .core import data_dir
+        from .devices import sweep
+        if args.action == "clear":
+            for f in ("devices.jsonl", "devices.json"):
+                (data_dir() / f).unlink(missing_ok=True)
+            print("Aureon's device log cleared (Windows' own records were not touched)")
+            return 0
+        snap = sweep()
+        if args.action == "list":
+            for e in snap["timeline"][:60]:
+                print(f"{time.strftime('%Y-%m-%d %H:%M', time.localtime(e['t']))}  {e['kind']:<16} {e['category']:<22} {e['name']}"
+                      + ("   <- tracking tag" if e.get("tracker") else ""))
+        print(f"{len(snap['devices'])} devices known, {len(snap['present'])} connected now")
         return 0
     if cmd == "settings" and args.apply:
         from .core import Settings

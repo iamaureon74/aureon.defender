@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 APP = "aureon.defender"
 
 
@@ -28,6 +28,8 @@ def data_dir() -> Path:
         p.mkdir(parents=True, exist_ok=True)
         return p
     pd = Path(os.environ.get("PROGRAMDATA", r"C:\ProgramData")) / "Aureon"
+    if (pd / "inbox").exists():          # installed: the engine owns it; users read it (and drop requests in inbox/)
+        return pd
     if _writable(pd):
         return pd
     lp = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "Aureon"
@@ -57,6 +59,13 @@ DEFAULTS = {
     "feeds_online": True,               # fetch free abuse.ch feeds when online (no user data sent)
     "daily_report": True,
     "radar": True,                      # hidden-software radar sweep every 30 min
+    "device_history": True,             # log every device connect/disconnect (local only, clearable)
+    "device_history_days": 365,
+    "defender_relay": True,             # show Microsoft Defender's detections as Aureon alerts
+    "block_trackers": False,            # opt-in: noah.shield's tracker list blocked system-wide via hosts
+    "clipboard_guard": True,            # warn when a key / card / seed phrase sits on the clipboard
+    "clipboard_clear_seconds": 60,
+    "leak_audit": True,
     "phone_watch": True,                # scan Android/iPhone automatically when plugged in (agent)
     "watch_folders": ["~/Downloads", "~/Desktop", "%TEMP%",
                       "%APPDATA%/Microsoft/Windows/Start Menu/Programs/Startup"],
@@ -98,6 +107,18 @@ def atomic_write(path: Path, text: str, tries=20):
             time.sleep(0.05 * (i + 1))
     tmp.unlink(missing_ok=True)
     return False
+
+
+def log(msg, name="aureon.log"):
+    """Small diagnostic log next to the data (install steps, engine start, crashes). Never raises."""
+    try:
+        p = data_dir() / name
+        if p.exists() and p.stat().st_size > 1_000_000:
+            p.replace(p.with_suffix(".old.log"))
+        with open(p, "a", encoding="utf-8") as f:
+            f.write(time.strftime("%Y-%m-%d %H:%M:%S ") + f"[{os.getpid()}] {msg}\n")
+    except Exception:
+        pass
 
 
 def expand(p: str) -> Path:

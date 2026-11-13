@@ -64,6 +64,11 @@ class Engine:
             ("feeds", 6 * 3600, self.t_feeds, "feeds_online"),
             ("report", 24 * 3600, self.t_report, "daily_report"),
             ("radar", 1800, self.t_radar, "radar"),
+            ("devices_live", 3, self.t_devices_live, "device_history"),
+            ("devices", 6 * 3600, self.t_devices, None),
+            ("defender_relay", 60, self.t_defender_relay, "defender_relay"),
+            ("leaks", 6 * 3600, self.t_leaks, "leak_audit"),
+            ("hosts", 600, self.t_hosts, None),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}
@@ -170,6 +175,78 @@ class Engine:
                         e["detail"] += f" | scanner: {r['verdict']} ({'; '.join(r['reasons'])})"
             self.emit(e)
 
+    def t_devices_live(self):
+        from .devices import LiveDevices, is_tracker
+        if not hasattr(self, "live_devices"):
+            self.live_devices = LiveDevices()
+        for e in self.live_devices.tick():
+            loud = e["category"] in ("Storage", "Phone / media device", "Phone (Android)") or is_tracker(e["name"])
+            sev = "medium" if is_tracker(e["name"]) else "low" if loud else "info"
+            verb = "connected" if e["kind"] == "connected" else "disconnected"
+            self.emit({"severity": sev, "kind": "device", "title": f"{e['name']} {verb}", "detail": f"{e['category']} · {e['id']}"})
+
+    def t_devices(self):
+        from .devices import prune, sweep
+        before = {r["id"] for r in (self.state.get("trackers_seen") or [])}
+        snap = sweep()
+        prune(days=self.s["device_history_days"])
+        self.state["devices"] = {"known": len(snap["devices"]), "present": len(snap["present"])}
+        for r in snap["trackers"]:
+            if r["id"] not in before:
+                self.emit({"severity": "medium", "kind": "device", "title": f"Tracking tag in this PC's Bluetooth history: {r['name']}",
+                           "detail": "Tile/AirTag-style tags can follow a person. If you don't own it, check who does."})
+        self.state["trackers_seen"] = snap["trackers"]
+
+    def t_defender_relay(self):
+        out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command",
+                              "Get-MpThreatDetection | Select DetectionID,ThreatID,InitialDetectionTime,ActionSuccess,"
+                              "@{n='R';e={$_.Resources -join '; '}},@{n='N';e={(Get-MpThreat -ThreatID $_.ThreatID).ThreatName}} | ConvertTo-Json -Compress"],
+                             capture_output=True, text=True, timeout=60, creationflags=NOWIN).stdout
+        rows = json.loads(out) if out.strip() else []
+        rows = rows if isinstance(rows, list) else [rows]
+        seen = set(self.state.get("defender_seen") or [])
+        first = not seen and not self.state.get("defender_relay_primed")
+        for r in rows:
+            did = r.get("DetectionID")
+            if not did or did in seen:
+                continue
+            seen.add(did)
+            if first:
+                continue                     # don't replay old detections on the first run
+            name = r.get("N") or f"threat {r.get('ThreatID')}"
+            self.emit({"severity": "high", "kind": "defender",
+                       "title": f"{'Blocked' if r.get('ActionSuccess') else 'Found'} {name}",
+                       "detail": f"Microsoft Defender engine · {(r.get('R') or '').replace('file:_', '')[:300]}"})
+        self.state["defender_seen"] = sorted(seen)
+        self.state["defender_relay_primed"] = True
+
+    def t_leaks(self):
+        from .leaks import audit, security_products
+        res = audit()
+        prods = security_products()
+        atomic_write(data_dir() / "leaks.json", json.dumps({"t": time.time(), "checks": res, "products": prods}))
+        self.state["leaks"] = sum(not r["ok"] for r in res)
+
+    def t_hosts(self):
+        """DNS shield: URLhaus malware domains and, if chosen, noah.shield's tracker list - one hosts block."""
+        want = []
+        if self.s["dns_shield_hosts"]:
+            want += self.feeds.bad_hosts()
+        if self.s["block_trackers"]:
+            from .noah import rule_domains
+            want += rule_domains()
+        want = sorted(set(want))
+        sig = hash(tuple(want))
+        if sig == self.state.get("hosts_sig"):
+            return
+        try:
+            feedmod.apply_hosts(want)
+            self.state["hosts_sig"] = sig
+            if want:
+                self.j.add("info", "update", f"DNS shield: {len(want)} domains blocked system-wide")
+        except OSError as ex:
+            self.errors["hosts"] = f"needs the installed engine: {ex}"
+
     def t_radar(self):
         from .radar import Radar
         for e in Radar().tick():
@@ -197,12 +274,7 @@ class Engine:
         rep = self.feeds.update(self.rep)
         self.state["feeds"] = rep
         self.j.add("info", "update", "Threat feeds updated", ", ".join(f"{k}: {v}" for k, v in rep.items()))
-        if self.s["dns_shield_hosts"]:
-            try:
-                n = feedmod.apply_hosts(self.feeds.bad_hosts())
-                self.j.add("info", "update", f"DNS shield: {n} malware domains blocked")
-            except OSError as ex:
-                self.j.add("low", "update", "DNS shield needs the installed (SYSTEM) engine", str(ex))
+        self.next["hosts"] = 0                    # fresh lists -> refresh the DNS shield
         exe = mpcmdrun()
         if exe:
             subprocess.run([str(exe), "-SignatureUpdate"], capture_output=True, timeout=600, creationflags=NOWIN)
@@ -243,9 +315,14 @@ class Engine:
                 self.next["report"] = 0
             elif kind == "radar":
                 self.next["radar"] = 0
+            elif kind == "devices":
+                self.next["devices"] = 0
+            elif kind == "leaks":
+                self.next["leaks"] = 0
             elif kind == "reload":
                 self.s = self.settings_store.load()
                 self.scanner = Scanner(self.s, self.rep)
+                self.next["hosts"] = 0
             # anything else is ignored: the inbox is writable by normal users, so it only takes harmless requests
 
     def scan_path(self, root: Path, emit_clean=True):
@@ -266,7 +343,8 @@ class Engine:
                   pid=os.getpid(), errors={k: v for k, v in self.errors.items() if not k.startswith("wifi:")})
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
-    SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar"}
+    SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay",
+            "leaks", "hosts"}
 
     def run_once(self, which="all"):
         now = time.time()

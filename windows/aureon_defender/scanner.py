@@ -262,7 +262,8 @@ class Scanner:
         self.settings = settings or {}
         self.rep = reputation or Reputation()
         bundled = Path(__file__).parent / "rules"
-        self.yara = Yara([bundled, data_dir() / "rules", *(rules_dirs or [])]) if self.settings.get("use_yara", True) else None
+        noah = Path(__file__).parent / "noah_shield" / "rules" / "yara"         # noah.shield's own rules
+        self.yara = Yara([bundled, noah, data_dir() / "rules", *(rules_dirs or [])]) if self.settings.get("use_yara", True) else None
 
     def scan(self, path):
         path = Path(path)

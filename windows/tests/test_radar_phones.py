@@ -209,7 +209,7 @@ class PhoneLinkAndResilience(unittest.TestCase):
 
     def test_ember_preset_is_users_palette(self):
         e = studio.PRESETS["Ember"]
-        self.assertEqual(e["palette"], ["#060608", "#1a0f0a", "#c9803f", "#ffd9b0"])
+        self.assertEqual(e["palette"], ["#060608", "#141012", "#c9803f", "#ffd9b0"])
         self.assertEqual(e["widget"]["hours"], 12)
         self.assertEqual(list(studio.PRESETS)[0], "Ember")
 

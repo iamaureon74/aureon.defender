@@ -20,7 +20,7 @@ from pathlib import Path
 
 from .core import VERSION, Journal, Settings, atomic_write, data_dir, user_dir
 from .quarantine import Vault
-from .studio import PRESETS, Studio, WIDGET_DEFAULT
+from .studio import PRESET_GROUPS, PRESETS, Studio, WIDGET_DEFAULT
 from .winmap import WINMAP
 
 HERE = Path(__file__).resolve().parent
@@ -55,9 +55,15 @@ def lock_workstation():
 
 
 class Follower:
-    """Tails the journal; toasts medium/high events; locks on USB alerts that ask for it."""
-    def __init__(self, journal, notify=toast, lock=lock_workstation):
-        self.j, self.notify, self.lock = journal, notify, lock
+    """Tails the journal; hands medium/high events to the notifier; locks on USB alerts that ask for it."""
+    def __init__(self, journal, notify=None, lock=lock_workstation, notifier=None):
+        from .notify import Notifier
+        self.j, self.lock = journal, lock
+        if notify is not None:                     # simple callback (tests / legacy)
+            self.notifier = None
+            self.notify = notify
+        else:
+            self.notifier = notifier or Notifier()
         self.seen = {e["id"] for e in journal.recent(500)}
 
     def poll(self):
@@ -66,7 +72,9 @@ class Follower:
             self.seen.add(e["id"])
             if e.get("lock"):
                 self.lock()
-            if e["severity"] in ("medium", "high"):
+            if self.notifier:
+                self.notifier.handle(e)
+            elif e["severity"] in ("medium", "high"):
                 self.notify(("⚠ " if e["severity"] == "high" else "") + e["title"], e.get("detail", ""))
         return fresh
 
@@ -129,7 +137,7 @@ def phone_events(old, new):
 
 
 # ---------------- HTTP API ----------------
-LAN_ALLOWED = {"/api/scan", "/api/phones/scan", "/api/radar"}
+LAN_ALLOWED = {"/api/scan", "/api/phones/scan", "/api/radar", "/api/devices/sweep"}
 
 
 def load_json(p, default=None):
@@ -158,10 +166,36 @@ class Api:
         events = sorted(self.j.recent(80) + self.uj.recent(40), key=lambda e: e["t"], reverse=True)[:100]
         return {"version": VERSION, "engine": {"alive": alive, **st}, "events": events,
                 "radar": load_json(data_dir() / "radar.json"), "phones": load_json(user_dir() / "phones.json"),
+                "devices": load_json(data_dir() / "devices.json") or load_json(user_dir() / "devices.json"),
+                "leaks": self.leaks_state(), "browsers": self.browsers_state(), "theme": self.theme(),
                 "phone_link": self.lan_info(), "readonly": self.readonly,
-                "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"],
-                "palette": v["palette"], "font": v["widget"]["font"]} for k, v in PRESETS.items()},
+                "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"], "palette": v["palette"], "font": v["widget"]["font"],
+                "group": next((g for g, names in PRESET_GROUPS.items() if k in names), "")} for k, v in PRESETS.items()},
                 "widget": self.widget_cfg(), "settings": self.settings.load(), "winmap": caps}
+
+    def leaks_state(self):
+        from .leaks import audit
+        saved = load_json(data_dir() / "leaks.json") or load_json(user_dir() / "leaks.json") or {}
+        return {"checks": audit(), "products": saved.get("products", []), "t": time.time()}
+
+    _browsers_cache = (0, None)
+
+    def browsers_state(self):
+        t, val = Api._browsers_cache
+        if time.time() - t > 60 or val is None:
+            from .noah import browsers, manifest
+            radar = load_json(data_dir() / "radar.json") or {}
+            try:
+                val = {"list": browsers(radar.get("extensions")), "version": manifest()["version"]}
+            except Exception as ex:
+                val = {"list": [], "error": str(ex)}
+            Api._browsers_cache = (time.time(), val)
+        return val
+
+    def theme(self):
+        name = (load_json(user_dir() / "agent_prefs.json", {}) or {}).get("theme", "Ember")
+        p = PRESETS.get(name) or PRESETS["Ember"]
+        return {"name": name, "palette": p["palette"], "accent": p["accent"], "mode": p["mode"]}
 
     def lan_info(self):
         prefs = load_json(user_dir() / "agent_prefs.json", {}) or {}
@@ -186,6 +220,81 @@ class Api:
         s = self.studio
         if self.readonly and path not in LAN_ALLOWED:
             return 403, {"error": "The phone link is view-only. Change this on the laptop."}
+        if path == "/api/devices/sweep":
+            alive, _ = engine_alive()
+            if alive:
+                inbox({"type": "devices"})
+            else:
+                from .devices import sweep
+                def run():
+                    snap = sweep()
+                    atomic_write(user_dir() / "devices.json", json.dumps(snap, default=str))
+                threading.Thread(target=run, daemon=True).start()
+            return 200, {"ok": True, "message": "Reading this PC's device history. Takes up to a minute."}
+        if path == "/api/devices/clear":
+            ok = self.elevate(["devices", "clear"])
+            return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to clear Aureon's device log."}
+        if path == "/api/leaks/fix":
+            from .leaks import MACHINE_SAFE, USER_FIXABLE, fix
+            cid = body.get("id", "")
+            if cid in USER_FIXABLE:
+                fix(cid)
+                return 200, {"ok": True, "message": "Fixed. Undo any time from Leaks."}
+            if cid in MACHINE_SAFE:
+                ok = self.elevate(["leaks", "fix", cid])
+                return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to apply this machine-wide fix."}
+            return 400, {"error": "follow the steps shown for this one"}
+        if path == "/api/leaks/undo":
+            from .leaks import undo_all
+            return 200, {"ok": True, "message": f"Restored {undo_all()} settings"}
+        if path == "/api/noah/setup":
+            from .noah import open_setup, register_host
+            res = open_setup(body.get("browser", ""))
+            register_host()
+            Api._browsers_cache = (0, None)
+            return 200, {"ok": True, "message": f"In {body.get('browser')}: turn on Developer mode, choose Load unpacked, pick the folder that just opened.", **res}
+        if path == "/api/tools/clean":
+            from .noah import clean_media
+            target = Path(body.get("path", "")).expanduser()
+            files = [target] if target.is_file() else [f for f in target.rglob("*") if f.suffix.lower() in (".jpg", ".jpeg", ".png")][:500] if target.is_dir() else []
+            if not files:
+                return 400, {"error": "pick a .jpg/.png file or a folder with photos"}
+            done = []
+            for f in files:
+                try:
+                    done.append(clean_media(f))
+                except (ValueError, OSError):
+                    continue
+            gps = sum(1 for d in done if d["had"].get("GPS"))
+            return 200, {"ok": True, "message": f"Cleaned {len(done)} photo(s), {gps} had a location. Clean copies are saved as name.clean.jpg.", "files": done}
+        if path == "/api/tools/breach":
+            from .noah import breach_count
+            pw = body.get("password", "")
+            if not pw:
+                return 400, {"error": "type a password"}
+            try:
+                n = breach_count(pw)
+            except OSError:
+                return 503, {"error": "Offline: the breach check needs the internet (only 5 characters of a hash are sent)."}
+            return 200, {"count": n, "message": f"Found in {n:,} breaches. Change it everywhere you use it." if n else "Not found in known breaches."}
+        if path == "/api/tools/secrets":
+            from .noah import scan_secrets
+            target = Path(body.get("path", "")).expanduser()
+            if not target.exists():
+                return 400, {"error": f"{target} does not exist"}
+            hits = scan_secrets(target)
+            return 200, {"hits": hits[:200], "message": f"{len(hits)} possible secret(s) found" if hits else "No secrets found."}
+        if path == "/api/brightness":
+            from .noah import brightness_set
+            ok = brightness_set(body.get("level", 50))
+            return (200 if ok else 400), {"ok": ok}
+        if path == "/api/theme":
+            if body.get("name") not in PRESETS:
+                return 400, {"error": "unknown theme"}
+            prefs = load_json(user_dir() / "agent_prefs.json", {}) or {}
+            prefs["theme"] = body["name"]
+            (user_dir() / "agent_prefs.json").write_text(json.dumps(prefs), encoding="utf-8")
+            return 200, self.theme()
         if path == "/api/phones/scan":
             threading.Thread(target=self.scan_phones, daemon=True).start()
             return 200, {"ok": True, "message": "Scanning connected phones. Results appear in about 20 seconds."}
@@ -246,7 +355,11 @@ class Api:
         if path == "/api/studio/preset":
             if body.get("name") not in PRESETS:
                 return 400, {"error": "unknown preset"}
-            return 200, s.apply_preset(body["name"])
+            res = s.apply_preset(body["name"])
+            prefs = load_json(user_dir() / "agent_prefs.json", {}) or {}
+            prefs["theme"] = body["name"]                       # the app takes on the look too
+            (user_dir() / "agent_prefs.json").write_text(json.dumps(prefs), encoding="utf-8")
+            return 200, {**res, "theme": self.theme()}
         if path == "/api/studio/set":
             b = body
             if "theme" in b:
@@ -301,6 +414,8 @@ def make_handler(api, token, port_ref, extra_hosts=()):
                 return self._send(403, {"error": "bad host"})
             u = urllib.parse.urlparse(self.path)
             q = urllib.parse.parse_qs(u.query)
+            if u.path == "/icon.png":                       # public asset: <img> can't send the token header
+                return self._send(200, (HERE / "ui" / "icon.png").read_bytes(), "image/png")
             if u.path == "/":
                 if q.get("t", [""])[0] != token:
                     return self._send(403, {"error": "missing token"})
@@ -315,9 +430,10 @@ def make_handler(api, token, port_ref, extra_hosts=()):
                 p = PRESETS[q["name"][0]]
                 out = user_dir() / "previews"
                 out.mkdir(exist_ok=True)
-                f = out / f"{q['name'][0]}.png"
+                f = out / f"{q['name'][0].replace(' ', '-')}.png"
                 if not f.exists():
-                    generate_wallpaper(p["wallpaper"], p["palette"], 480, 270, f)
+                    from .studio import preset_seed
+                    generate_wallpaper(p["wallpaper"], p["palette"], 480, 300, f, seed=preset_seed(q["name"][0]))
                 return self._send(200, f.read_bytes(), "image/png")
             return self._send(404, {"error": "not found"})
 
@@ -402,9 +518,34 @@ def phone_watch(api, interval=20):
         time.sleep(interval)
 
 
+def clipboard_watch(api):
+    from .noah import ClipboardGuard
+    def found(hits):
+        what = hits[0][1].split(",")[0]
+        secs = Settings().load().get("clipboard_clear_seconds", 60)
+        api.uj.add("medium", "clipboard", "Your clipboard is holding something private",
+                   f"{what[:140]}" + (f". It will be cleared in {secs} seconds unless you copy something else." if secs else ""))
+    guard = ClipboardGuard(found, clear_after=Settings().load().get("clipboard_clear_seconds", 60))
+    while True:
+        try:
+            if Settings().load().get("clipboard_guard", True):
+                guard.tick()
+        except Exception:
+            pass
+        time.sleep(1.5)
+
+
 def run_agent(with_widget=True, open_ui=False):
     api = Api()
     srv, info = serve(api)
+    try:
+        from .noah import register_host
+        from .notify import register
+        register()
+        register_host()
+    except Exception:
+        pass
+    threading.Thread(target=clipboard_watch, args=(api,), daemon=True).start()
     followers = [Follower(api.j), Follower(api.uj)]
 
     def follow():

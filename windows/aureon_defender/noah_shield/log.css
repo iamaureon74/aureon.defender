@@ -1,0 +1,11 @@
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters select, .filters input { min-width: 160px; }
+.count { font-size: 12px; color: var(--muted); }
+table.log td:first-child { white-space: nowrap; color: var(--muted); width: 1%; }
+table.log td:nth-child(2) { white-space: nowrap; width: 1%; }
+table.log td.kind span { font-size: 11px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line-mid); color: var(--sub); }
+table.log td.kind span.warn { color: var(--warn); border-color: rgba(220, 200, 150, .3); }
+table.log td.kind span.bad { color: var(--bad); border-color: rgba(230, 150, 150, .3); }
+table.log td.kind span.good { color: var(--accent-soft); border-color: rgba(169, 180, 90, .35); }
+table.log .detail { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; word-break: break-word; }
+.empty { color: var(--muted); padding: 24px 0; }

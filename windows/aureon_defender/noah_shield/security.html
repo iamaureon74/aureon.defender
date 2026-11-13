@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>noah shield · security center</title>
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="security.css">
+</head>
+<body class="options security">
+  <header class="sec-head">
+    <div>
+      <h1>security center</h1>
+      <p class="muted">every finding here comes from something the browser recorded and a written rule. no guesswork, no ai.</p>
+    </div>
+    <div id="sec-status" class="sec-status" aria-live="polite"></div>
+  </header>
+  <nav class="toc sec-tabs" role="tablist" aria-label="security center">
+    <button role="tab" data-tab="overview" aria-selected="true">overview</button>
+    <button role="tab" data-tab="audit">site audit</button>
+    <button role="tab" data-tab="mediaclean">media cleaner</button>
+    <button role="tab" data-tab="cases">investigations</button>
+    <button role="tab" data-tab="network">network</button>
+    <button role="tab" data-tab="graph">graph</button>
+    <button role="tab" data-tab="extensions">extensions</button>
+    <button role="tab" data-tab="files">files</button>
+    <button role="tab" data-tab="intel">threat intel</button>
+    <button role="tab" data-tab="identity">identity</button>
+    <button role="tab" data-tab="devices">devices</button>
+    <button role="tab" data-tab="local">local ai &amp; box</button>
+  </nav>
+  <main id="panes">
+    <section id="pane-overview" class="pane"></section>
+    <section id="pane-audit" class="pane" hidden></section>
+    <section id="pane-mediaclean" class="pane" hidden></section>
+    <section id="pane-cases" class="pane" hidden></section>
+    <section id="pane-network" class="pane" hidden></section>
+    <section id="pane-graph" class="pane" hidden></section>
+    <section id="pane-extensions" class="pane" hidden></section>
+    <section id="pane-files" class="pane" hidden></section>
+    <section id="pane-intel" class="pane" hidden></section>
+    <section id="pane-identity" class="pane" hidden></section>
+    <section id="pane-devices" class="pane" hidden></section>
+    <section id="pane-local" class="pane" hidden></section>
+  </main>
+  <script src="lib/common.js"></script>
+  <script src="lib/look.js"></script>
+  <script src="security.js"></script>
+</body>
+</html>

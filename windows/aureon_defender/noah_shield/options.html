@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>noah shield · settings</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body class="options">
+  <header>
+    <img src="icons/32.png" alt="" width="24" height="24">
+    <h1>noah shield</h1>
+    <span id="version" class="muted"></span>
+  </header>
+
+  <main>
+    <nav class="toc" aria-label="settings sections">
+      <a href="#s-network">network</a><a href="#s-data">data</a><a href="#s-vpn">vpn</a><a href="#s-security">security</a><a href="#s-cookies">cookies</a><a href="#look">look</a><a href="#s-extras">extras</a><a href="security.html">security center ↗</a>
+    </nav>
+    <section id="s-network">
+      <h2>the network you're on</h2>
+      <p class="muted">Whoever runs a wifi network (a café, a hotel, your internet provider) can read anything sent without encryption and the names of the sites you visit. These switches close what a browser can close. The names of sites are only hidden by secure dns plus the vpn.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="network.enabled"><span>Protect me from the network I'm on</span></label>
+        <label class="switch"><input type="checkbox" data-path="network.lanGuard"><span>Stop websites from scanning my home network (router, printer, cameras)</span></label>
+        <label class="switch"><input type="checkbox" data-path="network.hideLocalAddress"><span>Hide my device's local address (calls still work)</span></label>
+        <label class="switch"><input type="checkbox" data-path="network.stripClientIds"><span>Remove browser ids from requests (best effort)</span></label>
+        <label class="switch"><input type="checkbox" data-path="network.httpFallback"><span>If a site has no secure version, open it anyway instead of failing</span></label>
+        <label class="switch"><input type="checkbox" data-path="network.publicWifi"><span>Public wifi mode: ask before any unsecured page; calls only through the vpn</span></label>
+      </div>
+      <p class="muted"><button id="secure-dns" class="ghost">Turn on secure dns in this browser</button> <span id="secure-dns-result"></span></p>
+    </section>
+    <section id="s-data">
+      <h2>data protection</h2>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="privacy.trackers"><span>Stop ads and trackers (EasyList and EasyPrivacy rules, on every site)</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.thirdPartyCookies" data-invert><span>Block third-party cookies</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.purgeTrackerCookies"><span>Delete cookies trackers already left, twice a day</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.geolocation" data-block><span>Deny location to every site</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.notifications" data-block><span>Deny notification prompts</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.camera" data-block><span>Deny camera outright (instead of asking)</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.microphone" data-block><span>Deny microphone outright (instead of asking)</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.fingerprint"><span>Blur fingerprints</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.stripParameters"><span>Strip tracking parameters from links</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.gpc"><span>Send Global Privacy Control and Do Not Track</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.adTopics"><span>Allow the browser's ad topics and ad measurement</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.prefetch"><span>Allow link prefetching (loads pages you did not open)</span></label>
+      </div>
+      <p class="muted"><button id="purge" class="ghost">Delete tracker cookies now</button> <span id="purge-result"></span></p>
+      <div class="grid two">
+        <label>Trusted sites (everything through)<textarea data-list="privacy.trustedSites" rows="4" placeholder="one site per line, like bank.example"></textarea></label>
+        <label>No-cookie sites<textarea data-list="privacy.strictCookieSites" rows="4" placeholder="one site per line"></textarea></label>
+      </div>
+    </section>
+    <section id="s-vpn">
+      <h2>vpn locations</h2>
+      <p class="muted">
+        The VPN sends everything the browser does through one location you choose, so sites see that location's address
+        instead of yours. It fails closed: if the location stops answering, requests stop instead of slipping out on your own
+        connection. Names are looked up by the location and WebRTC calls cannot reveal your real address. It protects this
+        browser, not the rest of the computer. Locations come from noah's signed list, from servers you add here, or from Tor on
+        this computer (the anonymous route; its exit country changes on its own).
+      </p>
+      <table id="servers"></table>
+      <details>
+        <summary>Add a location of your own</summary>
+        <p class="muted">Any HTTPS proxy or SOCKS5 server works: one you rent, one a friend runs, or Tor on this computer. A plain <code>http</code> proxy across the internet is refused because everyone on the path could read it.</p>
+        <form id="add-server" class="grid">
+          <label>Name <input name="name" maxlength="80" placeholder="my server in Amsterdam"></label>
+          <label>Kind
+            <select name="kind"><option value="https">https</option><option value="socks5">socks5</option><option value="http">http (local only)</option></select>
+          </label>
+          <label>Host <input name="host" required maxlength="253" placeholder="proxy.example.net"></label>
+          <label>Port <input name="port" required type="number" min="1" max="65535" value="443"></label>
+          <label>User name <input name="username" maxlength="200" autocomplete="off"></label>
+          <label>Password <input name="password" type="password" maxlength="200" autocomplete="off"></label>
+          <label>Country (two letters) <input name="country" maxlength="2" placeholder="NL"></label>
+          <label>City <input name="city" maxlength="60"></label>
+          <button type="submit" class="ghost">Add server</button>
+          <span id="add-server-error" class="bad"></span>
+        </form>
+      </details>
+      <p class="muted">Vetted servers come from noah's signed feed (<span id="feed-servers">not fetched yet</span>). <button id="refresh-feeds" class="ghost">refresh feeds</button></p>
+    </section>
+    <section id="s-security">
+      <h2>security and account safety</h2>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="security.httpsUpgrade"><span>Upgrade every site to https (local networks excepted)</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.lookalike"><span>Stop lookalike domains before they load (paypa1.com, amazon-verify.net)</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.passwordReuse"><span>Warn when a password you used elsewhere is typed into a new site</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.passwordHttp"><span>Warn when a password would travel over plain http</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.breachCheck"><span>Check passwords against known leaks (Have I Been Pwned range API; five hex characters leave the browser)</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.downloadWarn"><span>Hold risky downloads (programs, scripts, archives) until you have read why</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.clipboardGuard"><span>Pages must ask before reading the clipboard</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.clipboardWipe"><span>Wipe the clipboard 30 seconds after copying from a password field</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.hiddenFields"><span>Disarm hidden form fields that harvest autofill</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.formLeak"><span>Stop what you type from leaving for third parties before you submit</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.typingGuard"><span>Typing guard: what you typed and deleted never leaves for another site, keystroke streams are stopped, and scripts from other sites that listen to every key are named</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.blockKeyListeners"><span>Typing guard, strict: refuse scripts from other sites the whole-page key listener (may break a chat widget's shortcuts)</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.walletGuard"><span>Crypto wallet guard: approvals, signatures and address swaps wait for you</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.scamPopups"><span>Break fake support pages (alert loops, "call this number")</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.hiddenFrames"><span>Remove hidden third-party frames</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.referrer"><span>Hide the page you came from (Referer) from other sites</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.mailPixels"><span>Block tracking pixels in webmail</span></label>
+        <label class="switch"><input type="checkbox" data-path="security.socialLogin"><span>Block "sign in with Google / Facebook / Apple" widgets on other sites</span></label>
+      </div>
+      <div class="grid two">
+        <label>VirusTotal API key (optional; risky download addresses are checked against its engines)<input type="password" data-text="security.virusTotalKey" autocomplete="off"></label>
+        <label>Have I Been Pwned API key (optional; needed only for email checks)<input type="password" data-text="security.hibpKey" autocomplete="off"></label>
+      </div>
+      <p class="muted">
+        <button id="check-email" class="ghost">Check an email address against known breaches</button>
+        <input id="email-to-check" type="email" placeholder="you@example.com">
+        <span id="email-result"></span>
+      </p>
+      <p class="muted"><button id="forget-passwords" class="ghost">Forget which sites saw which passwords</button> (only per-install hashes are kept, never the passwords)</p>
+      <label>Lookalike domains you have accepted<textarea data-list="security.allowedLookalikes" rows="2"></textarea></label>
+    </section>
+    <section id="s-cookies">
+      <h2>cookies, history and identity</h2>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="privacy.burnOnClose"><span>Burn a site's cookies when its last tab closes</span></label>
+        <label>Sites to keep signed in<textarea data-list="privacy.keepSites" rows="3" placeholder="mail.example"></textarea></label>
+        <label>Sign out of these sites after idle<textarea data-list="privacy.logoutSites" rows="3"></textarea></label>
+        <label>Sites that leave no history<textarea data-list="privacy.forgetHistorySites" rows="3"></textarea></label>
+        <label>Your email address, for plus-address aliases and decoy forms<input type="email" data-text="privacy.aliasBase" placeholder="you@example.com"></label>
+        <label>SimpleLogin API key (optional, real aliases instead of plus-addresses)<input type="password" data-text="privacy.simpleLoginKey" autocomplete="off"></label>
+        <label>Your name(s) to blur on pages (anti-dox)<textarea data-list-raw="privacy.hideNames" rows="2" placeholder="one per line"></textarea></label>
+      </div>
+      <h3>Settings sync, end to end encrypted</h3>
+      <p class="muted">Your settings travel through the browser's own sync as a blob only your passphrase opens. Set the same passphrase on each browser.</p>
+      <p class="muted"><input type="password" id="sync-passphrase" placeholder="passphrase (8+ characters)" autocomplete="off"> <button id="sync-set" class="ghost">Turn sync on</button> <button id="sync-pull" class="ghost">Pull from sync now</button> <button id="sync-off" class="ghost">Turn off</button> <span id="sync-result"></span></p>
+      <h3>Permission history</h3>
+      <table id="permissions"></table>
+    </section>
+    <section id="s-fingerprint">
+      <h2>fingerprint and location</h2>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="privacy.fingerprint"><span>Blur fingerprints (canvas, hardware, battery)</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.webglNoise"><span>WebGL noise</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.audioNoise"><span>Audio noise</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.perSite"><span>A different fingerprint for every site</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.blendIn"><span>Blend in: look like Windows, Chrome, 1920×1080, common fonts</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.stealth"><span>Stealth: the shield's own elements get unguessable names</span></label>
+        <label class="switch"><input type="checkbox" data-path="privacy.linkCleaner"><span>Clean links before you follow or copy them (redirect wrappers, tracking parameters)</span></label>
+      </div>
+      <div class="grid two">
+        <label>Rotate the fingerprint
+          <select data-select="privacy.rotate"><option value="session">every browser session</option><option value="daily">every day</option><option value="hourly">every hour</option></select>
+        </label>
+        <label>Location every site sees
+          <select data-select="privacy.location.mode"><option value="deny">deny (sites get nothing)</option><option value="real">real, on the browser's prompt</option><option value="tunnel">the tunnel's country</option><option value="fake">a city I choose</option></select>
+        </label>
+        <label>City for the fake location
+          <select data-select="privacy.location.city" id="city-select"></select>
+        </label>
+        <label>Toolbar meter
+          <select data-select="privacy.meter"><option value="count">trackers stopped on this tab</option><option value="grade">privacy grade of this site</option></select>
+        </label>
+      </div>
+      <p class="muted"><button id="rotate-now" class="ghost">New fingerprint now</button> Timezone, language and coordinates follow the chosen location, so they agree with the tunnel's exit. A page reload picks changes up.</p>
+    </section>
+    <section id="look">
+      <h2>the look</h2>
+      <p class="muted">
+        A picture sets the look: its colors become the shield's pages, the new tab page and, on Firefox, the browser's
+        own frame and toolbars (Chrome and Edge let no extension recolor theirs). The blacks take the picture's
+        temperature, the words stay readable, and one color from the picture becomes the accent, seen only where it
+        matters. Nothing is uploaded; the picture stays in this browser.
+      </p>
+      <div id="look-presets" class="looks"></div>
+      <div class="row small">
+        <label class="ghost file-button">use a picture of mine<input type="file" id="look-file" accept="image/*" hidden></label>
+        <button id="look-reset" class="ghost">back to noah's look</button>
+        <span id="look-status" class="muted"></span>
+      </div>
+      <div id="look-swatches" class="swatches"></div>
+    </section>
+    <section id="s-search">
+      <h2>search</h2>
+      <p class="muted">Results as the engine ranked them, not as advertisers paid for them. Works on Google, Bing, DuckDuckGo, Brave, Yahoo, Startpage and Ecosia; each cleaned page shows a small count, and the log keeps what was removed.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="search.clean"><span>Hide paid results (sponsored links, shopping ads, promoted listings)</span></label>
+        <label class="switch"><input type="checkbox" data-path="search.farms"><span>Hide content farms and scraper sites; fade pages whose titles read as written for the engine</span></label>
+        <label class="switch"><input type="checkbox" data-path="search.look"><span>Search pages wear the look chosen below: its picture behind, its palette, the shield's type and spacing</span></label>
+        <label class="switch"><input type="checkbox" data-path="search.peek"><span>A “peek” button under each result reads the page right there (fetched once, without cookies or a referrer)</span></label>
+        <label class="switch"><input type="checkbox" data-path="search.prices"><span>Show each result's plans and prices under it, and cheaper options on the same page (reads the site's pricing page once a week, without cookies)</span></label>
+      </div>
+    </section>
+    <section id="s-modes">
+      <h2>modes</h2>
+      <p class="muted">A profile sets many switches at once. Per site, a mode overrides it: put your bank on banking, your shops on shopping.</p>
+      <div class="row small">
+        <button class="ghost" data-profile="browsing">browsing: most private</button>
+        <button class="ghost" data-profile="shopping">shopping: prices and codes on</button>
+        <button class="ghost" data-profile="banking">banking: strict and plain</button>
+        <span id="profile-now" class="muted"></span>
+      </div>
+      <div class="grid two">
+        <label>Sites in banking mode<textarea data-mode-list="banking" rows="3" placeholder="bank.example"></textarea></label>
+        <label>Sites in shopping mode<textarea data-mode-list="shopping" rows="3"></textarea></label>
+        <label class="switch"><input type="checkbox" data-path="modes.pauseExtensionsForBanking"><span>Banking: pause every other extension while a banking site is in front (restored when you leave)</span></label>
+        <label class="switch"><input type="checkbox" data-path="modes.weeklyReport"><span>Weekly report: a notification with the week's numbers</span></label>
+        <label class="switch"><input type="checkbox" data-path="modes.lowData"><span>Low data: no media or fonts, no third-party images</span></label>
+        <label class="switch"><input type="checkbox" data-path="modes.batterySaver"><span>Battery saver: discard tabs left in the background for a while</span></label>
+        <label>Private search instead of Google, Bing and Yahoo results
+          <select data-select="modes.searchEngine"><option value="">leave searches alone</option><option value="duckduckgo">DuckDuckGo</option><option value="brave">Brave Search</option><option value="startpage">Startpage</option><option value="qwant">Qwant</option><option value="ecosia">Ecosia</option></select>
+        </label>
+        <label>Local-only mode<label class="switch"><input type="checkbox" data-path="localOnly"><span>The shield sends nothing anywhere: no feeds, no exit check, no price or breach lookups</span></label></label>
+      </div>
+      <h3>Focus hours</h3>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="modes.focus.enabled"><span>Block the distracting sites during the hours below</span></label>
+        <label>Sites<textarea data-list="modes.focus.sites" rows="3" placeholder="twitter.com&#10;youtube.com"></textarea></label>
+        <label>From<input type="time" data-text="modes.focus.start"></label>
+        <label>Until<input type="time" data-text="modes.focus.end"></label>
+        <label>Days<span class="row small" id="focus-days"></span></label>
+      </div>
+      <h3>Annoyances</h3>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="annoyances.banners"><span>Answer cookie banners with “reject all” for me</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.cookieDeception"><span>Consent dialogs with no reject button: hide them (never press accept)</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.darkPatterns"><span>Flag dark patterns: pre-ticked boxes, fake countdowns, confirm-shaming, buried cancel links</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.overlays"><span>Remove newsletter, paywall and app-nag overlays</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.autoplay"><span>Stop videos that start by themselves</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.timers"><span>Dim urgency claims; strike out countdowns that restart</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.pasteGuard"><span>Warn before pasting card numbers, ids, keys or seed phrases into the wrong place</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.uploadStrip"><span>Strip location and camera metadata from photos before they upload</span></label>
+        <label class="switch"><input type="checkbox" data-path="annoyances.darkEverywhere"><span>Dark mode on every light site</span></label>
+        <label>Dark mode on these sites<textarea data-list="annoyances.darkSites" rows="2"></textarea></label>
+        <label>Unblock copying and right-click on these sites<textarea data-list="annoyances.copySites" rows="2"></textarea></label>
+      </div>
+      <h3>Tab lock</h3>
+      <div class="grid two">
+        <label>Sites that lock after idle<textarea data-list="modes.lock.sites" rows="2"></textarea></label>
+        <label>Minutes idle<input type="number" min="1" max="120" data-number="modes.lock.minutes"></label>
+        <label>PIN (4 to 12 digits)<input type="password" id="lock-pin" inputmode="numeric" autocomplete="off"><button id="lock-pin-set" class="ghost">Set</button><span id="lock-pin-status" class="muted"></span></label>
+      </div>
+      <p class="muted">The lock is a curtain over a page left alone, not a vault: the page is still loaded underneath.</p>
+      <h3>Downloads that expire</h3>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="modes.expireDownloads.enabled"><span>Delete downloads from these sites after a while</span></label>
+        <label>Days<input type="number" min="1" max="365" data-number="modes.expireDownloads.days"></label>
+        <label>Sites<textarea data-list="modes.expireDownloads.sites" rows="2" placeholder="bank.example"></textarea></label>
+        <label class="switch"><input type="checkbox" data-path="modes.expireDownloads.allSensitive"><span>Also statements and spreadsheets (pdf, csv, xlsx, docx, ofx) from any site</span></label>
+      </div>
+      <h3>Parental mode</h3>
+      <p class="muted">Adult sites and keywords blocked, safe search forced on Google, Bing, DuckDuckGo and YouTube. Changing it needs the PIN. It is a browser-level filter, not a substitute for the operating system's family controls.</p>
+      <p class="muted">
+        <input type="password" id="parental-pin" placeholder="PIN" inputmode="numeric" autocomplete="off">
+        <button id="parental-on" class="ghost">Turn on</button>
+        <button id="parental-off" class="ghost">Turn off</button>
+        <button id="parental-setpin" class="ghost">Set or change PIN</button>
+        <span id="parental-status"></span>
+      </p>
+      <label>Extra sites to block<textarea data-list="modes.parental.extraSites" rows="2"></textarea></label>
+    </section>
+    <section id="s-shopping">
+      <h2>shopping</h2>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="shopping.compare"><span>Compare prices at other stores</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.coupons"><span>Collect codes the stores show</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.autoApply"><span>Try codes at checkout by itself</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.clipCoupons"><span>Clip the coupon Amazon shows on a product</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.webCoupons"><span>Find codes on the public web for the store and try them too</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.webSearch"><span>Search the open web for the same product at independent shops</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.foreign"><span>Look in other countries too, converted to your currency</span></label>
+        <label class="switch"><input type="checkbox" data-path="shopping.pharmaWarn"><span>On medicines and vitamins, say when a pharma company is behind the brand, and show herbal alternatives</span></label>
+      </div>
+      <label>Show prices in this currency (three letters, like USD, EUR, GBP, JPY, INR; leave empty for the currency of the page)
+        <input id="home-currency" type="text" maxlength="3" placeholder="auto"></label>
+      <p class="muted">Price lookups fetch the other stores' public search pages with no cookies and only the product's name. The shield never places an order; it fills the code box and presses apply.</p>
+      <label>Your own codes, one per line as <code>store.example CODE optional note</code> (no store means try it everywhere)
+        <textarea id="codes" rows="4"></textarea></label>
+      <label>Sites where shopping help stays quiet<textarea data-list="shopping.quietSites" rows="3"></textarea></label>
+      <p class="muted">noah's coupon feed: <span id="feed-coupons">not fetched yet</span>.</p>
+    </section>
+    <section id="s-recording">
+      <h2>recording watch</h2>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="capture.guardScreen"><span>Pages must ask before recording the screen</span></label>
+        <label class="switch"><input type="checkbox" data-path="capture.guardCamera"><span>Pages must ask before using camera or microphone</span></label>
+      </div>
+      <label>Sites allowed without asking<textarea data-list="capture.allowedSites" rows="3" placeholder="meet.example"></textarea></label>
+      <h3>Other extensions in this browser</h3>
+      <p class="muted">An extension with capture permissions and reach into every site can take a screenshot of every frame you see. Ones that were not installed from a store weigh more. Disabling is reversible here or in the browser's own extension page.</p>
+      <table id="extensions"></table>
+      <p class="muted">Programs outside the browser (screen recorders, remote access tools) are what noah's <a href="https://noah.asherin.com/download" target="_blank" rel="noopener">device room</a> looks for.</p>
+    </section>
+    <h2 class="group" id="s-extras">extras</h2>
+    <section>
+      <h2>shepherd persona on every AI</h2>
+      <p class="muted">On every AI chat you open — Gemini, Gemini Lens, ChatGPT, Claude, Copilot, Perplexity, Poe, Mistral, DeepSeek, HuggingChat, Grok, Yandex Alice, Character.ai, Pi, You.com, Kagi Assistant, Venice, AI Studio — the bundled shepherd document is pasted into the composer of a fresh conversation and sent as turn one. Every response after that runs under the shepherd rules. A small pill on the AI page shows the state and carries a "reseed" button. Auto-seeding only fires on a fresh chat with an empty composer.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="persona.consent"><span>I consent to the shield typing the persona into AI chats on my behalf</span></label>
+        <label class="switch"><input type="checkbox" data-path="persona.enabled"><span>Enable shepherd persona on AI chats</span></label>
+        <label class="switch"><input type="checkbox" data-path="persona.autoSeed"><span>Seed automatically when a new chat opens</span></label>
+      </div>
+    </section>
+    <section>
+      <h2>x profile intelligence</h2>
+      <p class="muted">On any X or Twitter profile page a floating report opens with account age and post rate, the rest_id and its rough signup era, verified/protected/withheld flags, follow ratio, bio URLs expanded (X hides them behind t.co), cross-platform handles pulled out of the bio, and one-click links to reverse-image-search the profile picture, browse older versions on Wayback Machine, and check any email in the bio against HIBP. Data comes from what your browser was already going to receive; external lookups only fire when you click them.</p>
+      <label class="switch"><input type="checkbox" data-path="profileIntel.enabled"><span>Show the intel report on X and Twitter profile pages</span></label>
+    </section>
+    <section>
+      <h2>twitter / x spaces</h2>
+      <p class="muted">On an X or Twitter Space page the shield adds a small panel listing every listener with their @, name and a link to their profile. Listeners in a Space are not anonymous; their handles ride in the audio-space responses the browser already gets, but the desktop and mobile apps hide them. Data stays in this browser.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="spaces.enabled"><span>Show the listener panel on X and Twitter Spaces</span></label>
+        <label class="switch"><input type="checkbox" data-path="spaces.flagLowFollowers"><span>Flag accounts with almost no followers as well as brand-new ones</span></label>
+      </div>
+      <div class="grid two">
+        <label>New-account cutoff (days): accounts younger than this get a "new account" mark<input type="number" data-number="spaces.newAccountDays" min="1" max="365" step="1"></label>
+        <label>Low-follower cutoff: fewer followers than this counts as low<input type="number" data-number="spaces.lowFollowersUnder" min="0" max="100000" step="1"></label>
+      </div>
+    </section>
+    <section>
+      <h2>inspect mode (for stress-testing your own site)</h2>
+      <p class="muted">A tab you arm from the popup records every fetch, XHR, WebSocket frame, form submit, storage read, CSP violation, and cross-origin postMessage the page sees, in plain text, with JWTs decoded and known secret shapes flagged. A snapshot button also pulls cookies, localStorage and sessionStorage. Copy-out puts the transcript on the clipboard for your security team. Off by default, per tab. Never turn it on for a site you do not own.</p>
+    </section>
+    <section>
+      <h2>instagram</h2>
+      <p class="muted">Flags sponsored posts, hides suggested content, surfaces algorithmic signals (Explore vs. Following, Reel rank), and adds a session-time reminder so the feed doesn't swallow hours. Reel focus mode hides the sidebar and related carousel.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="social.instagram.enabled"><span>Enable instagram intelligence</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.instagram.hideSponsored"><span>Hide sponsored posts</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.instagram.hideSuggested"><span>Hide "Suggested for you" posts</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.instagram.flagAlgoSignals"><span>Flag algorithmic signals on posts</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.instagram.focusMode"><span>Reel focus mode (hide sidebar and related)</span></label>
+      </div>
+      <label>Session reminder after (minutes)<input type="number" data-number="social.instagram.sessionWarningMinutes" min="5" max="120" step="5"></label>
+    </section>
+    <section>
+      <h2>tiktok</h2>
+      <p class="muted">Adds a live session clock TikTok deliberately hides, flags paid promotions and unverified creators, hides suggested accounts, and shows an exit panel once you hit your session limit. Focus mode removes the sidebar discovery carousel.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="social.tiktok.enabled"><span>Enable TikTok intelligence</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.tiktok.hideAds"><span>Hide promoted / ad videos</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.tiktok.showSessionTimer"><span>Show session timer</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.tiktok.hideSuggestedAccounts"><span>Hide suggested accounts sidebar</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.tiktok.flagUnverified"><span>Flag unverified creators</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.tiktok.focusMode"><span>Focus mode (hide discovery sidebar)</span></label>
+      </div>
+      <label>Session warning after (minutes)<input type="number" data-number="social.tiktok.sessionWarningMinutes" min="5" max="120" step="5"></label>
+    </section>
+    <section>
+      <h2>reddit</h2>
+      <p class="muted">Removes promoted posts, converts fuzzy "3 days ago" timestamps to exact dates, flags karma-farming title patterns, and can hide the award clutter that inflates post authority. Works on both the new (shreddit) and old Reddit.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="social.reddit.enabled"><span>Enable reddit intelligence</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.reddit.hideAds"><span>Hide promoted posts</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.reddit.showAbsoluteDates"><span>Show exact post dates</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.reddit.flagKarmaFarming"><span>Flag karma-farming titles</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.reddit.hideAwards"><span>Hide post awards</span></label>
+      </div>
+    </section>
+    <section>
+      <h2>youtube</h2>
+      <p class="muted">Removes the recommendation sidebar trap while watching, cleans endscreen cards, disables autoplay, shows exact upload dates with content age, flags sponsored disclosures in descriptions, and detects clickbait title patterns. Optionally hides the Shorts tab.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="social.youtube.enabled"><span>Enable YouTube intelligence</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.cleanSidebar"><span>Hide recommendation sidebar while watching</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.autoplayGuard"><span>Disable autoplay</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.cleanEndscreen"><span>Remove endscreen cards</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.showUploadDate"><span>Show exact upload date with age</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.flagSponsoredSegments"><span>Flag sponsor disclosures in descriptions</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.flagClickbait"><span>Flag clickbait title patterns</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.hideShortsTab"><span>Hide the Shorts tab</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.youtube.cleanHome"><span>Clean homepage (remove promoted sections)</span></label>
+      </div>
+    </section>
+    <section>
+      <h2>linkedin</h2>
+      <p class="muted">Removes sponsored content and job ads, converts "1 week ago" to a real date with days-since count, detects engagement-bait and hustle-porn formatting, flags job postings older than your threshold that are probably already filled, and cleans suggested / trending sidebar noise.</p>
+      <div class="grid two">
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.enabled"><span>Enable linkedin intelligence</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.hideSponsored"><span>Hide sponsored posts</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.showAbsoluteDates"><span>Show exact post dates</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.flagEngagementBait"><span>Flag engagement bait and hustle formatting</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.flagStaleJobs"><span>Flag stale job postings</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.hideReactions"><span>Mute reaction counts</span></label>
+        <label class="switch"><input type="checkbox" data-path="social.linkedin.cleanFeed"><span>Remove suggested / trending sidebar noise</span></label>
+      </div>
+      <label>Flag job postings older than (days)<input type="number" data-number="social.linkedin.staleJobDays" min="7" max="90" step="1"></label>
+    </section>
+    <section>
+      <h2>about</h2>
+      <p class="muted" id="about"></p>
+      <p class="muted">Feeds are signed with noah's ed25519 release key and refused when the signature does not match, so the website alone cannot change what the shield does. The shield sends nothing about you anywhere: no accounts, no telemetry. Tracker rules are EasyPrivacy (GPLv3 / CC BY-SA 3.0). Source: <a href="https://github.com/shep95/noah/tree/main/shield" target="_blank" rel="noopener">github.com/shep95/noah</a>.</p>
+    </section>
+  </main>
+
+  <script src="lib/common.js"></script>
+  <script src="lib/look.js"></script>
+  <script src="lib/cities.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

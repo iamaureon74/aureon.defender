@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>noah shield · log</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="log.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body class="options">
+  <header>
+    <img src="icons/32.png" alt="" width="24" height="24">
+    <h1>log</h1>
+    <span id="clock" class="muted"></span>
+  </header>
+  <main>
+    <section>
+      <p class="muted">Everything the shield stopped, warned about or did, in words, newest first. It stays on this device; nothing here is sent anywhere.</p>
+      <div class="filters">
+        <select id="kind">
+          <option value="">everything</option>
+        </select>
+        <input type="text" id="site" placeholder="a site, for example shop.example">
+        <input type="search" id="find" placeholder="find a word">
+        <button id="refresh" class="ghost">refresh</button>
+        <button id="export" class="ghost" title="Save the log as a text file">save as text</button>
+        <button id="clear" class="ghost danger">clear the log</button>
+        <span id="count" class="count"></span>
+      </div>
+      <table class="log">
+        <tbody id="rows"></tbody>
+      </table>
+      <p id="empty" class="empty" hidden>Nothing logged yet under these filters.</p>
+    </section>
+  </main>
+  <script src="lib/common.js"></script>
+  <script src="lib/look.js"></script>
+  <script src="log.js"></script>
+</body>
+</html>

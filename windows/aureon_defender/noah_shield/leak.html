@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>noah shield · leak test</title>
+  <link rel="stylesheet" href="warn.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <main id="card" class="card">
+    <div class="threat-bar"></div>
+    <div class="card-inner">
+      <p class="eyebrow"><span id="state-icon">◉</span> noah shield · leak test</p>
+      <h1 id="verdict">checking…</h1>
+      <p class="muted" id="notes">Two questions: where does traffic come out, and does WebRTC reveal another address?</p>
+      <div class="leak-rows">
+        <div class="leak-row"><span class="leak-label">tunnel</span><span id="tunnel" class="leak-val">reading…</span></div>
+        <div class="leak-row"><span class="leak-label">exit ip</span><span id="exit" class="leak-val">asking…</span></div>
+        <div class="leak-row"><span class="leak-label">webrtc</span><span id="webrtc" class="leak-val">gathering…</span></div>
+        <div class="leak-row"><span class="leak-label">locale</span><span id="locale" class="leak-val"></span></div>
+      </div>
+      <div class="actions"><button id="again" class="primary">Run again</button></div>
+      <small>DNS is not tested here: with the tunnel on, names resolve through the server. Without it, your OS resolver is used, as with any browser.</small>
+    </div>
+  </main>
+  <script src="lib/common.js"></script>
+  <script src="lib/look.js"></script>
+  <script src="leak.js"></script>
+</body>
+</html>

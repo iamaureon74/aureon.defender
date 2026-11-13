@@ -1,0 +1,678 @@
+{
+  "manifest_version": 3,
+  "name": "noah shield",
+  "version": "2026.11.12.5",
+  "description": "A tunnel that fails closed instead of leaking, trackers and data grabs stopped on every page, cheaper prices and working coupons while you shop, and a watch on anything that could record your screen.",
+  "author": "House of Asher",
+  "homepage_url": "https://noah.asherin.com/shield",
+  "minimum_chrome_version": "137",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_title": "noah shield",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": [
+      "lib/common.js",
+      "lib/feeds.js",
+      "lib/host.js",
+      "lib/tunnel.js",
+      "lib/privacy.js",
+      "lib/watch.js",
+      "lib/shopping.js",
+      "lib/market.js",
+      "lib/pharma.js",
+      "lib/brands.js",
+      "lib/safety.js",
+      "lib/owners.js",
+      "lib/cities.js",
+      "lib/tracking.js",
+      "lib/tools.js",
+      "lib/look.js",
+      "lib/network.js",
+      "lib/sec/events.js",
+      "lib/sec/rules.js",
+      "lib/sec/intel.js",
+      "lib/sec/graph.js",
+      "lib/sec/cases.js",
+      "lib/sec/filescan.js",
+      "lib/sec/yara.js",
+      "lib/sec/center.js",
+      "lib/sec/audit.js",
+      "lib/sec/vectors.js",
+      "lib/media/clean.js",
+      "lib/pricing.js",
+      "lib/local.js",
+      "background.js"
+    ]
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs",
+    "proxy",
+    "privacy",
+    "contentSettings",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "webRequest",
+    "webRequestAuthProvider",
+    "webRequestBlocking",
+    "webNavigation",
+    "cookies",
+    "management",
+    "notifications",
+    "scripting",
+    "downloads",
+    "clipboardWrite",
+    "browsingData",
+    "idle",
+    "history",
+    "contextMenus",
+    "offscreen",
+    "search",
+    "nativeMessaging",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/guard.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "world": "MAIN",
+      "match_origin_as_fallback": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/sensor_main.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/pace.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/bridge.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/drag.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/hash.js",
+        "content/safety.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/shop.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/links.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/checkout.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/annoyances.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "lib/secret_rules.js",
+        "content/paste.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/lock.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/capture.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/light.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/search.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://twitter.com/*",
+        "https://*.twitter.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*"
+      ],
+      "js": [
+        "content/social_twitter.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://twitter.com/*",
+        "https://*.twitter.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*"
+      ],
+      "js": [
+        "content/spaces.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://twitter.com/*",
+        "https://*.twitter.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*"
+      ],
+      "js": [
+        "content/spaces_bridge.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://twitter.com/*",
+        "https://*.twitter.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*"
+      ],
+      "js": [
+        "content/profile.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://twitter.com/*",
+        "https://*.twitter.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*"
+      ],
+      "js": [
+        "content/profile_bridge.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://bard.google.com/*",
+        "https://lens.google.com/*",
+        "https://aistudio.google.com/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://copilot.microsoft.com/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://poe.com/*",
+        "https://chat.mistral.ai/*",
+        "https://mistral.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://deepseek.com/*",
+        "https://huggingface.co/chat/*",
+        "https://grok.com/*",
+        "https://x.ai/*",
+        "https://grok.x.ai/*",
+        "https://ya.ru/*",
+        "https://alice.yandex.ru/*",
+        "https://yandex.com/*",
+        "https://yandex.ru/*",
+        "https://character.ai/*",
+        "https://beta.character.ai/*",
+        "https://pi.ai/*",
+        "https://you.com/*",
+        "https://kagi.com/*",
+        "https://venice.ai/*",
+        "https://shieldtest.example/*"
+      ],
+      "js": [
+        "content/persona.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://bard.google.com/*",
+        "https://lens.google.com/*",
+        "https://aistudio.google.com/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://copilot.microsoft.com/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://poe.com/*",
+        "https://chat.mistral.ai/*",
+        "https://mistral.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://deepseek.com/*",
+        "https://huggingface.co/chat/*",
+        "https://grok.com/*",
+        "https://x.ai/*",
+        "https://grok.x.ai/*",
+        "https://ya.ru/*",
+        "https://alice.yandex.ru/*",
+        "https://yandex.com/*",
+        "https://yandex.ru/*",
+        "https://character.ai/*",
+        "https://beta.character.ai/*",
+        "https://pi.ai/*",
+        "https://you.com/*",
+        "https://kagi.com/*",
+        "https://venice.ai/*",
+        "https://shieldtest.example/*"
+      ],
+      "js": [
+        "content/persona_bridge.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/inspect.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false,
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/inspect_bridge.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/downloader_scan.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://www.instagram.com/*",
+        "https://instagram.com/*"
+      ],
+      "js": [
+        "content/social_instagram.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.tiktok.com/*",
+        "https://tiktok.com/*"
+      ],
+      "js": [
+        "content/social_tiktok.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.reddit.com/*",
+        "https://old.reddit.com/*",
+        "https://reddit.com/*"
+      ],
+      "js": [
+        "content/social_reddit.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://youtube.com/*",
+        "https://m.youtube.com/*",
+        "https://www.youtube-nocookie.com/*"
+      ],
+      "js": [
+        "content/yt_ads.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://youtube.com/*",
+        "https://m.youtube.com/*"
+      ],
+      "js": [
+        "content/social_youtube.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/cookie_consent.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/dark_patterns.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://www.linkedin.com/*",
+        "https://linkedin.com/*"
+      ],
+      "js": [
+        "content/social_linkedin.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/cognition.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/prefetch.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/sensor.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/audit.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "trackers",
+        "enabled": true,
+        "path": "rules/trackers.json"
+      },
+      {
+        "id": "ads",
+        "enabled": true,
+        "path": "rules/ads.json"
+      },
+      {
+        "id": "headers",
+        "enabled": true,
+        "path": "rules/headers.json"
+      },
+      {
+        "id": "parameters",
+        "enabled": true,
+        "path": "rules/parameters.json"
+      },
+      {
+        "id": "security",
+        "enabled": true,
+        "path": "rules/security.json"
+      },
+      {
+        "id": "mail",
+        "enabled": true,
+        "path": "rules/mail.json"
+      },
+      {
+        "id": "referrer",
+        "enabled": true,
+        "path": "rules/referrer.json"
+      },
+      {
+        "id": "sociallogin",
+        "enabled": false,
+        "path": "rules/sociallogin.json"
+      },
+      {
+        "id": "ads_more",
+        "enabled": false,
+        "path": "rules/ads_more.json"
+      }
+    ]
+  },
+  "content_security_policy": {
+    "extension_pages": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; connect-src https: http://127.0.0.1:11434 http://localhost:11434; base-uri 'none'; form-action 'none'"
+  },
+  "commands": {
+    "panic": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Period",
+        "mac": "Command+Shift+Period"
+      },
+      "description": "Panic: close every tab, clear history, drop the tunnel"
+    },
+    "rotate-fingerprint": {
+      "description": "Give every site a new fingerprint"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "warn.html",
+        "downloader.html",
+        "optimizer.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "use_dynamic_url": true
+    },
+    {
+      "resources": [
+        "looks/*.jpg"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "use_dynamic_url": true
+    }
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuvtDdHVKklSRMDIuELABLtR8dzPZ9chWLYQ5yY8kp2PZDmzyLQZwoayEAx3tVOSobakF1uUaohUfoNYNSEc5oCs8Jqapz7HYC3rG6mYEc/8nvzWkDCm3sDLWFZX6boqitqG9M+gm4JUZ1pfeWcdgggfcBhx8PRwdRsnRjuLCac9hDTQievnMrOC+EpKnPcNpKkZ3HspkPguRgZH6b3t3BaMFWXII8YQFCbEjSqEhCkgU+5SZ8meRc6dM29+vL2lwCN3gdcezDgQJRyHtlg1FyTiEtZgQ4SrER5HOg7W8IGIv6mGe+mdHX0dzy/mQ8YpqyhSKjFNT7GQPhiIjbVMehwIDAQAB",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "shield@noah.asherin.com",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "128.0"
+    }
+  }
+}

@@ -20,6 +20,8 @@ if ($LASTEXITCODE) { Pop-Location; throw "tests failed" }
     --paths $PSScriptRoot --paths $repo `
     --add-data "$PSScriptRoot\aureon_defender\ui;aureon_defender\ui" `
     --add-data "$PSScriptRoot\aureon_defender\rules;aureon_defender\rules" `
+    --add-data "$PSScriptRoot\aureon_defender\noah_shield;aureon_defender\noah_shield" `
+    --hidden-import win32com.client --hidden-import pythoncom --hidden-import pywintypes `
     --hidden-import aureon.audit --hidden-import aureon.rfwatch --hidden-import aureon.hidguard --hidden-import aureon.analyst `
     --hidden-import aureon.keyagent `
     --distpath "$PSScriptRoot\dist" --workpath "$env:TEMP\aureon-build" --specpath "$env:TEMP\aureon-build" `

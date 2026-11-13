@@ -280,6 +280,14 @@ class CoreTest(unittest.TestCase):
         j.add("high", "x", "b")
         self.assertEqual([e["title"] for e in j.recent(min_sev="medium")], ["b"])
 
+    def test_installed_data_dir_is_shared_even_when_read_only(self):
+        pd = Path(tempfile.mkdtemp(dir=TMP))
+        (pd / "Aureon" / "inbox").mkdir(parents=True)
+        env = {k: v for k, v in os.environ.items() if k != "AUREON_DATA"}
+        env["PROGRAMDATA"] = str(pd)
+        with mock.patch.dict(os.environ, env, clear=True), mock.patch.object(core, "_writable", lambda p: False):
+            self.assertEqual(core.data_dir(), pd / "Aureon")      # users read the engine's status, not a private copy
+
     def test_expand_all_for_system(self):
         with mock.patch.dict(os.environ, {"AUREON_ALL_USERS": "1"}):
             paths = core.expand_all("~/Downloads")
@@ -311,11 +319,11 @@ class StudioTest(unittest.TestCase):
 
     def test_preset_generates_wallpaper_and_widget(self):
         s, reg, d = self.mk()
-        out = s.apply_preset("Dusk", 160, 90, out_dir=d)
+        out = s.apply_preset("Hearth", 160, 90, out_dir=d)
         self.assertTrue(Path(out["wallpaper"]).exists())
         self.assertEqual(self.wp, out["wallpaper"])
         self.assertEqual(out["widget"]["font"], "Georgia")
-        self.assertEqual(s.current()["accent"], "#ff8a5c")
+        self.assertEqual(s.current()["accent"], "#d9944a")
 
     def test_all_presets_render(self):
         d = Path(tempfile.mkdtemp(dir=TMP))
@@ -414,6 +422,25 @@ class Packaging(unittest.TestCase):
         for must in ("-RestartCount 999", "ExecutionTimeLimit ([TimeSpan]::Zero)", "-AllowStartIfOnBatteries", "S-1-5-18",
                      "-AtStartup", "-AtLogOn", "'C:\\Program Files\\Aureon\\aureon.defender.exe'"):
             self.assertIn(must, s)
+
+    def test_installer_only_stops_installed_copies(self):
+        d = Path(tempfile.mkdtemp(dir=TMP))
+        inst = d / "Program Files" / "Aureon"
+        inst.mkdir(parents=True)
+        decoy = inst / "aureon.defender.exe"
+        ping = Path(os.environ.get("SYSTEMROOT", r"C:\Windows")) / "System32" / "PING.EXE"
+        shutil.copy(ping, decoy)                               # a long-running process from the "installed" folder
+        p = subprocess.Popen([str(decoy), "-n", "60", "127.0.0.1"], stdout=subprocess.DEVNULL, creationflags=0x08000000)
+        try:
+            time.sleep(1)
+            stopped = install.stop_installed_copies(target=inst, me=p.pid)     # pretend the decoy is the installer
+            self.assertEqual(stopped, [])                                      # never stops itself
+            stopped = install.stop_installed_copies(target=inst)
+            self.assertEqual(stopped, [p.pid])                                 # stops the installed copy only
+            p.wait(timeout=10)
+        finally:
+            if p.poll() is None:
+                p.kill()
 
     def test_data_acl_users_read_only_except_inbox(self):
         cmds = install.acl_commands(Path(r"C:\ProgramData\Aureon"))

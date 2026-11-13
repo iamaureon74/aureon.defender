@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="ntp">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>new tab</title>
+  <link rel="stylesheet" href="newtab.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <div id="picture" class="picture"></div>
+  <div class="veil"></div>
+  <main>
+    <p id="greeting" class="greeting"></p>
+    <p id="clock" class="clock" role="button" tabindex="0">·</p>
+    <p id="day" class="day"></p>
+    <form id="search" class="search" autocomplete="off" role="search">
+      <input id="query" type="search" placeholder="search, or type an address" aria-label="search or address" autofocus>
+    </form>
+    <section id="rest" class="rest" aria-label="what the shield kept from this network today" hidden>
+      <p class="rest-title">kept safe today</p>
+      <ul id="numbers" class="numbers"></ul>
+    </section>
+  </main>
+  <div id="footer-hint" class="footer-hint" hidden role="note">
+    <span>the grey bar below is chrome's, not the shield's. right-click it → <b>hide footer on new tab page</b>. this note leaves once it's gone.</span>
+    <button id="footer-hint-close" type="button" aria-label="close">×</button>
+  </div>
+  <div id="verse" class="verse" tabindex="0" role="button" aria-expanded="false">
+    <span class="verse-num" aria-hidden="true">74</span>
+    <p id="verse-text" class="verse-text"></p>
+  </div>
+  <footer>
+    <a id="change-look" href="#">change the look</a>
+    <a id="shield-settings" href="#">shield settings</a>
+    <label class="plain"><input type="checkbox" id="hour12"> 12-hour clock</label>
+    <label class="plain"><input type="checkbox" id="plain"> plain page</label>
+  </footer>
+  <script src="lib/common.js"></script>
+  <script src="lib/look.js"></script>
+  <script src="newtab.js"></script>
+</body>
+</html>

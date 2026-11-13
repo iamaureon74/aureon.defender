@@ -1,0 +1,35 @@
+#drop-zone {
+  border: 1.5px dashed var(--line-mid);
+  border-radius: 10px;
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: border-color var(--quick), background var(--quick);
+  margin-top: 12px;
+}
+#drop-zone:hover, #drop-zone.drag {
+  border-color: var(--accent);
+  background: rgba(169, 180, 90,.07);
+}
+#drop-zone:focus-visible { outline: 1px solid var(--accent-bright); outline-offset: 2px; border-radius: 10px; }
+.drop-icon { font-size: 28px; opacity: .6; }
+.drop-label { font-size: 14px; color: var(--sub); }
+.drop-sub { font-size: 11px; margin-top: 2px; }
+.size-row { display: flex; align-items: baseline; gap: 16px; margin: 14px 0 0; flex-wrap: wrap; }
+.size-block { display: flex; flex-direction: column; gap: 3px; }
+.size-label { font-size: 10px; letter-spacing: .08em; text-transform: lowercase; }
+.size-num { font: 400 26px/1 var(--display, Georgia, serif); color: var(--bright, #f6f4e6); }
+.size-arrow { font-size: 18px; align-self: center; }
+.pill.good { background: rgba(169, 180, 90,.2); border-color: rgba(169, 180, 90,.35); color: var(--accent-soft); }
+
+/* was inline; the page CSP allows styles only from files */
+.hidden-input { display: none; }
+.spinner { margin-top: 12px; text-align: center; }
+.file-name { font-size: 11px; word-break: break-all; }
+.self-center { align-self: center; }
+.quality-note { font-size: 11px; margin-top: 8px; }
+b.kw { color: var(--text); font-weight: 500; }

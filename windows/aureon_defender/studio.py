@@ -220,8 +220,8 @@ class Studio:
         w, h = (width, height) if width else screen_size()
         out = Path(out_dir or user_dir() / "wallpapers")
         out.mkdir(parents=True, exist_ok=True)
-        img = out / f"{name.lower()}-{w}x{h}.png"
-        generate_wallpaper(p["wallpaper"], p["palette"], w, h, img, seed=p.get("seed", 7))
+        img = out / f"{name.lower().replace(' ', '-')}-{w}x{h}.png"
+        generate_wallpaper(p["wallpaper"], p["palette"], w, h, img, seed=preset_seed(name))
         self.set_theme(p["mode"], p["mode"])
         self.set_accent(p["accent"], on_taskbar=p.get("accent_taskbar", False), on_titlebars=True)
         self.set_transparency(True)
@@ -248,24 +248,46 @@ WIDGET_DEFAULT = {"enabled": True, "position": "top-left", "font": "Segoe UI Var
                   "color": "#ffffff", "dim": "#b8c2cc", "clock_size": 96, "show_seconds": False, "hours": 24,
                   "show_date": True, "show_stats": True, "show_shield": True, "opacity": 0.92}
 
+# Palette order: [background, surface, accent, text]. Community schemes credited by name; colours are their published values.
+def _p(mode, accent, wallpaper, palette, font, **widget):
+    return {"mode": mode, "accent": accent, "wallpaper": wallpaper, "palette": palette,
+            "widget": {"font": font, "color": palette[3], "dim": accent, **widget}}
+
+
 PRESETS = {
-    "Ember":    {"mode": "dark", "accent": "#c9803f", "wallpaper": "ember", "palette": ["#060608", "#1a0f0a", "#c9803f", "#ffd9b0"],
-                 "taskbar": "center", "seed": 11,
-                 "widget": {"font": "Bahnschrift Light", "mono": "Cascadia Mono", "color": "#ffd9b0", "dim": "#c9803f",
-                            "position": "top-left", "hours": 12, "clock_size": 112}},
-    "Aurora":   {"mode": "dark", "accent": "#3ddc97", "wallpaper": "aurora", "palette": ["#04121c", "#0b3d4a", "#3ddc97", "#7b5cff"],
-                 "widget": {"font": "Bahnschrift Light", "color": "#e8fff6", "dim": "#8fd9bd", "position": "top-left"}},
-    "Obsidian": {"mode": "dark", "accent": "#8ab4ff", "wallpaper": "grain", "palette": ["#0b0d12", "#151a24", "#2a3346", "#8ab4ff"],
-                 "widget": {"font": "Segoe UI Variable Display Light", "color": "#f2f4f8", "dim": "#8792a6", "position": "center", "clock_size": 140}},
-    "Dusk":     {"mode": "dark", "accent": "#ff8a5c", "wallpaper": "dusk", "palette": ["#1a1033", "#5b2a6e", "#ff8a5c", "#ffd59e"],
-                 "widget": {"font": "Georgia", "color": "#fff4e8", "dim": "#ffcfa8", "position": "bottom-left"}},
-    "Paper":    {"mode": "light", "accent": "#2f6f62", "wallpaper": "mono", "palette": ["#f3f1ec", "#e3dfd6", "#c9c2b4", "#2f6f62"],
-                 "widget": {"font": "Segoe UI Variable Display Semibold", "color": "#23312d", "dim": "#5d6b66", "position": "top-right"}},
-    "Lagoon":   {"mode": "light", "accent": "#0078a8", "wallpaper": "mesh", "palette": ["#dff6ff", "#9fe3f5", "#45b6e0", "#ffd3a8"],
-                 "widget": {"font": "Bahnschrift", "color": "#06324a", "dim": "#2b6a86", "position": "top-left"}},
-    "Terminal": {"mode": "dark", "accent": "#5af78e", "wallpaper": "grain", "palette": ["#050806", "#0a120c", "#12301a", "#5af78e"],
-                 "widget": {"font": "Cascadia Mono", "color": "#5af78e", "dim": "#3a9e5c", "position": "bottom-right", "show_seconds": True}},
+    # yours
+    "Ember":        _p("dark", "#c9803f", "ember", ["#060608", "#141012", "#c9803f", "#ffd9b0"], "Bahnschrift Light", hours=12, clock_size=112),
+    # cozy
+    "Hearth":       _p("dark", "#d9944a", "haze", ["#14100d", "#221a14", "#d9944a", "#f3e2c7"], "Georgia", hours=12, position="bottom-left"),
+    "Gruvbox":      _p("dark", "#fabd2f", "grain", ["#1d2021", "#282828", "#fabd2f", "#ebdbb2"], "Cascadia Mono", position="bottom-right"),
+    "Catppuccin":   _p("dark", "#cba6f7", "haze", ["#11111b", "#1e1e2e", "#cba6f7", "#cdd6f4"], "Segoe UI Variable Display Light"),
+    # nature
+    "Moss":         _p("dark", "#8fae6b", "topo", ["#0c120e", "#16201a", "#8fae6b", "#e2e8d8"], "Bahnschrift Light", hours=12),
+    "Everforest":   _p("dark", "#a7c080", "topo", ["#1e2326", "#272e33", "#a7c080", "#d3c6aa"], "Segoe UI Variable Display Light"),
+    "Pasture":      _p("dark", "#a9c55b", "image:pasture", ["#0b110d", "#141d15", "#a9c55b", "#eef2dc"], "Bahnschrift Light", hours=12, position="top-right"),
+    # moody
+    "Kanagawa":     _p("dark", "#7e9cd8", "haze", ["#16161d", "#1f1f28", "#7e9cd8", "#dcd7ba"], "Sitka Heading"),
+    "Rosé Pine":    _p("dark", "#ebbcba", "haze", ["#191724", "#1f1d2e", "#ebbcba", "#e0def4"], "Segoe UI Variable Display Light"),
+    "Tokyo Night":  _p("dark", "#7aa2f7", "haze", ["#16161e", "#1a1b26", "#7aa2f7", "#c0caf5"], "Bahnschrift Light"),
+    "Rain":         _p("dark", "#8aa4b8", "topo", ["#0e1114", "#171c21", "#8aa4b8", "#dde3e8"], "Segoe UI Variable Display Light", hours=12),
+    "Nord":         _p("dark", "#88c0d0", "topo", ["#2e3440", "#3b4252", "#88c0d0", "#eceff4"], "Segoe UI Variable Display Light"),
+    # noah.shield's looks (real photos)
+    "Meteor":       _p("dark", "#f08a3c", "image:meteor", ["#05080c", "#0d1218", "#f08a3c", "#e3eaf0"], "Bahnschrift Light", hours=12, position="top-left"),
+    "Halo":         _p("dark", "#c6a265", "image:halo", ["#0e0e0e", "#181614", "#c6a265", "#efe6dc"], "Georgia", hours=12, position="top-right"),
+    "Lights":       _p("dark", "#f2d6a2", "image:lights", ["#0a0a09", "#141412", "#f2d6a2", "#efe7da"], "Bahnschrift Light", hours=12, position="bottom-left"),
+    "Sea":          _p("dark", "#c9cdd1", "image:sea", ["#141516", "#222426", "#c9cdd1", "#f1f3f4"], "Georgia", position="top-right"),
+    "Rings":        _p("dark", "#d7d2cb", "image:rings", ["#040406", "#0e0e11", "#d7d2cb", "#eeeae6"], "Segoe UI Variable Display Light", position="center"),
+    "Glitch":       _p("dark", "#c2c0b8", "image:glitch", ["#161719", "#222325", "#c2c0b8", "#f0eee9"], "Cascadia Mono", position="bottom-right"),
+    # light, for daytime
+    "Paper":        _p("light", "#2f6f62", "mono", ["#f3f1ec", "#e3dfd6", "#2f6f62", "#23312d"], "Segoe UI Variable Display Semibold", position="top-right"),
 }
+def preset_seed(name):
+    return PRESETS[name].get("seed") or sum(ord(c) for c in name) % 97 + 3
+
+
+PRESET_GROUPS = {"Yours": ["Ember"], "Cozy": ["Hearth", "Gruvbox", "Catppuccin"], "Nature": ["Moss", "Everforest", "Pasture"],
+                 "Moody": ["Kanagawa", "Rosé Pine", "Tokyo Night", "Rain", "Nord"],
+                 "From noah.shield": ["Meteor", "Halo", "Lights", "Sea", "Rings", "Glitch"], "Light": ["Paper"]}
 
 
 # ---------------- wallpaper generator ----------------
@@ -279,12 +301,28 @@ def _ramp(cols, t):
     return _lerp(cols[i], cols[i + 1], t - i)
 
 
+def _image_look(name, w, h, out):
+    """noah.shield's photo looks, cover-cropped to the screen."""
+    from PIL import Image
+    src = Path(__file__).parent / "noah_shield" / "looks" / f"{name}.jpg"
+    with Image.open(src) as im:
+        im = im.convert("RGB")
+        scale = max(w / im.width, h / im.height)
+        im = im.resize((max(w, round(im.width * scale)), max(h, round(im.height * scale))), Image.LANCZOS)
+        x, y = (im.width - w) // 2, (im.height - h) // 2
+        im.crop((x, y, x + w, y + h)).save(out, quality=92)
+    return out
+
+
 def generate_wallpaper(style, palette, w, h, out, seed=7):
-    """Render at 1/4 resolution with numpy-free math, then upscale smoothly and add grain."""
+    """Render at 1/8 resolution with plain math, then upscale smoothly and add grain."""
     from PIL import Image, ImageFilter
+    if style.startswith("image:"):
+        return _image_look(style.split(":", 1)[1], w, h, out)
     rnd = random.Random(seed)
     cols = [hex_to_rgb(c) for c in palette]
-    sw, sh = max(64, w // 8), max(36, h // 8)
+    div = 3 if style == "topo" else 8          # contour lines need more resolution than soft gradients
+    sw, sh = max(64, w // div), max(36, h // div)
     img = Image.new("RGB", (sw, sh))
     px = img.load()
     blobs = [(rnd.random() * sw, rnd.random() * sh, (0.35 + rnd.random() * 0.5) * max(sw, sh), cols[i % len(cols)])
@@ -292,7 +330,24 @@ def generate_wallpaper(style, palette, w, h, out, seed=7):
     for y in range(sh):
         for x in range(sw):
             u, v = x / sw, y / sh
-            if style == "ember":
+            if style == "topo":
+                # contour lines over a quiet field: map-like, calm
+                f = (math.sin(u * 5.1 + math.sin(v * 3.3 + seed)) + math.sin(v * 6.7 + math.cos(u * 2.9 - seed)) * 0.8
+                     + math.sin((u + v) * 9.1) * 0.25)
+                band = abs(((f * 2.6) % 1.0) - 0.5) * 2          # 0 on a contour, 1 between contours
+                line = max(0.0, 1.0 - band / 0.06)
+                c = _lerp(cols[0], cols[1], 0.25 + 0.45 * v)
+                c = _lerp(c, cols[2], line * 0.35)
+            elif style == "haze":
+                acc, wsum = [0.0, 0.0, 0.0], 0.0
+                for bx, by, r, bc in blobs[:3]:
+                    wgt = math.exp(-((x - bx) ** 2 + (y - by) ** 2) / (r * r * 1.6))
+                    wsum += wgt
+                    for i in range(3):
+                        acc[i] += bc[i] * wgt
+                mix = tuple(a / wsum for a in acc) if wsum else cols[0]
+                c = _lerp(cols[0], mix, 0.42 * min(1.0, wsum * 1.4))
+            elif style == "ember":
                 # void sky, warm glow rising from a low horizon, faint ember haze
                 horizon = math.exp(-((v - 1.02) ** 2) / 0.09) * (0.75 + 0.25 * math.sin(u * 2.4 + 0.6))
                 core = math.exp(-(((u - 0.62) * sw / sh) ** 2 * 0.6 + (v - 0.95) ** 2) / 0.05)
@@ -321,7 +376,8 @@ def generate_wallpaper(style, palette, w, h, out, seed=7):
                 mix = tuple(a / wsum for a in acc) if wsum else cols[0]
                 c = _lerp(cols[0], mix, 0.55 if style == "grain" else 0.95)
             px[x, y] = c
-    img = img.resize((w, h), Image.BICUBIC).filter(ImageFilter.GaussianBlur(radius=max(2, w // 400)))
+    blur = 1 if style == "topo" else max(2, w // 400)
+    img = img.resize((w, h), Image.BICUBIC).filter(ImageFilter.GaussianBlur(radius=blur))
     if style == "ember":                          # sparks: small soft glowing dots drifting up from the horizon
         from PIL import ImageDraw
         sparks = Image.new("RGBA", (w, h), (0, 0, 0, 0))

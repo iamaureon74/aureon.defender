@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en" class="popup">
+<head>
+  <meta charset="utf-8">
+  <title>noah shield</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <header class="banner">
+    <div class="banner-text">
+      <h1>noah shield</h1>
+      <p class="shield-brand">an aureon software by <b>#houseofasher</b></p>
+      <p id="shield-state" class="shield-state">protected</p>
+    </div>
+    <span id="version" class="muted"></span>
+    <button id="quiet" class="ghost" title="Quiet: the shield shows no notifications">quiet</button>
+  </header>
+
+  <p id="update" class="notice" hidden></p>
+
+  <section id="site-section" class="hero">
+    <div class="hero-top">
+      <div id="grade" class="grade">·</div>
+      <div class="hero-info">
+        <h2 id="site" class="site-name">this page</h2>
+        <p id="score" class="muted">reading the page…</p>
+        <p id="trust" class="muted" hidden></p>
+      </div>
+      <div class="hero-right">
+        <span id="blocked" class="blocked-count" title="tracker requests stopped on this tab">0</span>
+        <span class="blocked-label">blocked</span>
+        <span id="hero-vpn-dot" class="dot hero-dot" title="VPN status"></span>
+      </div>
+    </div>
+    <div id="live-feed" class="live-feed" hidden></div>
+
+    <div class="row small">
+      <label class="switch"><input type="checkbox" id="trusted"><span>trust this site</span></label>
+      <label class="switch"><input type="checkbox" id="strict"><span>no cookies here</span></label>
+      <label class="switch"><input type="checkbox" id="capture"><span>may record</span></label>
+      <label class="switch"><input type="checkbox" id="shopquiet"><span>no shopping help</span></label>
+    </div>
+    <div id="blocked-now" class="blocked-now" aria-live="polite"></div>
+    <details class="site-tools">
+      <summary>site tools</summary>
+      <div class="row small">
+      <button id="here" class="ghost primary" title="What the shield stopped and did on this page, in words">what happened here</button>
+      <button id="watchers" class="ghost">who's watching</button>
+      <button id="burn" class="ghost danger" title="Delete this site's cookies, cache and storage">burn</button>
+      <button id="alias" class="ghost" title="An email alias for this site">alias</button>
+      <button id="decoy" class="ghost" title="Fill the sign-up form with decoy details">decoy</button>
+      <button id="policy" class="ghost" title="Read this page as a policy or terms">policy</button>
+    </div>
+    </details>
+    <div id="here-list" class="watchers" hidden></div>
+    <div id="watchers-list" class="watchers" hidden></div>
+    <p id="alias-out" class="muted" hidden></p>
+    <p id="media-live" class="muted bad" hidden></p>
+  </section>
+
+  <section id="network-section">
+    <div class="row"><h2>this network</h2><span id="net-state" class="muted"></span></div>
+    <p class="muted small">What the wifi you are on can and cannot see.</p>
+    <ul id="net-list" class="net-list"></ul>
+    <label class="switch"><input type="checkbox" id="net-public"><span>i'm on public wifi (café, hotel, airport): ask before any unsecured page</span></label>
+    <div class="row small">
+      <button id="net-dns" class="ghost" title="Hide the names of sites you visit from the network's dns: your browser's own switch">turn on secure dns</button>
+      <button id="net-log" class="ghost" title="Everything the shield stopped, in plain words">see everything blocked</button>
+      <button id="sec-open" class="ghost" title="Investigations, network, graph, extensions, files, threat lists">security center</button>
+    </div>
+    <div id="audit-card" class="audit-card">
+      <div class="row small">
+        <h3>this site's security</h3>
+        <button id="audit-run" class="ghost" title="Grade this site from the headers, cookies and page it already sent — nothing is probed">grade it</button>
+      </div>
+      <div id="audit-result" class="audit-result" hidden>
+        <div id="audit-badge" class="audit-badge">—</div>
+        <div class="audit-right">
+          <div id="audit-score" class="audit-score-n">·</div>
+          <div id="audit-summary" class="muted small"></div>
+          <button id="audit-details" class="link-btn">see every issue and how to fix it</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vpn-section">
+    <div class="row">
+      <h2>vpn</h2>
+      <span id="vpn-dot" class="dot"></span>
+      <span id="vpn-state" class="muted">off</span>
+    </div>
+    <div class="row">
+      <select id="server" class="grow"></select>
+      <button id="tunnel-on" class="ghost primary">connect</button>
+    </div>
+    <p id="tunnel-status" class="muted"></p>
+    <div class="row small">
+      <label class="switch"><input type="checkbox" id="kill"><span>block everything if it drops</span></label>
+      <label class="switch"><input type="checkbox" id="webrtc"><span>hide my real address in calls</span></label>
+      <button id="recheck" class="ghost" title="Ask where the traffic comes out right now">check</button>
+      <button id="fastest" class="ghost" title="Try every location once and keep the fastest">fastest</button>
+      <button id="route" class="ghost" title="Send only this site through a location, or straight out">this site</button>
+    </div>
+    <p id="webrtc-leak" class="muted small" hidden></p>
+    <p id="vpn-noah" class="muted" hidden>One press needs <a href="https://noah.asherin.com/download" target="_blank" rel="noopener">noah on this computer</a> (free): it fetches Tor from the Tor Project, runs it while you are connected and picks the country you choose. Without it, start Tor Browser and pick that route, or add a server under settings.</p>
+  </section>
+
+  <section>
+    <div class="row"><h2>today</h2><span id="today" class="muted"></span></div>
+    <div class="threat-banner" id="scam-banner">
+      <b id="d-scams">0</b><span>scams &amp; threats caught</span>
+    </div>
+    <div class="dash">
+      <div class="defense"><b id="d-trackers">0</b><span>ads &amp; trackers</span></div>
+      <div class="defense"><b id="d-cookies">0</b><span>cookies burned</span></div>
+      <div class="defense"><b id="d-annoy">0</b><span>banners &amp; walls</span></div>
+      <div class="savings"><b id="d-coupons">0</b><span>codes that worked</span></div>
+      <div class="savings reward"><b id="d-saved">0</b><span>saved on orders</span></div>
+    </div>
+    <p id="week" class="muted"></p>
+  </section>
+
+  <details class="more">
+    <summary>more tools</summary>
+  <section id="social-section">
+    <div class="row"><h2>social</h2><span id="social-status" class="muted"></span></div>
+    <p class="muted small">Sponsored posts, engagement bait, algo injections and session timers across every platform.</p>
+    <div class="social-grid">
+      <label class="platform-toggle" title="Instagram"><input type="checkbox" id="social-instagram"><span>instagram</span></label>
+      <label class="platform-toggle" title="TikTok"><input type="checkbox" id="social-tiktok"><span>tiktok</span></label>
+      <label class="platform-toggle" title="Reddit"><input type="checkbox" id="social-reddit"><span>reddit</span></label>
+      <label class="platform-toggle" title="YouTube"><input type="checkbox" id="social-youtube"><span>youtube</span></label>
+      <label class="platform-toggle" title="Skip unskippable ads on YouTube invisibly"><input type="checkbox" id="skip-ads"><span>skip ads</span></label>
+      <label class="platform-toggle" title="LinkedIn"><input type="checkbox" id="social-linkedin"><span>linkedin</span></label>
+      <label class="platform-toggle" title="X / Twitter"><input type="checkbox" id="social-twitter"><span>x / twitter</span></label>
+    </div>
+    <p id="social-caught" class="muted" hidden></p>
+  </section>
+  <section id="persona-section">
+    <div class="row"><h2>shepherd persona for every AI</h2><span id="persona-status" class="muted"></span></div>
+    <p class="muted small">On every AI chat you open — Gemini, Gemini Lens, ChatGPT, Claude, Copilot, Perplexity, Poe, Mistral, DeepSeek, HuggingChat, Grok, Yandex, Character.ai, Pi, You, Kagi, Venice — the shepherd instructions are pasted as turn one of a fresh conversation. Every response after that runs under those rules.</p>
+    <label class="switch"><input type="checkbox" id="persona-enabled"><span>seed AI chats with the shepherd persona</span></label>
+    <label class="switch"><input type="checkbox" id="persona-autoseed"><span>seed automatically when a new chat opens</span></label>
+    <div class="row small">
+      <button id="persona-reseed" class="ghost" title="Force the shepherd persona into the current AI chat">reseed the current tab</button>
+    </div>
+  </section>
+  <section id="profile-section">
+    <div class="row"><h2>x profile intel</h2><span id="profile-status" class="muted"></span></div>
+    <p class="muted small">On any X or Twitter profile page a report opens with account age and post rate, follow ratio, rest_id and signup era, verified/protected/withheld flags, bio URLs expanded and cross-platform handles pulled out, plus one-click links to reverse-image-search the profile picture, browse Wayback Machine history, and check any email in the bio against HIBP. All from what your browser was already going to receive.</p>
+    <label class="switch"><input type="checkbox" id="profile-enabled"><span>show the intel report on X and Twitter profile pages</span></label>
+  </section>
+  <section id="spaces-section">
+    <div class="row"><h2>twitter / x spaces</h2><span id="spaces-status" class="muted"></span></div>
+    <p class="muted small">On an X or Twitter Space page the shield shows every listener with their @, name and a link to their profile. Listeners under a month old are marked; you can flag low-follower accounts too. Data comes from what the browser was already going to receive. Nothing leaves this tab.</p>
+    <label class="switch"><input type="checkbox" id="spaces-enabled"><span>show the listener panel on X and Twitter Spaces</span></label>
+    <label class="switch"><input type="checkbox" id="spaces-lowfollow"><span>flag accounts with almost no followers</span></label>
+    <div class="row small">
+      <label>new-account cutoff (days)</label>
+      <input type="number" id="spaces-days" min="1" max="365" step="1" class="grow small">
+      <label>low followers under</label>
+      <input type="number" id="spaces-underfollow" min="0" max="10000" step="1" class="grow small">
+    </div>
+  </section>
+  <section id="inspect-section">
+    <div class="row"><h2>inspect (audit your own site or platform)</h2><span id="inspect-count" class="muted"></span></div>
+    <p class="muted small">For companies stress-testing their own website — every request, form, WebSocket, EventSource, storage read, cookie and secret this page sees, in plain text. GraphQL operations are named so an X or Twitter security team can see exactly which call carries user data. Only turn this on for a site you own or a platform you are authorised to audit.</p>
+    <div class="row small">
+      <button id="inspect-toggle" class="ghost primary">arm this tab and reload</button>
+      <button id="inspect-quiet" class="ghost" title="Arm without reloading; only catches what happens next">arm without reload</button>
+    </div>
+  </section>
+  <section id="capture-section">
+    <div class="row"><h2>capture</h2><span id="capture-status" class="muted"></span></div>
+    <div class="row small">
+      <button id="shot-visible" class="ghost" title="What is on screen right now, saved to Downloads/noah-shield">screenshot</button>
+      <button id="shot-full" class="ghost" title="The whole page, top to bottom, stitched into one picture">full page</button>
+      <button id="shot-area" class="ghost" title="Drag over the part of the page you want">an area</button>
+      <button id="record" class="ghost" title="Record the screen, a window or a tab, with your camera in a corner if you like; the file goes straight to your downloads">record</button>
+    </div>
+    <label class="switch"><input type="checkbox" id="capture-blur"><span>blur private details first (emails, numbers, cards, keys, filled-in fields)</span></label>
+  </section>
+  <section id="light-section">
+    <div class="row"><h2>light</h2><span id="light-now" class="muted"></span></div>
+    <div class="row small">
+      <button class="ghost" data-light="sunny" title="Full brightness">bright and sunny</button>
+      <button class="ghost" data-light="day" title="Bright, for a lit room">daytime</button>
+      <button class="ghost" data-light="restaurant" title="Half brightness, for a restaurant or a café">restaurant</button>
+      <button class="ghost" data-light="dark" title="Low, for a dark room">in a dark room</button>
+      <button class="ghost" data-light="night" title="As low as it goes, for the last hour of the day">night</button>
+    </div>
+    <div class="row small">
+      <label class="slider">brightness <input type="range" id="light-level" min="5" max="100" step="5"></label>
+      <label class="slider">warm tint <input type="range" id="light-warm" min="0" max="100" step="5"></label>
+    </div>
+    <p id="light-note" class="muted">The screen's own brightness, turned through noah on this computer. The warm tint is the one thing laid over pages, and only if you slide it up.</p>
+  </section>
+  <section id="search-section">
+    <div class="row"><h2>search</h2><span id="search-now" class="muted"></span></div>
+    <label class="switch"><input type="checkbox" id="search-clean"><span>no paid results on Google, Bing, DuckDuckGo, Brave, Yahoo, Startpage and Ecosia</span></label>
+    <label class="switch"><input type="checkbox" id="search-farms"><span>no content farms; pages written for the engine shown faded</span></label>
+    <label class="switch"><input type="checkbox" id="search-look"><span>search pages wear the look: its picture, palette, type and spacing</span></label>
+    <label class="switch"><input type="checkbox" id="search-peek"><span>a “peek” under each result reads the page here, without opening it</span></label>
+  </section>
+  <section id="tone-section">
+    <div class="row"><h2>frequency</h2><span id="tone-now" class="muted"></span></div>
+    <div class="row">
+      <select id="tone-preset" class="grow"></select>
+      <button id="tone-toggle" class="ghost primary">play</button>
+    </div>
+    <div class="row small">
+      <label class="slider">hz <input type="number" id="tone-hz" min="2" max="963" step="0.01" value="432"></label>
+      <label class="slider">volume <input type="range" id="tone-volume" min="0" max="100" step="5" value="15"></label>
+    </div>
+    <p class="muted">Plays under whatever is on: a pure tone from 20 Hz up; below that a binaural beat, which needs headphones.</p>
+  </section>
+  <section>
+    <div class="row"><h2>mode</h2><span id="mode-now" class="muted"></span></div>
+    <div class="row small">
+      <button class="ghost" data-profile="browsing">browsing</button>
+      <button class="ghost" data-profile="shopping">shopping</button>
+      <button class="ghost" data-profile="banking">banking</button>
+      <button id="panic" class="ghost danger" title="Close every tab, clear history, drop the tunnel">panic</button>
+    </div>
+  </section>
+  <details>
+    <summary class="switches-summary">switches</summary>
+    <section>
+      <h2>data protection</h2>
+      <label class="switch"><input type="checkbox" id="trackers"><span>stop ads and trackers</span></label>
+      <label class="switch"><input type="checkbox" id="cookies"><span>block third-party cookies</span></label>
+      <label class="switch"><input type="checkbox" id="geo"><span>deny location to every site</span></label>
+      <label class="switch"><input type="checkbox" id="fingerprint"><span>blur fingerprints</span></label>
+      <label class="switch"><input type="checkbox" id="params"><span>strip tracking parameters</span></label>
+      <label class="switch"><input type="checkbox" id="gpc"><span>send Global Privacy Control</span></label>
+      <label class="switch"><input type="checkbox" id="cookie-deception"><span>hide cookie banners that have no "reject" button (never clicks accept)</span></label>
+      <label class="switch"><input type="checkbox" id="dark-patterns"><span>detect and flag dark patterns (pre-ticked boxes, fake countdowns, confirm-shaming, hidden subscriptions)</span></label>
+    </section>
+    <section>
+      <h2>shopping</h2>
+      <label class="switch"><input type="checkbox" id="compare"><span>cheaper elsewhere, on product pages</span></label>
+      <label class="switch"><input type="checkbox" id="coupons"><span>try codes at checkout, never order</span></label>
+      <p id="shop-stats" class="muted"></p>
+    </section>
+    <section>
+      <div class="row"><h2>recording watch</h2><span id="watch-count" class="pill"></span></div>
+      <label class="switch"><input type="checkbox" id="guard-screen"><span>pages ask before recording the screen</span></label>
+      <label class="switch"><input type="checkbox" id="guard-camera"><span>pages ask before camera or microphone</span></label>
+      <p id="watch-note" class="muted"></p>
+    </section>
+  </details>
+  </details>
+
+  <footer>
+    <a href="#" id="options">settings</a>
+    <a href="#" id="log">log</a>
+    <a href="#" id="tools">tools</a>
+    <a href="#" id="leak">leak test</a>
+    <a href="https://noah.asherin.com/shield" target="_blank" rel="noopener">about</a>
+    <a href="https://noah.asherin.com/download" target="_blank" rel="noopener" title="Programs outside the browser recording your screen show up in noah's device room">noah's device room</a>
+  </footer>
+
+  <script src="lib/common.js"></script>
+  <script src="lib/look.js"></script>
+  <script src="lib/tone.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
