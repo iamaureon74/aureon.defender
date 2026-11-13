@@ -182,6 +182,8 @@ def main():
         for s in stack:
             gm += [f'[submodule "{s["path"]}"]', f'\tpath = {s["path"]}', f'\turl = {s["url"]}.git',
                    "\tshallow = true"]
+            # an empty folder keeps `git add -A` from treating the unfetched submodule as deleted
+            (ROOT / s["path"]).mkdir(parents=True, exist_ok=True)
             subprocess.run(["git", "-C", str(ROOT), "update-index", "--add", "--cacheinfo",
                             f"160000,{s['commit']},{s['path']}"], check=True)
         (ROOT / ".gitmodules").write_text("\n".join(gm) + "\n", encoding="utf-8")
