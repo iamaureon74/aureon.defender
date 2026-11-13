@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060608">
+<title>Aureon</title>
+<style>
+/* Void & Ember. One deliberate dark world: void black, ember amber, warm glow.
+   Layout: top bar, one view at a time, floating rounded dock at the bottom (bottom bar on phones). */
+:root{
+  --void:#060608; --void2:#0d0b0c; --glass:rgba(255,217,176,.035); --glass2:rgba(255,217,176,.06);
+  --line:rgba(201,128,63,.16); --line2:rgba(201,128,63,.32);
+  --ember:#c9803f; --glow:#ffd9b0; --ink:#efe7de; --muted:#8f847a; --faint:#5c544d;
+  --coal:#ff5b3a; --coal-soft:rgba(255,91,58,.12); --amber:#f0b25a; --amber-soft:rgba(240,178,90,.12); --ash:#a99a8a;
+  --fd:"Bahnschrift","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --fb:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --fm:"Cascadia Code","Cascadia Mono",Consolas,ui-monospace,monospace;
+  --r:18px; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--void);color:var(--ink);font:14px/1.55 var(--fb);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:auto 0 0 0;height:60vh;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 70% at 60% 120%,rgba(201,128,63,.28),rgba(201,128,63,.08) 45%,transparent 70%)}
+#sparks{position:fixed;inset:0;z-index:0;pointer-events:none}
+.app{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:22px max(20px,env(safe-area-inset-right)) 130px max(20px,env(safe-area-inset-left))}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px}
+.mark{display:flex;align-items:baseline;gap:10px;font:600 15px var(--fd);letter-spacing:.32em;color:var(--glow)}
+.mark span{font:400 12px var(--fm);letter-spacing:.08em;color:var(--ember)}
+.hright{display:flex;align-items:center;gap:14px}
+.clock{white-space:nowrap;font:300 22px var(--fd);letter-spacing:.04em;color:var(--glow);font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);background:var(--glass);
+  font:500 11.5px var(--fm);color:var(--ash);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ember);box-shadow:0 0 10px var(--ember)}
+.dot.off{background:var(--faint);box-shadow:none}.dot.bad{background:var(--coal);box-shadow:0 0 10px var(--coal)}
+h1{font:300 clamp(28px,4vw,40px)/1.1 var(--fd);margin:0;letter-spacing:.01em;text-wrap:balance}
+h2{font:500 16px var(--fd);margin:0;letter-spacing:.04em;color:var(--glow)}
+.lead{color:var(--muted);max-width:64ch;margin:8px 0 0}
+.k{font:500 10.5px var(--fm);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.view{display:none;flex-direction:column;gap:18px;animation:rise .45s cubic-bezier(.2,.7,.2,1)}
+.view.on{display:flex}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.vhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);min-width:0}
+.grid{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.c3,.c4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.c2,.c3,.c4{grid-template-columns:1fr}}
+
+/* ---- the core ---- */
+.hero{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:30px;align-items:center}
+@media (max-width:820px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.core{position:relative;width:min(340px,78vw);aspect-ratio:1}
+.orb{position:absolute;inset:22%;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,#fff3e3 0%,var(--glow) 12%,var(--ember) 38%,rgba(201,128,63,.35) 62%,transparent 72%);
+  filter:blur(.3px);animation:breathe 4.8s ease-in-out infinite}
+.orb::after{content:"";position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(circle,rgba(201,128,63,.25),transparent 65%);animation:breathe 4.8s ease-in-out infinite reverse}
+.core.bad .orb{background:radial-gradient(circle at 50% 45%,#fff0ea 0%,#ffb39e 12%,var(--coal) 40%,rgba(255,91,58,.3) 62%,transparent 72%)}
+.core.off .orb{background:radial-gradient(circle at 50% 45%,#6d655e 0%,#3a3430 30%,rgba(58,52,48,.3) 62%,transparent 72%);animation:none}
+@keyframes breathe{0%,100%{transform:scale(.94);opacity:.92}50%{transform:scale(1.03);opacity:1}}
+.ring{position:absolute;inset:4%;border-radius:50%;border:1px dashed var(--line);animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bead{position:absolute;width:12px;height:12px;margin:-6px;border-radius:50%;background:var(--ember);box-shadow:0 0 12px var(--ember)}
+.bead.off{background:var(--faint);box-shadow:none}.bead.error{background:var(--coal);box-shadow:0 0 12px var(--coal)}
+.bead span{position:absolute;left:50%;top:16px;transform:translateX(-50%) rotate(var(--r0));white-space:nowrap;font:500 9.5px var(--fm);color:var(--muted);opacity:0;transition:opacity .2s;pointer-events:none}
+.core:hover .bead span{opacity:1}
+.verdict .big{font:300 clamp(34px,5vw,54px)/1.05 var(--fd);color:var(--glow);text-shadow:0 0 34px rgba(255,217,176,.25)}
+.verdict p{color:var(--muted);margin:10px 0 0}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:22px}
+@media (max-width:820px){.stats{justify-content:center}}
+.stat b{display:block;font:300 30px var(--fd);color:var(--ink);font-variant-numeric:tabular-nums}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:none}
+.row .v{font:12px var(--fm);color:var(--ash);text-align:right;overflow-wrap:anywhere}
+.meter{height:4px;border-radius:4px;background:rgba(255,217,176,.08);overflow:hidden;width:120px;flex:none}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--ember),var(--glow));border-radius:4px}
+
+/* ---- lists / events ---- */
+.ev{display:grid;grid-template-columns:10px 1fr auto;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.ev:first-child{border-top:none}
+.ev .b{width:8px;height:8px;border-radius:50%;margin-top:7px;background:var(--faint)}
+.ev.high .b{background:var(--coal);box-shadow:0 0 10px var(--coal)}.ev.medium .b{background:var(--amber);box-shadow:0 0 8px var(--amber)}.ev.low .b{background:var(--ember)}
+.ev b{font-weight:600;color:var(--ink)}.ev p{margin:2px 0 0;color:var(--muted);overflow-wrap:anywhere}
+.ev time{font:11.5px var(--fm);color:var(--faint);white-space:nowrap}
+.tag{display:inline-block;padding:2px 8px;border-radius:7px;font:500 11px var(--fm);border:1px solid var(--line);color:var(--ash);margin:2px 4px 2px 0}
+.tag.hot{border-color:transparent;background:var(--coal-soft);color:#ffb7a6}.tag.warm{border-color:transparent;background:var(--amber-soft);color:#ffd79a}
+.mono{font-family:var(--fm);font-size:12px;overflow-wrap:anywhere}
+.muted{color:var(--muted)}.empty{color:var(--faint);padding:14px 0}
+.bar{display:grid;grid-template-columns:minmax(90px,170px) 1fr auto;gap:10px;align-items:center;padding:5px 0;cursor:pointer;border-radius:8px}
+.bar:hover .fill{filter:brightness(1.25)}
+.bar .fill{height:8px;border-radius:5px;background:linear-gradient(90deg,rgba(201,128,63,.55),var(--ember));min-width:3px}
+.bar .fill.t{background:linear-gradient(90deg,rgba(240,178,90,.4),var(--amber))}
+.bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar.sel span{color:var(--glow)}
+.scroll{max-height:420px;overflow:auto;padding-right:6px}
+.scroll::-webkit-scrollbar{width:6px}.scroll::-webkit-scrollbar-thumb{background:var(--line2);border-radius:6px}
+.acc{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.acc:first-child{border-top:none}
+.ico{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--glass2);color:var(--ember)}
+.ico svg{width:15px;height:15px}
+.ico.hot{color:var(--coal);background:var(--coal-soft)}
+
+/* ---- controls ---- */
+button{font:inherit;color:inherit}
+.btn{border:1px solid var(--line2);background:var(--glass2);color:var(--glow);padding:9px 16px;border-radius:12px;cursor:pointer;font:500 13px var(--fb);transition:.2s}
+.btn:hover{background:rgba(201,128,63,.16);border-color:var(--ember)}
+.btn.pri{background:linear-gradient(180deg,#d68d4b,var(--ember));color:#1a0d05;border-color:transparent;box-shadow:0 6px 24px rgba(201,128,63,.28)}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+input[type=text]{flex:1 1 280px;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--line2);border-radius:12px;padding:10px 14px;color:var(--ink);font:13px var(--fm)}
+input[type=text]::placeholder{color:var(--faint)}
+select{background:#100d0c;border:1px solid var(--line2);border-radius:10px;padding:7px 10px;color:var(--ink);font:13px var(--fb)}
+input[type=range]{accent-color:var(--ember);width:160px}
+input[type=color]{width:42px;height:30px;border:1px solid var(--line2);border-radius:8px;background:none;padding:2px}
+:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+.seg{display:inline-flex;padding:3px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid var(--line)}
+.seg button{border:0;background:none;padding:6px 13px;border-radius:9px;cursor:pointer;color:var(--muted);font:500 12.5px var(--fb)}
+.seg button[aria-pressed="true"]{background:var(--ember);color:#1a0d05}
+.field{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--line)}
+.field:first-of-type{border-top:none}
+.field label{color:var(--ash)}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:13px 0;border-top:1px solid var(--line)}
+.tog:first-child{border-top:none}.tog p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+.sw{position:relative;width:44px;height:24px;flex:none}.sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;z-index:1}
+.sw span{position:absolute;inset:0;border-radius:99px;background:#2a2421;transition:.25s}
+.sw span::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#8f847a;transition:.25s}
+.sw input:checked+span{background:rgba(201,128,63,.45)}.sw input:checked+span::after{transform:translateX(20px);background:var(--glow);box-shadow:0 0 10px var(--glow)}
+.sw input:focus-visible+span{outline:2px solid var(--glow);outline-offset:2px}
+
+/* ---- studio ---- */
+.looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.look{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;background:#0b0909;padding:0;text-align:left;transition:.25s}
+.look:hover{border-color:var(--ember);transform:translateY(-2px)}
+.look[aria-pressed="true"]{border-color:var(--glow);box-shadow:0 0 0 1px var(--glow),0 10px 40px rgba(201,128,63,.25)}
+.look img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#120e0c}
+.look .cap{position:absolute;inset:auto 0 0 0;padding:28px 14px 12px;background:linear-gradient(transparent,rgba(6,6,8,.92));display:flex;justify-content:space-between;align-items:flex-end}
+.look .cap b{font:500 15px var(--fd);letter-spacing:.06em;color:#fff}
+.sws{display:flex;gap:3px}.sws i{width:10px;height:10px;border-radius:3px;display:block}
+
+/* ---- dock ---- */
+nav.dock{position:fixed;z-index:20;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:4px;padding:7px;
+  border-radius:24px;background:rgba(14,11,11,.72);border:1px solid var(--line2);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 18px 50px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,217,176,.06)}
+nav.dock button{position:relative;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px 7px;border-radius:17px;color:var(--muted);transition:.2s;min-width:62px}
+nav.dock button svg{width:20px;height:20px}
+nav.dock button small{font:500 10px var(--fb);letter-spacing:.02em}
+nav.dock button:hover{color:var(--glow);background:rgba(255,217,176,.05)}
+nav.dock button[aria-current="true"]{color:var(--glow);background:rgba(201,128,63,.14)}
+nav.dock button[aria-current="true"]::after{content:"";position:absolute;bottom:-1px;width:5px;height:5px;border-radius:50%;background:var(--ember);box-shadow:0 0 8px var(--ember)}
+nav.dock .n{position:absolute;top:3px;right:9px;min-width:16px;height:16px;border-radius:8px;background:var(--coal);color:#fff;font:600 10px/16px var(--fm);text-align:center;padding:0 4px}
+@media (max-width:760px){
+  nav.dock{left:0;right:0;transform:none;bottom:0;border-radius:22px 22px 0 0;justify-content:space-around;padding:6px 6px max(8px,env(safe-area-inset-bottom));overflow-x:auto}
+  nav.dock{gap:0}
+  nav.dock button{min-width:0;flex:1;padding:7px 2px}
+  nav.dock button small{font-size:9px}
+  nav.dock .n{right:2px}
+  .clock{font-size:17px}
+  .mark span,#net .t{display:none}
+  .app{padding-bottom:110px}
+}
+.toast{position:fixed;z-index:30;left:50%;bottom:110px;transform:translateX(-50%);padding:11px 18px;border-radius:14px;background:rgba(20,15,13,.94);border:1px solid var(--ember);color:var(--glow);box-shadow:0 10px 40px rgba(0,0,0,.6);max-width:min(520px,90vw)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="sparks" aria-hidden="true"></canvas>
+<div class="app">
+<header>
+  <div class="mark">AUREON <span>defender</span></div>
+  <div class="hright"><span class="chip" id="net"><span class="dot off"></span>…</span><span class="clock" id="clock"></span></div>
+</header>
+
+<section class="view on" id="v-shield" aria-label="Shield">
+  <div class="hero">
+    <div class="core" id="core"><div class="ring"></div><div class="orb"></div><div id="beads"></div></div>
+    <div class="verdict"><span class="k" id="since"></span><div class="big" id="verdict">Waking up…</div><p id="vsub"></p>
+      <div class="stats" id="stats"></div></div>
+  </div>
+  <div class="grid c3">
+    <div class="panel"><h2>Latest</h2><div id="latest" style="margin-top:6px"></div></div>
+    <div class="panel"><h2>This laptop</h2><div id="vit" style="margin-top:6px"></div></div>
+    <div class="panel"><h2>Defender engine</h2><p class="muted" style="margin:6px 0 4px;font-size:12.5px">Microsoft's offline engine runs underneath as one of Aureon's scanners.</p><div id="mdef"></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-radar" aria-label="Radar">
+  <div class="vhead"><div><span class="k">Hidden software radar</span><h1>Who's on this laptop</h1>
+    <p class="lead">Every program, background service, task and browser extension, attributed to the company behind it. Also Windows' own record of which apps used your camera, microphone, location and screen.</p></div>
+    <button class="btn pri" data-post="/api/radar">Sweep now</button></div>
+  <div class="stats" id="rstats" style="margin-top:0"></div>
+  <div class="grid c2">
+    <div class="panel"><h2>Camera · microphone · screen · location</h2><div class="scroll" id="privacy" style="margin-top:8px"></div></div>
+    <div class="panel"><h2>Companies</h2><p class="muted" style="margin:4px 0 8px;font-size:12.5px">Bars show background items; amber is telemetry. Select a company to list what it runs.</p><div class="scroll" id="companies"></div></div>
+  </div>
+  <div class="grid c2">
+    <div class="panel"><h2 id="cotitle">Browser extensions with broad powers</h2><div class="scroll" id="rlist" style="margin-top:8px"></div></div>
+    <div class="panel"><h2>Hidden from Settings › Apps</h2><div class="scroll" id="hidden" style="margin-top:8px"></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-phones" aria-label="Phones">
+  <div class="vhead"><div><span class="k">Phones</span><h1>Every phone, every hidden app</h1>
+    <p class="lead">Plug in an Android phone (any brand) with USB debugging on, or an iPhone. Aureon lists every package, including ones with no icon and carrier or maker preloads, and which apps used your camera, mic or location recently.</p></div>
+    <button class="btn pri" data-post="/api/phones/scan">Scan phones</button></div>
+  <div id="phones"></div>
+  <div class="grid c2">
+    <div class="panel"><h2>Connect a phone</h2>
+      <div class="row"><span><b>Android</b> <span class="muted">· Pixel, Samsung, Xiaomi, OnePlus, Motorola…</span></span></div>
+      <p class="muted" style="margin:0 0 8px">Settings › About phone › tap Build number 7 times › Developer options › USB debugging on. Plug in and tap <i>Allow</i>. Aureon scans automatically.</p>
+      <div class="row"><span><b>iPhone</b></span></div>
+      <p class="muted" style="margin:0">Install libimobiledevice, trust this computer on the iPhone, then Scan. For a deep spyware check, make an encrypted backup and run MVT.</p></div>
+    <div class="panel"><h2>Open Aureon on your phone</h2>
+      <p class="muted" style="margin:6px 0 10px">A view-only link on your home WiFi, protected by a long private key. Anyone with the link can view, so keep it to yourself.</p>
+      <div class="field"><label for="plink">Phone link</label><span class="sw"><input type="checkbox" id="plink"><span></span></span></div>
+      <div id="plinkurl" class="mono muted"></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-activity" aria-label="Activity">
+  <div class="vhead"><div><span class="k">Activity</span><h1>Everything Aureon noticed</h1></div>
+    <div class="btns"><div class="seg" id="sevf"><button aria-pressed="true" data-s="info">All</button><button aria-pressed="false" data-s="medium">Alerts</button></div>
+    <button class="btn" data-post="/api/report">Write today's report</button></div></div>
+  <div class="panel"><div id="events"></div></div>
+</section>
+
+<section class="view" id="v-scan" aria-label="Scan">
+  <div class="vhead"><div><span class="k">Scan</span><h1>Check anything, offline</h1>
+    <p class="lead">Each file goes through reputation, delivery-trick heuristics, YARA rules and the Microsoft Defender engine.</p></div></div>
+  <div class="panel"><div class="btns"><input type="text" id="spath" placeholder="C:\Users\you\Downloads" aria-label="File or folder to scan"><button class="btn pri" id="sgo">Scan</button></div>
+    <div class="btns" style="margin-top:14px"><button class="btn" data-quick="~/Downloads">Downloads</button><button class="btn" data-quick="~/Desktop">Desktop</button><button class="btn" data-quick="~/Documents">Documents</button>
+    <button class="btn" data-post="/api/update">Update threat feeds</button><button class="btn" data-post="/api/posture">Check security settings</button></div></div>
+</section>
+
+<section class="view" id="v-vault" aria-label="Vault">
+  <div class="vhead"><div><span class="k">Vault</span><h1>Quarantine</h1><p class="lead">Blocked files are scrambled so they can't run. Restore only what you're sure is safe.</p></div></div>
+  <div class="panel"><div id="vault"></div></div>
+</section>
+
+<section class="view" id="v-studio" aria-label="Studio">
+  <div class="vhead"><div><span class="k">Studio</span><h1>Make it yours</h1><p class="lead">Wallpaper, colours, clock and a desktop widget, with no extra apps. Undo puts everything back.</p></div>
+    <button class="btn" id="restore">Undo all Studio changes</button></div>
+  <div class="looks" id="looks"></div>
+  <div class="grid c3">
+    <div class="panel"><h2>Windows</h2>
+      <div class="field"><label>Mode</label><div class="seg" data-set="theme"><button data-v="light">Light</button><button data-v="dark">Dark</button></div></div>
+      <div class="field"><label for="acc">Accent</label><span><input type="color" id="acc"> <label class="muted"><input type="checkbox" id="acctb"> taskbar</label></span></div>
+      <div class="field"><label>Transparency</label><div class="seg" data-set="transparency"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
+      <div class="field"><label>Taskbar</label><div class="seg" data-set="taskbar"><button data-v="left">Left</button><button data-v="center">Centre</button></div></div></div>
+    <div class="panel"><h2>Time</h2>
+      <div class="field"><label>Clock</label><div class="seg" data-set="hours"><button data-v="12">12h</button><button data-v="24">24h</button></div></div>
+      <div class="field"><label>Seconds</label><div class="seg" data-set="seconds"><button data-v="true">Show</button><button data-v="false">Hide</button></div></div>
+      <div class="field"><label for="datef">Date</label><select id="datef"><option>yyyy-MM-dd</option><option>dd/MM/yyyy</option><option>MM/dd/yyyy</option><option>d MMM yyyy</option></select></div></div>
+    <div class="panel"><h2>Desktop widget</h2>
+      <div class="field"><label>Widget</label><div class="seg" data-w="enabled"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
+      <div class="field"><label for="wpos">Place</label><select id="wpos"><option>top-left</option><option>top-right</option><option>center</option><option>bottom-left</option><option>bottom-right</option></select></div>
+      <div class="field"><label for="wfont">Font</label><select id="wfont"></select></div>
+      <div class="field"><label for="wsize">Size</label><input type="range" id="wsize" min="48" max="200" step="4"></div>
+      <div class="field"><label for="wcol">Colour</label><input type="color" id="wcol"></div></div>
+  </div>
+  <div class="panel"><h2>Your own files</h2>
+    <div class="btns" style="margin-top:10px"><input type="text" id="wpp" placeholder="Wallpaper image: C:\path\image.jpg"><button class="btn" id="wpgo">Set wallpaper</button></div>
+    <div class="btns" style="margin-top:10px"><input type="text" id="fnt" placeholder="Font file: C:\path\font.ttf"><button class="btn" id="fntgo">Install font</button></div></div>
+</section>
+
+<section class="view" id="v-settings" aria-label="Settings">
+  <div class="vhead"><div><span class="k">Settings</span><h1>Protection</h1><p class="lead">When Aureon is installed these switches need administrator approval, so malware running as you can't turn them off.</p></div></div>
+  <div class="panel" id="toggles"></div>
+  <div class="panel"><h2>What runs where</h2><p class="muted" style="margin:4px 0 8px;font-size:12.5px">The 53 Aureon capabilities, built from the best of 790 open-source projects.</p><div id="caps"></div></div>
+</section>
+</div>
+
+<nav class="dock" aria-label="Sections" id="dock"></nav>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+const TOKEN="__TOKEN__"; let S=null, sevMin="info", company=null;
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ago=t=>{if(!t)return"";const s=Date.now()/1000-t;return s<60?"now":s<3600?Math.floor(s/60)+"m ago":s<86400?Math.floor(s/3600)+"h ago":s<86400*30?Math.floor(s/86400)+"d ago":new Date(t*1000).toLocaleDateString()};
+const base=p=>String(p||"").split(/[\\/]/).pop();
+const I={
+ shield:'<path d="M12 3 5 6v6c0 4.5 3 8 7 9 4-1 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/>',
+ radar:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12 19 5"/>',
+ phone:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+ activity:'<path d="M3 12h4l3-7 4 14 3-7h4"/>',
+ scan:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/>',
+ vault:'<rect x="4" y="5" width="16" height="15" rx="3"/><circle cx="12" cy="12.5" r="3"/><path d="M12 9.5V8"/>',
+ studio:'<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.9-.6-1.3-.6-2.2 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/>',
+ settings:'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+ camera:'<path d="M15 10l5-3v10l-5-3z"/><rect x="3" y="6" width="12" height="12" rx="2"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+ screen:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+ pin:'<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+ bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>'};
+const svg=(n,c="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="${c}">${I[n]||""}</svg>`;
+const TABS=[["shield","Shield"],["radar","Radar"],["phone","Phones"],["activity","Activity"],["scan","Scan"],["vault","Vault"],["studio","Studio"],["settings","Settings"]];
+const VIEW={shield:"v-shield",radar:"v-radar",phone:"v-phones",activity:"v-activity",scan:"v-scan",vault:"v-vault",studio:"v-studio",settings:"v-settings"};
+$("#dock").innerHTML=TABS.map(([k,l],i)=>`<button data-tab="${k}" aria-current="${i===0}">${svg(k)}<small>${l}</small>${k==="activity"?'<span class="n" id="nb" hidden></span>':""}</button>`).join("");
+
+async function api(path,body){const r=await fetch(path,{method:body?"POST":"GET",headers:{"X-Aureon-Token":TOKEN,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+  const j=await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.error||j.message||("error "+r.status)); return j}
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(()=>t.hidden=true,4200)}
+async function post(path,body,msg){try{const r=await api(path,body||{});toast(r.message||msg||"Done");setTimeout(refresh,600);return r}catch(e){toast(e.message)}}
+
+const MOD={realtime:"Real-time files",canary:"Ransomware tripwires",hid:"USB keyboard guard",network:"Network watch",vitals:"Vitals",wifi:"WiFi twins",persistence:"Autostart watch",defender:"Defender link",inbox:"Inbox",posture:"Settings check",feeds:"Threat feeds",report:"Daily report",radar:"Hidden-software radar"};
+function renderShield(){
+  const e=S.engine, c=e.counts||{}, alive=e.alive, now=Date.now()/1000;
+  const day=S.events.filter(x=>x.severity==="high"&&x.t>now-86400);
+  const blocked=day.filter(x=>x.quarantine_id).length, open=day.length-blocked;   // open = still needs you
+  const core=$("#core"); core.className="core"+(!alive?" off":open?" bad":"");
+  $("#verdict").textContent=!alive?"Engine asleep":open?`${open} alert${open>1?"s":""} need you`:"Protected";
+  if(alive&&!open&&blocked) $("#verdict").insertAdjacentHTML("beforeend",`<span style="display:block;font-size:.42em;color:var(--ember);margin-top:6px">${blocked} threat${blocked>1?"s":""} blocked today</span>`);
+  $("#vsub").textContent=!alive?"Start Aureon from the Start menu, or run aureon.defender.exe install.":(e.online?"Online · threat feeds refresh every 6 hours":"Offline · running on local rules and signatures")+" · nothing about you leaves this PC";
+  $("#since").textContent=alive?"Watching since "+new Date(e.started*1000).toLocaleString([], {hour:"numeric",minute:"2-digit",month:"short",day:"numeric"}):"";
+  $("#stats").innerHTML=[["Scanned",c.scanned??0],["Blocked",c.quarantined??0],["Alerts",c.alerts??0],["Known-bad hashes",(e.reputation??0).toLocaleString()]].map(([k,v])=>`<div class="stat"><span class="k">${k}</span><b>${v}</b></div>`).join("");
+  const mods=Object.keys(MOD), m=e.modules||{};
+  $("#beads").innerHTML=mods.map((k,i)=>{const a=i/mods.length*2*Math.PI-Math.PI/2, x=50+46*Math.cos(a), y=50+46*Math.sin(a), st=m[k]||(alive?"waiting":"off");
+    return `<div class="bead ${st==="ok"?"":st==="error"?"error":"off"}" style="left:${x}%;top:${y}%" title="${MOD[k]}: ${st}"><span style="--r0:0deg">${MOD[k]}</span></div>`}).join("");
+  const top=S.events.filter(x=>x.severity!=="info").slice(0,5);
+  $("#latest").innerHTML=top.length?top.map(evHTML).join(""):'<p class="empty">Quiet. Nothing needs you.</p>';
+  const v=e.vitals||{}, meter=p=>`<span class="meter"><i style="width:${Math.min(100,p||0)}%"></i></span>`;
+  $("#vit").innerHTML=[["CPU",v.cpu],["Memory",v.ram],["Disk",v.disk],["Battery",v.battery]].map(([k,x])=>`<div class="row"><span>${k}</span><span style="display:flex;gap:10px;align-items:center">${x!=null?meter(x)+`<span class="v">${Math.round(x)}%${k==="Battery"&&v.plugged?" ⚡":""}</span>`:'<span class="v">–</span>'}</span></div>`).join("")
+    +(v.top?`<div class="row"><span class="muted">Heaviest</span><span class="v">${esc(v.top.slice(0,2).map(p=>p[0]+" "+p[2]+"MB").join(" · "))}</span></div>`:"");
+  const d=e.defender||{};
+  $("#mdef").innerHTML=[["Real-time",d.RealTimeProtectionEnabled],["Signatures",d.AntivirusSignatureVersion],["Signature age",d.AntivirusSignatureAge!=null?d.AntivirusSignatureAge+" d":null],["Tamper protection",d.IsTamperProtected]].map(([k,x])=>`<div class="row"><span>${k}</span><span class="v">${esc(x??"–")}</span></div>`).join("");
+}
+const evHTML=x=>`<div class="ev ${x.severity}"><span class="b"></span><div><b>${esc(x.title)}</b>${x.detail?`<p>${esc(x.detail)}</p>`:""}</div><time>${ago(x.t)}</time></div>`;
+
+function renderRadar(){
+  const r=S.radar;
+  if(!r){$("#rstats").innerHTML='<p class="empty">No sweep yet. Press <b>Sweep now</b>.</p>';["#privacy","#companies","#rlist","#hidden"].forEach(s=>$(s).innerHTML="");return}
+  const hidden=r.installed.filter(p=>p.hidden), tele=r.background.filter(b=>b.telemetry), broad=r.extensions.filter(x=>x.broad.length);
+  const rec=r.recall||{};
+  $("#rstats").innerHTML=[["Programs",r.installed.length],["Hidden",hidden.length],["Background",r.background.length],["Telemetry",tele.length],["Extensions",r.extensions.length],["Monitoring tools",r.watchers.length],["Recall",rec.verdict||"–"]]
+    .map(([k,v])=>`<div class="stat"><span class="k">${k}</span><b style="${k==="Monitoring tools"&&v?"color:var(--coal)":""}">${esc(v)}</b></div>`).join("")+`<div class="stat"><span class="k">Last sweep</span><b style="font-size:18px">${ago(r.t)}</b></div>`;
+  const icon=w=>/screen/.test(w)?"screen":/camera/.test(w)?"camera":/micro/.test(w)?"mic":/location/.test(w)?"pin":"bell";
+  const pv=r.privacy.filter(p=>["webcam","microphone","graphicsCaptureProgrammatic","graphicsCaptureWithoutBorder","location","userNotificationListener"].includes(p.capability)).slice(0,60);
+  $("#privacy").innerHTML=pv.length?pv.map(p=>`<div class="acc"><span class="ico ${p.in_use||/screen/.test(p.what)?"hot":""}">${svg(icon(p.what))}</span><div><b>${esc(base(p.app))}</b> <span class="muted">used your ${esc(p.what)}</span>${p.in_use?' <span class="tag hot">in use now</span>':""}</div><time class="mono muted">${ago(p.last_start)}</time></div>`).join(""):'<p class="empty">No recorded access.</p>';
+  const cos=Object.entries(r.companies).filter(([n,c])=>c.background||c.programs).slice(0,40), mx=Math.max(...cos.map(([,c])=>c.background+c.programs),1);
+  $("#companies").innerHTML=cos.map(([n,c])=>`<div class="bar ${company===n?"sel":""}" data-co="${esc(n)}" role="button" tabindex="0"><span>${esc(n)}</span><span style="display:flex;gap:2px"><i class="fill" style="width:${Math.sqrt(c.background+c.programs-c.telemetry)/Math.sqrt(mx)*100}%"></i>${c.telemetry?`<i class="fill t" style="width:${Math.sqrt(c.telemetry)/Math.sqrt(mx)*100}%"></i>`:""}</span><span class="mono muted">${c.background+c.programs}</span></div>`).join("");
+  if(company){
+    $("#cotitle").textContent=company;
+    const items=[...r.installed.filter(p=>p.company===company).map(p=>({n:p.name,k:p.hidden?"hidden program":"program",t:false})),...r.background.filter(b=>b.company===company).map(b=>({n:b.name,k:b.kind,t:b.telemetry,d:b.target}))];
+    $("#rlist").innerHTML=items.map(i=>`<div class="row"><span>${esc(i.n)}${i.t?' <span class="tag warm">telemetry</span>':""}${i.k==="hidden program"?' <span class="tag hot">hidden</span>':""}</span><span class="v">${esc(i.k)}</span></div>`).join("")+`<div class="btns" style="margin-top:10px"><button class="btn" data-co="">Back to extensions</button></div>`;
+  }else{
+    $("#cotitle").textContent="Browser extensions with broad powers";
+    $("#rlist").innerHTML=broad.length?broad.map(x=>`<div class="row" style="align-items:flex-start"><span><b>${esc(x.name)}</b> <span class="muted">${esc(x.browser)}</span><br>${x.broad.map(b=>`<span class="tag ${/desktopCapture|tabCapture|debugger|<all_urls>/.test(b)?"hot":"warm"}">${esc(b)}</span>`).join("")}</span></div>`).join(""):'<p class="empty">None.</p>';
+  }
+  $("#hidden").innerHTML=hidden.length?hidden.map(p=>`<div class="row"><span>${esc(p.name)}</span><span class="v">${esc(p.company)}</span></div>`).join(""):'<p class="empty">None.</p>';
+  if(r.watchers.length) $("#hidden").insertAdjacentHTML("afterbegin",r.watchers.map(w=>`<div class="ev high"><span class="b"></span><div><b>Monitoring software: ${esc(w.product)}</b><p>${esc(w.where)}: ${esc(w.evidence)}</p></div><time></time></div>`).join(""));
+}
+
+function renderPhones(){
+  const P=S.phones, box=$("#phones");
+  if(!P){box.innerHTML='<div class="panel"><p class="empty">No phone scanned yet. Plug one in, or press <b>Scan phones</b>.</p></div>';return renderLink()}
+  let h="";
+  for(const d of P.android||[]){
+    if(d.error){h+=`<div class="panel"><h2>Android ${esc(d.serial)}</h2><p class="muted">${esc(d.error)}</p></div>`;continue}
+    const s=d.summary, dv=d.device, recent=[];
+    d.apps.forEach(a=>(a.recent||[]).forEach(o=>{if(["CAMERA","RECORD_AUDIO","PROJECT_MEDIA","FINE_LOCATION","COARSE_LOCATION","READ_SMS","READ_CALL_LOG"].includes(o.op)) recent.push({...o,pkg:a.package})}));
+    recent.sort((a,b)=>a.secs-b.secs);
+    const flagged=d.apps.filter(a=>a.risk!=="none"&&a.flags.length);
+    const cos=Object.entries(s.companies).slice(0,14), mx=Math.max(...cos.map(([,c])=>c.apps),1);
+    h+=`<div class="panel"><div class="vhead"><div><span class="k">${esc(dv.brand)} · Android ${esc(dv.android)} · patch ${esc(dv.patch)}</span><h1 style="font-size:30px">${esc(dv.model)}</h1></div>
+      <span class="chip"><span class="dot ${dv.bootloader_locked?"":"bad"}"></span>${dv.bootloader_locked?"verified boot · locked":"bootloader unlocked"}</span></div>
+      <div class="stats">${[["Packages",s.total],["Preinstalled",s.system],["No icon",s.hidden_icon],["Sideloaded",s.sideloaded],["High risk",s.high],["Medium",s.medium]].map(([k,v])=>`<div class="stat"><span class="k">${k}</span><b style="${k==="High risk"&&v?"color:var(--coal)":""}">${v}</b></div>`).join("")}</div></div>
+      <div class="grid c2"><div class="panel"><h2>Recently used camera, mic, location</h2><div class="scroll" style="margin-top:8px">${recent.slice(0,40).map(o=>`<div class="acc"><span class="ico ${o.op==="PROJECT_MEDIA"?"hot":""}">${svg(/CAMERA/.test(o.op)?"camera":/AUDIO/.test(o.op)?"mic":/MEDIA/.test(o.op)?"screen":/LOCATION/.test(o.op)?"pin":"bell")}</span><div><b>${esc(o.pkg.split(".").slice(-2).join("."))}</b> <span class="muted">${esc(o.what)}</span></div><span class="mono muted">${esc(o.ago)} ago</span></div>`).join("")||'<p class="empty">Nothing recorded.</p>'}</div></div>
+      <div class="panel"><h2>Flagged and hidden</h2><div class="scroll" style="margin-top:8px">${flagged.map(a=>`<div class="row" style="align-items:flex-start"><span><b class="mono">${esc(a.package)}</b> <span class="muted">${esc(a.company)}</span><br>${a.flags.map(f=>`<span class="tag ${a.risk==="high"?"hot":a.risk==="medium"?"warm":""}">${esc(f)}</span>`).join("")}</span></div>`).join("")||'<p class="empty">Nothing flagged.</p>'}</div></div></div>
+      <div class="panel"><h2>Who made the software on it</h2><div style="margin-top:8px">${cos.map(([n,c])=>`<div class="bar"><span>${esc(n)}</span><i class="fill" style="width:${Math.sqrt(c.apps)/Math.sqrt(mx)*100}%"></i><span class="mono muted">${c.apps}${c.hidden?` · ${c.hidden} no icon`:""}</span></div>`).join("")}</div></div>`;
+  }
+  const ip=P.iphone;
+  if(ip&&!ip.error) h+=`<div class="panel"><span class="k">iPhone · iOS ${esc(ip.device.ios)}</span><h1 style="font-size:30px">${esc(ip.device.name||ip.device.model)}</h1><p class="muted">${ip.apps.length} apps · ${ip.provisioning_profiles.length} provisioning profiles</p>${(ip.notes||[]).map(n=>`<p class="tag warm">${esc(n)}</p>`).join("")}</div>`;
+  if(!h) h='<div class="panel"><p class="empty">No phone connected. Plug one in and allow USB debugging.</p></div>';
+  box.innerHTML=`<p class="k">Last scan ${ago(P.t)}</p>`+h; renderLink();
+}
+function renderLink(){const L=S.phone_link||{}; if(document.activeElement!==$("#plink")) $("#plink").checked=!!L.enabled;
+  $("#plinkurl").innerHTML=L.url?`Open on your phone: <br><b style="color:var(--glow)">${esc(L.url)}</b> <button class="btn" id="copyl" style="margin-left:6px;padding:4px 10px">Copy</button>`:(L.enabled?"Starting…":"");
+  if(S.readonly) $("#plink").disabled=true}
+
+function renderActivity(){const o={info:0,low:1,medium:2,high:3}, ev=S.events.filter(x=>o[x.severity]>=o[sevMin]);
+  $("#events").innerHTML=ev.length?ev.map(evHTML).join(""):'<p class="empty">Nothing yet.</p>';
+  const hi=S.events.filter(x=>x.severity==="high"&&x.t>Date.now()/1000-86400).length, nb=$("#nb"); nb.hidden=!hi; nb.textContent=hi}
+function renderVault(){$("#vault").innerHTML=S.quarantine.length?S.quarantine.map(q=>`<div class="row" style="align-items:flex-start"><span><b class="mono">${esc(base(q.original))}</b><br><span class="muted">${esc((q.reasons||[]).join("; "))}</span><br><span class="mono muted">${esc(q.original)} · ${ago(q.t)}</span></span><span class="btns"><button class="btn" data-q="restore" data-id="${q.id}">Restore</button><button class="btn" data-q="delete" data-id="${q.id}">Delete</button></span></div>`).join(""):'<p class="empty">The vault is empty.</p>'}
+
+let built=false;
+const FONTS=["Bahnschrift Light","Bahnschrift","Segoe UI Variable Display Light","Segoe UI Variable Display","Segoe UI Variable Display Semibold","Cascadia Mono","Georgia","Gabriola","Ink Free","Sitka Heading","Candara Light","Corbel Light","Consolas"];
+function renderStudio(){const st=S.studio,w=S.widget;
+  if(!built){built=true;
+    $("#looks").innerHTML=Object.entries(S.presets).map(([n,p])=>`<button class="look" data-preset="${n}" aria-pressed="false"><img alt="" data-src="/api/wallpaper-preview?name=${n}"><span class="cap"><span><b>${n}</b><br><span class="k">${p.mode} · ${esc(p.font)}</span></span><span class="sws">${p.palette.map(c=>`<i style="background:${c}"></i>`).join("")}</span></span></button>`).join("");
+    document.querySelectorAll("img[data-src]").forEach(async im=>{try{const r=await fetch(im.dataset.src,{headers:{"X-Aureon-Token":TOKEN}});if(r.ok)im.src=URL.createObjectURL(await r.blob())}catch(e){}});
+    $("#wfont").innerHTML=FONTS.map(f=>`<option>${f}</option>`).join("")}
+  const pick=(sel,v)=>document.querySelectorAll(`${sel} button`).forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===String(v))));
+  pick('[data-set="theme"]',st.apps);pick('[data-set="transparency"]',st.transparency);pick('[data-set="taskbar"]',st.taskbar);
+  pick('[data-set="hours"]',st.time&&/H/.test(st.time)?24:12);pick('[data-set="seconds"]',st.seconds);pick('[data-w="enabled"]',w.enabled);
+  if(document.activeElement!==$("#acc"))$("#acc").value=st.accent||"#c9803f"; if(st.date)$("#datef").value=st.date;
+  $("#wpos").value=w.position;$("#wfont").value=w.font;$("#wsize").value=w.clock_size;$("#wcol").value=w.color;$("#restore").disabled=!st.has_backup}
+const TOG=[["realtime","Real-time file protection","New files in Downloads, Desktop, Temp and Startup, the moment they finish arriving."],["auto_quarantine","Quarantine threats automatically","Malicious files go to the vault. Suspicious ones only alert."],["radar","Hidden-software radar","Sweep every 30 minutes for new programs, services, tasks, extensions and camera/mic/screen use."],["phone_watch","Scan phones when plugged in","Android over USB debugging, iPhone with libimobiledevice."],["use_defender_engine","Microsoft Defender engine","Microsoft's offline signatures as one more scanner."],["use_yara","YARA rules","Pattern rules for malware families. Drop more .yar files in the rules folder."],["canary","Ransomware tripwires","Hidden decoy documents. Touching them is an instant alert."],["canary_suspend_writer","Freeze ransomware automatically","Suspend the unsigned program writing the most when a tripwire fires."],["network_monitor","Network watch","Botnet servers, new open ports, hosts-file and DNS hijacks."],["persistence_monitor","Autostart watch","Anything that sets itself to start with Windows."],["wifi_watch","WiFi twins","Fake copies of networks you trust."],["hid_guard","USB keyboard guard","Fake-keyboard USB sticks."],["hid_lock","Lock on new keyboards","Injected keystrokes land on the lock screen."],["dns_shield_hosts","DNS shield","Block malware-distribution domains through the hosts file."],["feeds_online","Threat feeds","Free abuse.ch lists when online. Nothing about you is sent."],["daily_report","Daily report","Plain-English summary, by a local AI model if one is installed."]];
+function renderSettings(){const s=S.settings;if(document.activeElement&&document.activeElement.closest("#toggles"))return;
+  $("#toggles").innerHTML=TOG.map(([k,t,d])=>`<div class="tog"><div><b>${t}</b><p>${d}</p></div><span class="sw"><input type="checkbox" data-k="${k}" ${s[k]?"checked":""} aria-label="${t}" ${S.readonly?"disabled":""}><span></span></span></div>`).join("");
+  const L={engine:"Running 24/7",studio:"Studio",app:"In the app",node:"Via your Aureon Node",branch:"Next branches","n/a":"Not used on a laptop"};
+  $("#caps").innerHTML=Object.keys(L).filter(k=>S.winmap[k]).map(k=>`<div class="row" style="align-items:flex-start"><span><b>${L[k]}</b><br>${S.winmap[k].map(c=>`<span class="tag" title="${esc(c.how)}">${esc(c.id)}</span>`).join("")}</span><span class="v">${S.winmap[k].length}</span></div>`).join("")}
+
+function render(){$("#net").innerHTML=`<span class="dot ${!S.engine.alive?"off":""}"></span><span class="t">${!S.engine.alive?"engine off":S.engine.online?"online":"offline mode"}${S.readonly?" · view only":""}</span>`;
+  renderShield();renderRadar();renderPhones();renderActivity();renderVault();renderStudio();renderSettings()}
+async function refresh(){try{S=await api("/api/state");render()}catch(e){$("#verdict").textContent="Can't reach Aureon";$("#vsub").textContent=e.message}}
+
+$("#dock").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(!b)return;
+  document.querySelectorAll("#dock button").forEach(x=>x.setAttribute("aria-current",String(x===b)));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===VIEW[b.dataset.tab]));window.scrollTo({top:0,behavior:"smooth"})});
+$("#sevf").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;sevMin=b.dataset.s;$("#sevf").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));renderActivity()});
+document.addEventListener("click",async e=>{
+  const p=e.target.closest("[data-post]");if(p)return post(p.dataset.post,{},"Started");
+  const q=e.target.closest("[data-quick]");if(q)return post("/api/scan",{path:q.dataset.quick});
+  const v=e.target.closest("[data-q]");if(v)return post("/api/quarantine/"+v.dataset.q,{id:v.dataset.id});
+  const co=e.target.closest("[data-co]");if(co){company=co.dataset.co||null;renderRadar();return}
+  if(e.target.id==="copyl"){try{await navigator.clipboard.writeText(S.phone_link.url);toast("Link copied")}catch(_){toast("Select the link and copy it")}return}
+  const pr=e.target.closest("[data-preset]");if(pr){toast("Applying "+pr.dataset.preset+"…");await post("/api/studio/preset",{name:pr.dataset.preset},pr.dataset.preset+" applied");document.querySelectorAll(".look").forEach(x=>x.setAttribute("aria-pressed",String(x===pr)));return}
+  const sg=e.target.closest("[data-set] button");if(sg){const k=sg.parentElement.dataset.set;let val=sg.dataset.v;if(val==="true"||val==="false")val=val==="true";const body={[k]:val};if(k==="hours")body.date=$("#datef").value;return post("/api/studio/set",body)}
+  const wg=e.target.closest("[data-w] button");if(wg)return post("/api/widget",{[wg.parentElement.dataset.w]:wg.dataset.v==="true"});
+});
+document.addEventListener("keydown",e=>{const co=e.target.closest&&e.target.closest("[data-co]");if(co&&(e.key==="Enter"||e.key===" ")){e.preventDefault();co.click()}});
+$("#sgo").onclick=()=>post("/api/scan",{path:$("#spath").value});
+$("#acc").onchange=e=>post("/api/studio/set",{accent:e.target.value,accent_taskbar:$("#acctb").checked});
+$("#acctb").onchange=()=>post("/api/studio/set",{accent:$("#acc").value,accent_taskbar:$("#acctb").checked});
+$("#datef").onchange=()=>post("/api/studio/set",{hours:/H/.test(S.studio.time||"HH")?24:12,date:$("#datef").value});
+$("#wpos").onchange=e=>post("/api/widget",{position:e.target.value});$("#wfont").onchange=e=>post("/api/widget",{font:e.target.value});
+$("#wsize").onchange=e=>post("/api/widget",{clock_size:+e.target.value});$("#wcol").onchange=e=>post("/api/widget",{color:e.target.value});
+$("#wpgo").onclick=()=>post("/api/studio/wallpaper",{path:$("#wpp").value},"Wallpaper set");$("#fntgo").onclick=()=>post("/api/studio/font",{path:$("#fnt").value},"Font installed");
+$("#restore").onclick=()=>post("/api/studio/restore",{},"Your original look is back");
+$("#plink").onchange=e=>post("/api/phone-link",{enabled:e.target.checked});
+$("#toggles").addEventListener("change",e=>{const i=e.target.closest("input[data-k]");if(i)post("/api/settings",{[i.dataset.k]:i.checked},"Saved")});
+
+/* clock: 12-hour */
+function tick(){$("#clock").textContent=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}tick();setInterval(tick,10000);
+
+/* ember sparks: ~45 particles, paused when hidden, off with reduced motion */
+(function(){const cv=$("#sparks"),cx=cv.getContext("2d");if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  let W,H,P=[];const R=()=>{W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio};R();addEventListener("resize",R);
+  const mk=(y)=>({x:Math.random()*W,y:y??H*(0.6+Math.random()*0.5),r:(0.6+Math.random()*1.6)*devicePixelRatio,v:(0.15+Math.random()*0.45)*devicePixelRatio,a:Math.random()*0.7+0.2,w:Math.random()*6.28});
+  for(let i=0;i<45;i++)P.push(mk(Math.random()*H));
+  function f(){if(document.hidden){requestAnimationFrame(f);return}cx.clearRect(0,0,W,H);
+    for(const p of P){p.y-=p.v;p.w+=0.01;p.x+=Math.sin(p.w)*0.3;const life=Math.max(0,Math.min(1,p.y/H*1.4));
+      cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);cx.fillStyle=`rgba(255,${190+Math.floor(30*life)},${130+Math.floor(40*life)},${p.a*life})`;cx.shadowColor="rgba(201,128,63,.9)";cx.shadowBlur=8*devicePixelRatio;cx.fill();
+      if(p.y<-10)Object.assign(p,mk())}requestAnimationFrame(f)}f()})();
+
+refresh();setInterval(refresh,5000);
+</script>
+</body>
+</html>

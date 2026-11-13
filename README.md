@@ -5,6 +5,7 @@ reading all **790** open-source projects in [shep95/rasberry-pi](https://github.
 taking each one's best capability, and combining them into **53 Aureon capabilities** organised as
 **20 organs** that depend on each other, like a body.
 
+- **[windows/](windows/README.md): aureon.defender**, a one-exe Windows app that runs the laptop-side organs 24/7 (protection engine, dashboard, Studio looks and desktop widget)
 - [docs/CAPABILITIES.md](docs/CAPABILITIES.md): all 790 projects, the best capability taken from each, and the fused Aureon capability it feeds
 - [docs/ORGANISM.md](docs/ORGANISM.md): the 20 organs, what each needs, and what fails if it fails
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how Agent, Node, Mobile and Key fit together
