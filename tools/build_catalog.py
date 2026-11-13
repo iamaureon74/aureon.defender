@@ -66,6 +66,72 @@ def gitlinks(rpi: Path):
     return links
 
 
+def load_caps():
+    from capmap_a import CAPS_A
+    from capmap_b import CAPS_B
+    from capmap_c import CAPS_C
+    from capmap_d import CAPS_D
+    caps = []
+    for cid, domain, name, fused, realised, members in CAPS_A + CAPS_B + CAPS_C + CAPS_D:
+        mem = []
+        for line in members.strip().splitlines():
+            repo, best = line.split(":", 1)
+            mem.append({"repo": repo.strip(), "best": best.strip()})
+        caps.append({"id": cid, "domain": domain, "name": name, "fused": fused, "realised": realised,
+                     "members": mem})
+    return caps
+
+
+def build_capabilities(rows, by_repo):
+    """Every catalog project must contribute its best capability to exactly one Aureon capability."""
+    caps = load_caps()
+    owner = {}
+    for c in caps:
+        for m in c["members"]:
+            if m["repo"] in owner:
+                sys.exit(f"{m['repo']} mapped twice: {owner[m['repo']]} and {c['id']}")
+            if m["repo"] not in by_repo:
+                sys.exit(f"{m['repo']} in capability map but not in catalog")
+            owner[m["repo"]] = c["id"]
+            m["url"] = by_repo[m["repo"]]["url"]
+            m["picked"] = m["repo"] in PICKS
+    missing = sorted(set(by_repo) - set(owner))
+    if missing:
+        sys.exit(f"catalog projects without a capability: {missing}")
+    (ROOT / "capabilities.json").write_text(json.dumps(caps, indent=1) + "\n", encoding="utf-8")
+
+    domains = []
+    for c in caps:
+        if c["domain"] not in domains:
+            domains.append(c["domain"])
+    lines = ["# Aureon capability map",
+             "",
+             f"Each of the {len(owner)} projects in shep95/rasberry-pi was read for its single best capability. "
+             f"Those capabilities are fused into **{len(caps)} Aureon capabilities** across {len(domains)} domains. "
+             "This is the one system: `python -m aureon caps` browses it, `python -m aureon caps show <id>` "
+             "explains one, and the *Realised in* line says where it lives in this repo.",
+             "",
+             "Status words in *Realised in*: **built** = Aureon code in this repo, deploy/* = ready compose stack, "
+             "profile = in a device plan, catalog = pinned or listed and fetchable, not yet wired in.",
+             "",
+             "| Domain | Capabilities | Projects |", "|---|---|---|"]
+    for d in domains:
+        cs = [c for c in caps if c["domain"] == d]
+        lines.append(f"| {d} | {', '.join(c['name'] for c in cs)} | {sum(len(c['members']) for c in cs)} |")
+    for d in domains:
+        lines += ["", f"## {d}"]
+        for c in caps:
+            if c["domain"] != d:
+                continue
+            lines += ["", f"### {c['name']} (`{c['id']}`)", "", f"**Fused capability:** {c['fused']}", "",
+                      f"**Realised in:** {c['realised']}", "",
+                      "| Project | Best capability taken | Pinned |", "|---|---|---|"]
+            for m in c["members"]:
+                lines.append(f"| [{m['repo']}]({m['url']}) | {m['best']} | {'yes' if m['picked'] else ''} |")
+    (ROOT / "docs" / "CAPABILITIES.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"{len(caps)} capabilities cover all {len(owner)} projects")
+
+
 def main():
     rpi = Path(sys.argv[1]).resolve()
     pin = "--pin" in sys.argv
@@ -108,6 +174,8 @@ def main():
         lines.append(f"| [{r['repo']}]({r['url']}) | {verdict} |")
     (ROOT / "docs").mkdir(exist_ok=True)
     (ROOT / "docs" / "CATALOG.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    build_capabilities(rows, by_repo)
 
     if pin:
         gm = []

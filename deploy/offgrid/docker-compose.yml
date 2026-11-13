@@ -1,0 +1,40 @@
+# Aureon Off-grid - works with no internet and no cell network.
+#   docker compose up -d
+#   Put .zim files (https://download.kiwix.org/zim/) in ./zim - e.g. wikipedia_en_all_maxi, ifixit, stackexchange.
+#   Plug a Meshtastic LoRa radio (T-Beam, Heltec, RAK) into the Node by USB -> /dev/ttyUSB0 or /dev/ttyACM0.
+
+name: aureon-offgrid
+
+services:
+  kiwix:                 # kiwix/kiwix-tools - offline Wikipedia, manuals, medical refs
+    image: ghcr.io/kiwix/kiwix-serve:3.7.0
+    restart: unless-stopped
+    command: "*.zim"
+    ports: [ "8181:8080" ]
+    volumes: [ "./zim:/data:ro" ]
+
+  reticulum:             # markqvist/Reticulum + NomadNet - encrypted mesh over LAN, LoRa (RNode), packet radio
+    image: python:3.12-slim
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./data/reticulum:/root/.reticulum
+      - ./data/nomadnet:/root/.nomadnetwork
+    command: sh -c "pip install --quiet rns nomadnet && exec rnsd -v"
+    # LoRa via RNode: add to data/reticulum/config an [[RNode LoRa Interface]] with port = /dev/ttyACM0
+    # and uncomment:
+    # devices: [ "/dev/ttyACM0:/dev/ttyACM0" ]
+
+  mesh-bridge:           # meshtastic/python - relays Aureon alerts to your LoRa mesh, logs inbound texts
+    image: python:3.12-slim
+    restart: unless-stopped
+    devices: [ "${MESHTASTIC_DEV:-/dev/ttyUSB0}:/dev/meshtastic" ]
+    working_dir: /aureon
+    volumes:
+      - ../../aureon:/aureon/aureon:ro
+      - ../ai/data/reports:/reports:ro
+      - ./data/mesh:/data
+    command: >
+      sh -c "pip install --quiet meshtastic &&
+             python -m aureon mesh bridge --port /dev/meshtastic
+               --watch /reports/latest.md --log /data/inbox.jsonl"

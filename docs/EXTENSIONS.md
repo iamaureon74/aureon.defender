@@ -22,16 +22,26 @@ Things the catalog makes possible that weren't in the original list.
    can be rebuilt identically in an hour; rclone crypt + Syncthing for the data.
 9. **Hardware token** - extend the Aureon Key into a FIDO2/U2F authenticator (TinyUSB HID +
    RP2350 secure boot/OTP). Open implementations exist outside this catalog (e.g. pico-fido).
-10. **USB-HID injection guard** - host agent that alerts when a new keyboard device appears and
-    types faster than a human (defends against Rubber-Ducky/pico-ducky style attacks).
+10. **USB-HID injection guard** - host agent that alerts (and can lock the screen) the moment an untrusted keyboard device appears
+    (defends against Rubber-Ducky/pico-ducky style attacks; typing-speed analysis is future work).
 11. **Compute pooling** - k3s across Node(s) and laptops to push heavy jobs (transcoding,
     AI, builds) off the battery-powered device.
 12. **Secret hygiene** - gitleaks + trufflehog as pre-commit hooks on every repo you own.
 
+## Status
+Built and tested in this repo:
+- Off-grid communication: `deploy/offgrid` (Kiwix, Reticulum, Meshtastic bridge), `aureon mesh`
+- Radio-environment awareness: `aureon rf wifi|cell|gsm`
+- Offline knowledge: Kiwix in `deploy/offgrid`
+- Out-of-band rescue: `aureon rescue` (PiKVM API)
+- AI security analyst: `aureon analyst` + `deploy/ai` (hourly), relayed to the Key and the LoRa mesh
+- USB-HID injection guard: `aureon hidguard`
+- Organism model: `aureon body`
+
 ## Roadmap
-- [ ] `aureon apply <profile>` that runs the scripts step by step with confirmation
-- [ ] Wazuh manager + AI-summary pipeline in `deploy/soc/`
-- [ ] `deploy/cloud/` and `deploy/ai/` compose files
-- [ ] USB-HID injection guard in `aureon/hidguard.py`
-- [ ] Aureon Key v2: TinyUSB C firmware (HID + CDC), FIDO2 research
+- [ ] `aureon apply <profile>` running each plan step with confirmation
+- [ ] Wazuh manager in `deploy/soc/` feeding the analyst
+- [ ] Frigate camera presence (Eyes organ) + walk-away lock fusion
+- [ ] Aureon Key v3: TinyUSB C firmware, inline USB firewall via Pico-PIO-USB, FIDO2 research
 - [ ] Ansible playbooks mirroring `scripts/linux/`
+- [ ] Offline voice pipeline (Wyoming: openWakeWord -> whisper.cpp -> LLM -> Piper)

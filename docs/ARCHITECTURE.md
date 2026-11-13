@@ -1,6 +1,6 @@
 # Aureon Hardware - architecture
 
-Aureon is not one more tool. It is **four pieces that combine ~200 of the 790 projects** from
+Aureon is not one more tool. It is **four pieces that combine the best capability of all 790 projects** (53 fused capabilities, 20 organs - see [CAPABILITIES.md](CAPABILITIES.md) and [ORGANISM.md](ORGANISM.md)) from
 [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) into one system for laptops and phones.
 
 ```
@@ -47,14 +47,14 @@ Aureon is not one more tool. It is **four pieces that combine ~200 of the 790 pr
 |---|---|---|
 | base | OS, boot, VMs, sandboxing, app compatibility | 17 |
 | defend | firewall, IDS/IPS, AV, EDR, forensics, honeypots | 31 |
-| audit | authorized self-audit lab - never auto-installed | 38 |
+| audit | authorized self-audit lab - never auto-installed | 39 |
 | net | DNS, VPN, mesh, anonymity, sync | 19 |
-| perf | monitoring, x86-on-ARM, streaming, light desktops | 27 |
+| perf | monitoring, x86-on-ARM, streaming, light desktops | 28 |
 | ai | local LLM, speech, vision, accelerators | 23 |
-| cloud | self-hosted replacements for cloud services | 17 |
-| key | Pico toolchains for the Aureon Key | 13 |
-| rf | SDR / radio-environment awareness / off-grid comms | 11 |
-| ops | provisioning, containers, backups | 10 |
+| cloud | self-hosted replacements for cloud services | 20 |
+| key | Pico toolchains for the Aureon Key | 14 |
+| rf | SDR / radio-environment awareness / off-grid comms | 12 |
+| ops | provisioning, containers, backups | 12 |
 
 ## Honest limits
 

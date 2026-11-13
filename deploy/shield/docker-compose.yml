@@ -87,4 +87,6 @@ services:
     restart: unless-stopped
     networks: [shield]
     ports: [ "2222:2222", "8081:80", "4450:445" ]
-    volumes: [ "./opencanary.conf:/root/.opencanary.conf:ro" ]
+    volumes:
+      - ./opencanary.conf:/root/.opencanary.conf:ro
+      - ./data/opencanary:/var/log/opencanary     # read by the AI analyst (deploy/ai)

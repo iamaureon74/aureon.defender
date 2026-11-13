@@ -243,4 +243,14 @@ PICKS = {
     "balena-io/etcher": ("ops", "LWM", "Safe image flashing"),
     "Botspot/pi-apps": ("ops", "N", "App store for ARM Linux"),
     "MichaIng/DietPi": ("ops", "N", "Minimal optimised Debian for the Node"),
+    "Drewsif/PiShrink": ("ops", "LN", "Shrink Node backup images, auto-expand on restore"),
+    "PiSupply/PiJuice": ("ops", "N", "Battery UPS: Node rides out power cuts, shuts down cleanly"),
+    "sekigon-gonnoc/Pico-PIO-USB": ("key", "-", "USB host on Pico: inline USB firewall for a future Key"),
+    "peass-ng/PEASS-ng": ("audit", "LWM", "Find privilege-escalation misconfig on your own hosts"),
+    # added for the extensions (off-grid, rescue, RF watch, analyst)
+    "pikvm/os": ("perf", "N", "PiKVM OS image for the rescue KVM"),
+    "rtlsdrblog/rtl-sdr-blog": ("rf", "LN", "Improved RTL-SDR driver (V4 dongles)"),
+    "kiwix/kiwix-hotspot": ("cloud", "N", "Offline content hotspot builder"),
+    "iiab/iiab": ("cloud", "N", "Internet-in-a-Box offline library"),
+    "learningequality/kolibri": ("cloud", "N", "Offline learning platform"),
 }

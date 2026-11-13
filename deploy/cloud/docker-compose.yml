@@ -1,0 +1,90 @@
+# Aureon Cloud - photos, files, passwords you own. Runs on the Node (8GB+ RAM, SSD strongly recommended).
+#   cp .env.example .env && edit && docker compose up -d
+# Reach it over WireGuard (deploy/shield). Caddy issues internal TLS certs for *.aureon.lan names;
+# add those names as DNS rewrites in AdGuard Home pointing at the Node's LAN IP.
+# Immich moves fast: compare with https://github.com/immich-app/immich/blob/main/docker/docker-compose.yml before upgrading.
+
+name: aureon-cloud
+
+services:
+  caddy:                 # caddyserver/caddy - HTTPS reverse proxy for every service
+    image: caddy:2.8
+    restart: unless-stopped
+    ports: [ "443:443", "80:80" ]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./data/caddy:/data
+
+  # ---- Immich (immich-app/immich): phone photo/video backup ----
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    restart: unless-stopped
+    depends_on: [immich-db, immich-redis]
+    environment:
+      DB_HOSTNAME: immich-db
+      DB_USERNAME: immich
+      DB_PASSWORD: ${IMMICH_DB_PASSWORD}
+      DB_DATABASE_NAME: immich
+      REDIS_HOSTNAME: immich-redis
+    volumes:
+      - ${PHOTO_DIR:-./data/photos}:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+
+  immich-ml:             # face/object search runs locally, nothing leaves the Node
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    restart: unless-stopped
+    volumes: [ "./data/immich-model-cache:/cache" ]
+
+  immich-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  immich-db:
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: immich
+      POSTGRES_PASSWORD: ${IMMICH_DB_PASSWORD}
+      POSTGRES_DB: immich
+      POSTGRES_INITDB_ARGS: --data-checksums
+    volumes: [ "./data/immich-db:/var/lib/postgresql/data" ]
+    shm_size: 128mb
+
+  # ---- Nextcloud (nextcloud/server): files, calendar, contacts ----
+  nextcloud:
+    image: nextcloud:30-apache
+    restart: unless-stopped
+    depends_on: [nextcloud-db, nextcloud-redis]
+    environment:
+      POSTGRES_HOST: nextcloud-db
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+      REDIS_HOST: nextcloud-redis
+      NEXTCLOUD_TRUSTED_DOMAINS: cloud.aureon.lan
+      OVERWRITEPROTOCOL: https
+      TRUSTED_PROXIES: 172.16.0.0/12
+    volumes: [ "./data/nextcloud:/var/www/html" ]
+
+  nextcloud-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+    volumes: [ "./data/nextcloud-db:/var/lib/postgresql/data" ]
+
+  nextcloud-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  # ---- Vaultwarden (dani-garcia/vaultwarden): Bitwarden-compatible passwords ----
+  vaultwarden:
+    image: vaultwarden/server:1.32.5
+    restart: unless-stopped
+    environment:
+      DOMAIN: https://vault.aureon.lan
+      SIGNUPS_ALLOWED: "false"          # create your account via the admin token, then keep closed
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
+    volumes: [ "./data/vaultwarden:/data" ]

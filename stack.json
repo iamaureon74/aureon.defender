@@ -2727,5 +2727,115 @@
   "path": "upstream/ops/MichaIng__DietPi",
   "commit": "8151dc4649538725c00554ad14aea81d375ec5ea",
   "source_category": "os"
+ },
+ {
+  "repo": "Drewsif/PiShrink",
+  "url": "https://github.com/Drewsif/PiShrink",
+  "layer": "ops",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Shrink Node backup images, auto-expand on restore",
+  "path": "upstream/ops/Drewsif__PiShrink",
+  "commit": "5f358d03eed4b7334657ee93867826a2b42f112a",
+  "source_category": "os"
+ },
+ {
+  "repo": "PiSupply/PiJuice",
+  "url": "https://github.com/PiSupply/PiJuice",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Battery UPS: Node rides out power cuts, shuts down cleanly",
+  "path": "upstream/ops/PiSupply__PiJuice",
+  "commit": "df8674691bd376170cfc4659d8f2e2fbebed29b3",
+  "source_category": "hardware"
+ },
+ {
+  "repo": "sekigon-gonnoc/Pico-PIO-USB",
+  "url": "https://github.com/sekigon-gonnoc/Pico-PIO-USB",
+  "layer": "key",
+  "platforms": [],
+  "role": "USB host on Pico: inline USB firewall for a future Key",
+  "path": "upstream/key/sekigon-gonnoc__Pico-PIO-USB",
+  "commit": "b186e36bea0f3bcc2ee94ca1fa81e7f71281443a",
+  "source_category": "pico"
+ },
+ {
+  "repo": "peass-ng/PEASS-ng",
+  "url": "https://github.com/peass-ng/PEASS-ng",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Find privilege-escalation misconfig on your own hosts",
+  "path": "upstream/audit/peass-ng__PEASS-ng",
+  "commit": "80cf64188ad45407f0baaaccb11278763182a872",
+  "source_category": "security"
+ },
+ {
+  "repo": "pikvm/os",
+  "url": "https://github.com/pikvm/os",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "PiKVM OS image for the rescue KVM",
+  "path": "upstream/perf/pikvm__os",
+  "commit": "2b90ce69a56f167beaf1bc3a801137c4f12058d3",
+  "source_category": "media"
+ },
+ {
+  "repo": "rtlsdrblog/rtl-sdr-blog",
+  "url": "https://github.com/rtlsdrblog/rtl-sdr-blog",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Improved RTL-SDR driver (V4 dongles)",
+  "path": "upstream/rf/rtlsdrblog__rtl-sdr-blog",
+  "commit": "aed0ea19f3a273370a13c9009b96313c75d54c7b",
+  "source_category": "radio"
+ },
+ {
+  "repo": "kiwix/kiwix-hotspot",
+  "url": "https://github.com/kiwix/kiwix-hotspot",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Offline content hotspot builder",
+  "path": "upstream/cloud/kiwix__kiwix-hotspot",
+  "commit": "7838b5d91fce1bc73210c52d3fda8685dce25160",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "iiab/iiab",
+  "url": "https://github.com/iiab/iiab",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Internet-in-a-Box offline library",
+  "path": "upstream/cloud/iiab__iiab",
+  "commit": "83b49d5fb0874f24201124f62ef7320ed75c320e",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "learningequality/kolibri",
+  "url": "https://github.com/learningequality/kolibri",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Offline learning platform",
+  "path": "upstream/cloud/learningequality__kolibri",
+  "commit": "fe298f54494c1e1cf4ecd42ee3d153d6c6305b85",
+  "source_category": "education"
  }
 ]

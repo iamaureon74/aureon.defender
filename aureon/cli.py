@@ -85,9 +85,70 @@ def cmd_fetch(a):
                             "--jobs", "8", "--", *paths])
 
 
+def cmd_caps(a):
+    caps = json.loads((ROOT / "capabilities.json").read_text(encoding="utf-8"))
+    if a.id:
+        c = next((c for c in caps if c["id"] == a.id or c["id"].endswith("." + a.id)), None)
+        if not c:
+            print("unknown capability; run: aureon caps")
+            return 2
+        print(f"{c['name']}  [{c['id']}]  domain={c['domain']}\n\n{c['fused']}\n\nRealised in: {c['realised']}\n")
+        for m in c["members"]:
+            print(f"  {'*' if m['picked'] else ' '} {m['repo']:<48} {m['best']}")
+        print("\n  * = pinned under upstream/ (aureon fetch <repo>)")
+        return 0
+    domains = list(dict.fromkeys(c["domain"] for c in caps))
+    for dom in domains:
+        print(f"\n{dom}")
+        for c in (c for c in caps if c["domain"] == dom):
+            print(f"  {c['id']:<24} {c['name']:<44} {len(c['members']):>3} projects")
+    print(f"\n{len(caps)} capabilities from {sum(len(c['members']) for c in caps)} projects. aureon caps <id> for detail.")
+    return 0
+
+
+def _lazy(mod):
+    def run(a):
+        import importlib
+        m = importlib.import_module(f"aureon.{mod}")
+        return m.cli(a) if hasattr(m, "cli") else m.run(a)
+    return run
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="aureon", description="Aureon Hardware control CLI")
     sub = ap.add_subparsers(dest="cmd", required=True)
+    s = sub.add_parser("caps", help="browse the fused capability map")
+    s.add_argument("id", nargs="?"); s.set_defaults(f=cmd_caps)
+
+    s = sub.add_parser("body", help="organism view: organs, dependencies, live vitals")
+    s.add_argument("--graph", action="store_true"); s.add_argument("--fail"); s.add_argument("--json", action="store_true")
+    s.set_defaults(f=_lazy("organism"))
+
+    s = sub.add_parser("rf", help="rogue WiFi / fake cell tower watch")
+    s.add_argument("mode", choices=["wifi", "cell", "gsm"]); s.add_argument("--learn", action="store_true")
+    s.add_argument("--kal", help="kalibrate-rtl output file (gsm mode)"); s.add_argument("--json", action="store_true")
+    s.set_defaults(f=_lazy("rfwatch"))
+
+    s = sub.add_parser("rescue", help="PiKVM remote rescue")
+    s.add_argument("action", choices=["status", "power", "screenshot", "type", "key", "iso"])
+    s.add_argument("arg", nargs="?"); s.add_argument("--insecure", action="store_true")
+    s.set_defaults(f=_lazy("rescue"))
+
+    s = sub.add_parser("analyst", help="local-AI security report from alerts")
+    for o in ("--suricata", "--canary", "--crowdsec", "--wazuh", "--since", "--out"):
+        s.add_argument(o)
+    s.add_argument("--audit", action="store_true"); s.add_argument("--rf", action="store_true")
+    s.add_argument("--no-llm", action="store_true"); s.set_defaults(f=_lazy("analyst"))
+
+    s = sub.add_parser("hidguard", help="USB keystroke-injection guard")
+    s.add_argument("--learn", action="store_true"); s.add_argument("--lock", action="store_true")
+    s.add_argument("--key-port"); s.add_argument("--interval", type=float, default=1.0)
+    s.set_defaults(f=_lazy("hidguard"))
+
+    s = sub.add_parser("mesh", help="Meshtastic off-grid messaging")
+    s.add_argument("action", choices=["send", "listen", "bridge"]); s.add_argument("text", nargs="*")
+    s.add_argument("--port", required=True); s.add_argument("--watch"); s.add_argument("--log")
+    s.set_defaults(f=_lazy("mesh"))
     s = sub.add_parser("audit"); s.add_argument("--json", action="store_true"); s.set_defaults(f=cmd_audit)
     sub.add_parser("profiles").set_defaults(f=cmd_profiles)
     s = sub.add_parser("plan"); s.add_argument("profile"); s.set_defaults(f=cmd_plan)

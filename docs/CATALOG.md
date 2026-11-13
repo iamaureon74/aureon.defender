@@ -2,7 +2,7 @@
 
 Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (790 entries, 790 unique upstreams) with the verdict for Aureon Hardware.
 
-**Picked: 206.** Picked projects show their Aureon layer; the rest show why they were left out.
+**Picked: 215.** Picked projects show their Aureon layer; the rest show why they were left out.
 
 
 ## official (2 of 32 picked)
@@ -42,7 +42,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [RPi-Distro/raspberrypi-sys-mods](https://github.com/RPi-Distro/raspberrypi-sys-mods) | Pi-board specific (kernel/firmware/camera for Broadcom SoC) |
 | [RPi-Distro/raspi-config](https://github.com/RPi-Distro/raspi-config) | Pi-board specific (kernel/firmware/camera for Broadcom SoC) |
 
-## pico (12 of 32 picked)
+## pico (13 of 32 picked)
 
 | Project | Verdict |
 |---|---|
@@ -73,13 +73,13 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [raspberrypi/pico-vscode](https://github.com/raspberrypi/pico-vscode) | Superseded by the chosen Key toolchain |
 | [raspberrypi/picotool](https://github.com/raspberrypi/picotool) | **key** - Flash/inspect Pico |
 | [rp-rs/rp-hal](https://github.com/rp-rs/rp-hal) | **key** - Rust HAL for RP2040 |
-| [sekigon-gonnoc/Pico-PIO-USB](https://github.com/sekigon-gonnoc/Pico-PIO-USB) | Superseded by the chosen Key toolchain |
+| [sekigon-gonnoc/Pico-PIO-USB](https://github.com/sekigon-gonnoc/Pico-PIO-USB) | **key** - USB host on Pico: inline USB firewall for a future Key |
 | [tinygo-org/tinygo](https://github.com/tinygo-org/tinygo) | Superseded by the chosen Key toolchain |
 | [wokwi/rp2040js](https://github.com/wokwi/rp2040js) | **key** - Simulate Key firmware in CI |
 | [Wren6991/PicoDVI](https://github.com/Wren6991/PicoDVI) | Superseded by the chosen Key toolchain |
 | [zephyrproject-rtos/zephyr](https://github.com/zephyrproject-rtos/zephyr) | **key** - RTOS with crypto/secure-boot subsystems |
 
-## hardware (0 of 42 picked)
+## hardware (1 of 42 picked)
 
 | Project | Verdict |
 |---|---|
@@ -115,7 +115,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [pimoroni/st7789-python](https://github.com/pimoroni/st7789-python) | Pi GPIO/HAT library - only relevant to Node add-ons |
 | [pimoroni/unicornhatmini-python](https://github.com/pimoroni/unicornhatmini-python) | Pi GPIO/HAT library - only relevant to Node add-ons |
 | [pinout-xyz/Pinout.xyz](https://github.com/pinout-xyz/Pinout.xyz) | Pi GPIO/HAT library - only relevant to Node add-ons |
-| [PiSupply/PiJuice](https://github.com/PiSupply/PiJuice) | Pi GPIO/HAT library - only relevant to Node add-ons |
+| [PiSupply/PiJuice](https://github.com/PiSupply/PiJuice) | **ops** - Battery UPS: Node rides out power cuts, shuts down cleanly |
 | [rm-hull/luma.led_matrix](https://github.com/rm-hull/luma.led_matrix) | Pi GPIO/HAT library - only relevant to Node add-ons |
 | [rm-hull/luma.oled](https://github.com/rm-hull/luma.oled) | Pi GPIO/HAT library - only relevant to Node add-ons |
 | [rpi-ws281x/rpi-ws281x-python](https://github.com/rpi-ws281x/rpi-ws281x-python) | Pi GPIO/HAT library - only relevant to Node add-ons |
@@ -126,7 +126,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [waveshareteam/e-Paper](https://github.com/waveshareteam/e-Paper) | Pi GPIO/HAT library - only relevant to Node add-ons |
 | [WiringPi/WiringPi](https://github.com/WiringPi/WiringPi) | Pi GPIO/HAT library - only relevant to Node add-ons |
 
-## os (16 of 96 picked)
+## os (17 of 96 picked)
 
 | Project | Verdict |
 |---|---|
@@ -149,7 +149,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [colloqi/piSignage](https://github.com/colloqi/piSignage) | Pi-only distro or duplicate of a chosen base |
 | [colloqi/pisignage-server](https://github.com/colloqi/pisignage-server) | Pi-only distro or duplicate of a chosen base |
 | [davidferguson/pibakery](https://github.com/davidferguson/pibakery) | Pi-only distro or duplicate of a chosen base |
-| [Drewsif/PiShrink](https://github.com/Drewsif/PiShrink) | Pi-only distro or duplicate of a chosen base |
+| [Drewsif/PiShrink](https://github.com/Drewsif/PiShrink) | **ops** - Shrink Node backup images, auto-expand on restore |
 | [dwelch67/raspberrypi](https://github.com/dwelch67/raspberrypi) | Pi-only distro or duplicate of a chosen base |
 | [dwelch67/raspberrypi-three](https://github.com/dwelch67/raspberrypi-three) | Pi-only distro or duplicate of a chosen base |
 | [evilsocket/pwnagotchi](https://github.com/evilsocket/pwnagotchi) | Pi-only distro or duplicate of a chosen base |
@@ -266,7 +266,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [scummvm/scummvm](https://github.com/scummvm/scummvm) | Entertainment; not core (installable via app layer) |
 | [yquake2/yquake2](https://github.com/yquake2/yquake2) | Entertainment; not core (installable via app layer) |
 
-## media (8 of 42 picked)
+## media (9 of 42 picked)
 
 | Project | Verdict |
 |---|---|
@@ -300,7 +300,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [owntone/owntone-server](https://github.com/owntone/owntone-server) | Media/camera service; optional Node app |
 | [PhotoPrism/photoprism](https://github.com/PhotoPrism/photoprism) | Media/camera service; optional Node app |
 | [pikvm/kvmd](https://github.com/pikvm/kvmd) | **perf** - Out-of-band KVM: rescue a dead laptop over the network |
-| [pikvm/os](https://github.com/pikvm/os) | Media/camera service; optional Node app |
+| [pikvm/os](https://github.com/pikvm/os) | **perf** - PiKVM OS image for the rescue KVM |
 | [pikvm/pikvm](https://github.com/pikvm/pikvm) | Media/camera service; optional Node app |
 | [pikvm/ustreamer](https://github.com/pikvm/ustreamer) | **perf** - Ultra-low-latency video streamer |
 | [popcornmix/omxplayer](https://github.com/popcornmix/omxplayer) | Media/camera service; optional Node app |
@@ -368,7 +368,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [yggdrasil-network/yggdrasil-go](https://github.com/yggdrasil-network/yggdrasil-go) | **net** - Encrypted IPv6 mesh overlay |
 | [ZeroTier/ZeroTierOne](https://github.com/ZeroTier/ZeroTierOne) | Duplicate of a chosen net component or crypto-node |
 
-## selfhost (13 of 53 picked)
+## selfhost (15 of 53 picked)
 
 | Project | Verdict |
 |---|---|
@@ -390,10 +390,10 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [gogs/gogs](https://github.com/gogs/gogs) | Duplicate of a chosen cloud component |
 | [haiwen/seafile](https://github.com/haiwen/seafile) | Duplicate of a chosen cloud component |
 | [huginn/huginn](https://github.com/huginn/huginn) | Duplicate of a chosen cloud component |
-| [iiab/iiab](https://github.com/iiab/iiab) | Duplicate of a chosen cloud component |
+| [iiab/iiab](https://github.com/iiab/iiab) | **cloud** - Internet-in-a-Box offline library |
 | [Jermolene/TiddlyWiki5](https://github.com/Jermolene/TiddlyWiki5) | Duplicate of a chosen cloud component |
 | [jitsi/jitsi-meet](https://github.com/jitsi/jitsi-meet) | **cloud** - Video calls you own |
-| [kiwix/kiwix-hotspot](https://github.com/kiwix/kiwix-hotspot) | Duplicate of a chosen cloud component |
+| [kiwix/kiwix-hotspot](https://github.com/kiwix/kiwix-hotspot) | **cloud** - Offline content hotspot builder |
 | [kiwix/kiwix-tools](https://github.com/kiwix/kiwix-tools) | **cloud** - Offline Wikipedia/manuals - works with no internet |
 | [LemmyNet/lemmy](https://github.com/LemmyNet/lemmy) | Duplicate of a chosen cloud component |
 | [LibVNC/x11vnc](https://github.com/LibVNC/x11vnc) | Duplicate of a chosen cloud component |
@@ -620,7 +620,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [Ultimaker/Cura](https://github.com/Ultimaker/Cura) | 3D printing/CNC - out of scope |
 | [vlachoudis/bCNC](https://github.com/vlachoudis/bCNC) | 3D printing/CNC - out of scope |
 
-## radio (8 of 50 picked)
+## radio (9 of 50 picked)
 
 | Project | Verdict |
 |---|---|
@@ -663,7 +663,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [projecthorus/horusdemodlib](https://github.com/projecthorus/horusdemodlib) | Hobby radio (ADS-B, ham, satellites) - out of scope |
 | [projecthorus/radiosonde_auto_rx](https://github.com/projecthorus/radiosonde_auto_rx) | Hobby radio (ADS-B, ham, satellites) - out of scope |
 | [ptrkrysik/gr-gsm](https://github.com/ptrkrysik/gr-gsm) | **rf** - GSM analysis: spot fake base stations (IMSI catchers) |
-| [rtlsdrblog/rtl-sdr-blog](https://github.com/rtlsdrblog/rtl-sdr-blog) | Hobby radio (ADS-B, ham, satellites) - out of scope |
+| [rtlsdrblog/rtl-sdr-blog](https://github.com/rtlsdrblog/rtl-sdr-blog) | **rf** - Improved RTL-SDR driver (V4 dongles) |
 | [SatDump/SatDump](https://github.com/SatDump/SatDump) | Hobby radio (ADS-B, ham, satellites) - out of scope |
 | [sdr-enthusiasts/docker-adsb-ultrafeeder](https://github.com/sdr-enthusiasts/docker-adsb-ultrafeeder) | Hobby radio (ADS-B, ham, satellites) - out of scope |
 | [steve-m/kalibrate-rtl](https://github.com/steve-m/kalibrate-rtl) | **rf** - Scan/inventory cell towers for anomalies |
@@ -690,7 +690,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [pchev/ccdciel](https://github.com/pchev/ccdciel) | Astronomy - out of scope |
 | [Stellarium/stellarium](https://github.com/Stellarium/stellarium) | Astronomy - out of scope |
 
-## security (71 of 117 picked)
+## security (72 of 117 picked)
 
 | Project | Verdict |
 |---|---|
@@ -757,7 +757,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [openwall/john](https://github.com/openwall/john) | **audit** - Password strength auditing (CPU) |
 | [ossec/ossec-hids](https://github.com/ossec/ossec-hids) | **defend** - Lightweight host IDS fallback |
 | [P0cL4bs/wifipumpkin3](https://github.com/P0cL4bs/wifipumpkin3) | Offensive-only, deprecated, or duplicated; not suitable for a protection product |
-| [peass-ng/PEASS-ng](https://github.com/peass-ng/PEASS-ng) | Offensive-only, deprecated, or duplicated; not suitable for a protection product |
+| [peass-ng/PEASS-ng](https://github.com/peass-ng/PEASS-ng) | **audit** - Find privilege-escalation misconfig on your own hosts |
 | [Pennyw0rth/NetExec](https://github.com/Pennyw0rth/NetExec) | **audit** - AD/network credential auditing |
 | [PiRogueToolSuite/pirogue-cli](https://github.com/PiRogueToolSuite/pirogue-cli) | **defend** - Phone traffic interception/analysis station |
 | [PowerShellMafia/PowerSploit](https://github.com/PowerShellMafia/PowerSploit) | Offensive-only, deprecated, or duplicated; not suitable for a protection product |
@@ -812,7 +812,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [ZerBea/hcxtools](https://github.com/ZerBea/hcxtools) | **audit** - Convert captures for hashcat |
 | [zmap/zmap](https://github.com/zmap/zmap) | **audit** - Network survey scanner |
 
-## education (2 of 30 picked)
+## education (3 of 30 picked)
 
 | Project | Verdict |
 |---|---|
@@ -827,7 +827,7 @@ Every project in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi) (79
 | [jupyterlab/jupyterlab](https://github.com/jupyterlab/jupyterlab) | Learning tool; not core |
 | [KDE/gcompris](https://github.com/KDE/gcompris) | Learning tool; not core |
 | [kivy/kivy](https://github.com/kivy/kivy) | Learning tool; not core |
-| [learningequality/kolibri](https://github.com/learningequality/kolibri) | Learning tool; not core |
+| [learningequality/kolibri](https://github.com/learningequality/kolibri) | **cloud** - Offline learning platform |
 | [LibreOffice/core](https://github.com/LibreOffice/core) | Learning tool; not core |
 | [lordmauve/pgzero](https://github.com/lordmauve/pgzero) | Learning tool; not core |
 | [martinohanlon/mcpi](https://github.com/martinohanlon/mcpi) | Learning tool; not core |

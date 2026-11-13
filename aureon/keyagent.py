@@ -31,7 +31,10 @@ def main():
     ap.add_argument("--port", required=True)
     ap.add_argument("--timeout", type=float, default=4.0, help="seconds without heartbeat before locking")
     ap.add_argument("--dry-run", action="store_true", help="log instead of locking")
+    ap.add_argument("--alert-report", help="analyst report file; Key flashes when it turns Severity: HIGH")
     a = ap.parse_args()
+    import os
+    rep_mtime = os.path.getmtime(a.alert_report) if a.alert_report and os.path.exists(a.alert_report) else 0
     try:
         import serial
     except ImportError:
@@ -50,6 +53,15 @@ def main():
                         armed, last = True, now
                     elif line.startswith("LOCK"):
                         act(line[5:] or "key")
+                    elif line == "ACK":
+                        print("alert acknowledged on Key")
+                    if a.alert_report and os.path.exists(a.alert_report) and os.path.getmtime(a.alert_report) > rep_mtime:
+                        rep_mtime = os.path.getmtime(a.alert_report)
+                        with open(a.alert_report, encoding="utf-8") as f:
+                            high = "Severity: HIGH" in f.read()
+                        if high:
+                            ser.write(b"ALERT\n")
+                            print("HIGH severity report -> Key alerting")
                     if armed and now - last > a.timeout:
                         act("heartbeat lost")
                         armed = False

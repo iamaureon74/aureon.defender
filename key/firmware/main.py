@@ -8,6 +8,8 @@
 # Talks to aureon/keyagent.py over USB serial (CDC). Line protocol:
 #   Key -> host:  "HB <n>", "LOCK panic", "LOCK tamper"
 #   host -> Key:  "PING" -> "PONG"
+#                 "ALERT"  -> fast-blink until the panic button is pressed (acknowledge)
+#                             sent by hidguard (rogue keyboard) and keyagent (HIGH analyst report)
 import sys
 import time
 import select
@@ -35,8 +37,18 @@ def debounced(pin, level=0, ms=40):
 n = 0
 last_hb = time.ticks_ms()
 tamper_latched = False
+alerting = False
 while True:
-    if debounced(panic):
+    if alerting:
+        led.toggle()
+        time.sleep_ms(60)
+        if debounced(panic):  # press = acknowledge alert, not panic
+            alerting = False
+            send("ACK")
+            while panic.value() == 0:
+                time.sleep_ms(20)
+            continue
+    elif debounced(panic):
         send("LOCK panic")
         for _ in range(6):
             led.toggle()
@@ -54,10 +66,13 @@ while True:
         line = sys.stdin.readline().strip()
         if line == "PING":
             send("PONG")
+        elif line == "ALERT":
+            alerting = True
 
     if time.ticks_diff(time.ticks_ms(), last_hb) > 1000:
         n += 1
         send("HB %d" % n)
-        led.toggle()
+        if not alerting:
+            led.toggle()
         last_hb = time.ticks_ms()
     time.sleep_ms(10)

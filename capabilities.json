@@ -1,0 +1,5219 @@
+[
+ {
+  "id": "system.image",
+  "domain": "SYSTEM",
+  "name": "Aureon OS image factory",
+  "fused": "One pipeline that builds signed, minimal, reproducible images for Node, laptop and phone: pi-gen stages + Buildroot minimalism + Yocto layers + Nix reproducibility + first-boot automation + safe flashing.",
+  "realised": "tools/ (planned: images/), profile node step 1",
+  "members": [
+   {
+    "repo": "Drewsif/PiShrink",
+    "best": "shrink images to minimum size, auto-expand on boot",
+    "url": "https://github.com/Drewsif/PiShrink",
+    "picked": true
+   },
+   {
+    "repo": "archlinuxarm/PKGBUILDs",
+    "best": "Arch Linux ARM package recipes",
+    "url": "https://github.com/archlinuxarm/PKGBUILDs",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pi-gen-micro",
+    "best": "tiny initramfs-style images",
+    "url": "https://github.com/raspberrypi/pi-gen-micro",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-image-gen",
+    "best": "declarative YAML image layers",
+    "url": "https://github.com/raspberrypi/rpi-image-gen",
+    "picked": false
+   },
+   {
+    "repo": "RPi-Distro/pi-gen",
+    "best": "staged Debian image build",
+    "url": "https://github.com/RPi-Distro/pi-gen",
+    "picked": false
+   },
+   {
+    "repo": "guysoft/CustomPiOS",
+    "best": "distro-from-modules framework",
+    "url": "https://github.com/guysoft/CustomPiOS",
+    "picked": false
+   },
+   {
+    "repo": "buildroot/buildroot",
+    "best": "minimal read-only embedded rootfs",
+    "url": "https://github.com/buildroot/buildroot",
+    "picked": true
+   },
+   {
+    "repo": "agherzan/meta-raspberrypi",
+    "best": "Yocto BSP layer",
+    "url": "https://github.com/agherzan/meta-raspberrypi",
+    "picked": false
+   },
+   {
+    "repo": "balena-os/meta-balena",
+    "best": "OTA-updatable container OS layer",
+    "url": "https://github.com/balena-os/meta-balena",
+    "picked": false
+   },
+   {
+    "repo": "balena-os/balena-raspberrypi",
+    "best": "device-specific Yocto integration",
+    "url": "https://github.com/balena-os/balena-raspberrypi",
+    "picked": false
+   },
+   {
+    "repo": "armbian/build",
+    "best": "one build system for hundreds of ARM boards",
+    "url": "https://github.com/armbian/build",
+    "picked": true
+   },
+   {
+    "repo": "void-linux/void-mklive",
+    "best": "live/installer ISO creation",
+    "url": "https://github.com/void-linux/void-mklive",
+    "picked": true
+   },
+   {
+    "repo": "void-linux/void-packages",
+    "best": "clean cross-compiling package templates",
+    "url": "https://github.com/void-linux/void-packages",
+    "picked": false
+   },
+   {
+    "repo": "NixOS/nixos-hardware",
+    "best": "per-device hardware quirks as code",
+    "url": "https://github.com/NixOS/nixos-hardware",
+    "picked": true
+   },
+   {
+    "repo": "nvmd/nixos-raspberrypi",
+    "best": "Nix flakes for Pi boards",
+    "url": "https://github.com/nvmd/nixos-raspberrypi",
+    "picked": false
+   },
+   {
+    "repo": "hypriot/image-builder-rpi",
+    "best": "container-ready image recipe",
+    "url": "https://github.com/hypriot/image-builder-rpi",
+    "picked": false
+   },
+   {
+    "repo": "TOLDOTECHNIK/buildroot-webkit",
+    "best": "kiosk browser appliance image",
+    "url": "https://github.com/TOLDOTECHNIK/buildroot-webkit",
+    "picked": false
+   },
+   {
+    "repo": "sakaki-/gentoo-on-rpi-64bit",
+    "best": "source-optimised 64-bit userland",
+    "url": "https://github.com/sakaki-/gentoo-on-rpi-64bit",
+    "picked": false
+   },
+   {
+    "repo": "manjaro-arm/rpi4-images",
+    "best": "rolling-release ARM images",
+    "url": "https://github.com/manjaro-arm/rpi4-images",
+    "picked": false
+   },
+   {
+    "repo": "android-rpi/local_manifests",
+    "best": "AOSP device manifests",
+    "url": "https://github.com/android-rpi/local_manifests",
+    "picked": true
+   },
+   {
+    "repo": "lineage-rpi/android_local_manifest",
+    "best": "LineageOS device tree layout",
+    "url": "https://github.com/lineage-rpi/android_local_manifest",
+    "picked": true
+   },
+   {
+    "repo": "openfyde/overlay-rpi4-openfyde",
+    "best": "ChromiumOS board overlay",
+    "url": "https://github.com/openfyde/overlay-rpi4-openfyde",
+    "picked": false
+   },
+   {
+    "repo": "FydeOS/chromium_os-raspberry_pi",
+    "best": "verified-boot ChromiumOS build",
+    "url": "https://github.com/FydeOS/chromium_os-raspberry_pi",
+    "picked": true
+   },
+   {
+    "repo": "nmcclain/raspberian-firstboot",
+    "best": "run-once first-boot script hook",
+    "url": "https://github.com/nmcclain/raspberian-firstboot",
+    "picked": false
+   },
+   {
+    "repo": "davidferguson/pibakery",
+    "best": "visual block-based image customisation",
+    "url": "https://github.com/davidferguson/pibakery",
+    "picked": false
+   },
+   {
+    "repo": "seamusdemora/RonR-RPi-image-utils",
+    "best": "shrink/backup running images",
+    "url": "https://github.com/seamusdemora/RonR-RPi-image-utils",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-imager",
+    "best": "verified image download + OS customisation",
+    "url": "https://github.com/raspberrypi/rpi-imager",
+    "picked": false
+   },
+   {
+    "repo": "balena-io/etcher",
+    "best": "validated flashing that refuses system disks",
+    "url": "https://github.com/balena-io/etcher",
+    "picked": true
+   },
+   {
+    "repo": "hypriot/flash",
+    "best": "one-command flash with cloud-init",
+    "url": "https://github.com/hypriot/flash",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/noobs",
+    "best": "multi-OS boot menu installer",
+    "url": "https://github.com/raspberrypi/noobs",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/scriptexecutor",
+    "best": "scripted provisioning during boot",
+    "url": "https://github.com/raspberrypi/scriptexecutor",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "system.firmware",
+  "domain": "SYSTEM",
+  "name": "Firmware, boot & secure-boot chain",
+  "fused": "A verified boot chain: signed EEPROM/bootloader + UEFI for standard OSes + USB recovery + kernel/userland tooling, with key provisioning done once at the factory step.",
+  "realised": "profile node; catalog base layer",
+  "members": [
+   {
+    "repo": "raspberrypi/firmware",
+    "best": "GPU firmware + boot blobs",
+    "url": "https://github.com/raspberrypi/firmware",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-firmware",
+    "best": "packaged firmware updates",
+    "url": "https://github.com/raspberrypi/rpi-firmware",
+    "picked": false
+   },
+   {
+    "repo": "RPi-Distro/firmware",
+    "best": "Debian-packaged firmware",
+    "url": "https://github.com/RPi-Distro/firmware",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-eeprom",
+    "best": "updatable signed bootloader EEPROM",
+    "url": "https://github.com/raspberrypi/rpi-eeprom",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-sb-provisioner",
+    "best": "secure-boot key provisioning at scale",
+    "url": "https://github.com/raspberrypi/rpi-sb-provisioner",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/usbboot",
+    "best": "USB device boot / recovery",
+    "url": "https://github.com/raspberrypi/usbboot",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/rpi-update",
+    "best": "bleeding-edge kernel/firmware fetch",
+    "url": "https://github.com/raspberrypi/rpi-update",
+    "picked": false
+   },
+   {
+    "repo": "pftf/RPi3",
+    "best": "UEFI firmware for Pi 3",
+    "url": "https://github.com/pftf/RPi3",
+    "picked": false
+   },
+   {
+    "repo": "pftf/RPi4",
+    "best": "UEFI firmware for Pi 4 (boots generic ARM distros)",
+    "url": "https://github.com/pftf/RPi4",
+    "picked": false
+   },
+   {
+    "repo": "worproject/rpi5-uefi",
+    "best": "UEFI firmware for Pi 5",
+    "url": "https://github.com/worproject/rpi5-uefi",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/linux",
+    "best": "maintained ARM kernel with board drivers",
+    "url": "https://github.com/raspberrypi/linux",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/userland",
+    "best": "VideoCore userspace libraries",
+    "url": "https://github.com/raspberrypi/userland",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/utils",
+    "best": "vcgencmd/pinctrl/eeprom tools",
+    "url": "https://github.com/raspberrypi/utils",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/tools",
+    "best": "cross-compilation toolchains",
+    "url": "https://github.com/raspberrypi/tools",
+    "picked": false
+   },
+   {
+    "repo": "RPi-Distro/raspberrypi-sys-mods",
+    "best": "system tweaks/udev rules",
+    "url": "https://github.com/RPi-Distro/raspberrypi-sys-mods",
+    "picked": false
+   },
+   {
+    "repo": "RPi-Distro/raspi-config",
+    "best": "one-screen system configuration",
+    "url": "https://github.com/RPi-Distro/raspi-config",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rc_gui",
+    "best": "GUI system configuration",
+    "url": "https://github.com/raspberrypi/rc_gui",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-keyboard-config",
+    "best": "keyboard firmware configuration",
+    "url": "https://github.com/raspberrypi/rpi-keyboard-config",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/hats",
+    "best": "HAT EEPROM identification spec",
+    "url": "https://github.com/raspberrypi/hats",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-bootrom-rp2040",
+    "best": "RP2040 mask-ROM bootloader source",
+    "url": "https://github.com/raspberrypi/pico-bootrom-rp2040",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-bootrom-rp2350",
+    "best": "RP2350 secure-boot ROM source",
+    "url": "https://github.com/raspberrypi/pico-bootrom-rp2350",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "system.appliance",
+  "domain": "SYSTEM",
+  "name": "Appliance OS personalities",
+  "fused": "Aureon Node can take any of these single-purpose personalities (router, NAS, media, home hub, node box) while keeping the Aureon shield underneath; the best idea taken from each is the one-click appliance UX.",
+  "realised": "deploy/* stacks; profile node",
+  "members": [
+   {
+    "repo": "Itai-Nelken/PiApps-terminal_bash-edition",
+    "best": "terminal app store",
+    "url": "https://github.com/Itai-Nelken/PiApps-terminal_bash-edition",
+    "picked": false
+   },
+   {
+    "repo": "jmcerrejon/PiKISS",
+    "best": "one-menu installer for hundreds of apps",
+    "url": "https://github.com/jmcerrejon/PiKISS",
+    "picked": false
+   },
+   {
+    "repo": "jiangcuo/Proxmox-Port",
+    "best": "Proxmox VE ported to ARM64",
+    "url": "https://github.com/jiangcuo/Proxmox-Port",
+    "picked": false
+   },
+   {
+    "repo": "MichaIng/DietPi",
+    "best": "optimised minimal Debian + software menu",
+    "url": "https://github.com/MichaIng/DietPi",
+    "picked": true
+   },
+   {
+    "repo": "openwrt/openwrt",
+    "best": "router firmware with package system",
+    "url": "https://github.com/openwrt/openwrt",
+    "picked": true
+   },
+   {
+    "repo": "home-assistant/operating-system",
+    "best": "appliance OS with supervisor + OTA",
+    "url": "https://github.com/home-assistant/operating-system",
+    "picked": false
+   },
+   {
+    "repo": "LibreELEC/LibreELEC.tv",
+    "best": "just-enough-OS for media",
+    "url": "https://github.com/LibreELEC/LibreELEC.tv",
+    "picked": false
+   },
+   {
+    "repo": "osmc/osmc",
+    "best": "polished media appliance",
+    "url": "https://github.com/osmc/osmc",
+    "picked": false
+   },
+   {
+    "repo": "libretro/Lakka-LibreELEC",
+    "best": "console-like gaming appliance",
+    "url": "https://github.com/libretro/Lakka-LibreELEC",
+    "picked": false
+   },
+   {
+    "repo": "batocera-linux/batocera.linux",
+    "best": "plug-and-play retro gaming OS",
+    "url": "https://github.com/batocera-linux/batocera.linux",
+    "picked": false
+   },
+   {
+    "repo": "RetroPie/RetroPie-Setup",
+    "best": "script-built emulation station",
+    "url": "https://github.com/RetroPie/RetroPie-Setup",
+    "picked": false
+   },
+   {
+    "repo": "moode-player/moode",
+    "best": "audiophile player appliance",
+    "url": "https://github.com/moode-player/moode",
+    "picked": false
+   },
+   {
+    "repo": "volumio/Build",
+    "best": "music appliance image build",
+    "url": "https://github.com/volumio/Build",
+    "picked": false
+   },
+   {
+    "repo": "volumio/volumio3-os",
+    "best": "music OS base",
+    "url": "https://github.com/volumio/volumio3-os",
+    "picked": false
+   },
+   {
+    "repo": "hifiberry/hifiberry-os",
+    "best": "DSP audio appliance",
+    "url": "https://github.com/hifiberry/hifiberry-os",
+    "picked": false
+   },
+   {
+    "repo": "motioneye-project/motioneyeos",
+    "best": "camera NVR appliance",
+    "url": "https://github.com/motioneye-project/motioneyeos",
+    "picked": false
+   },
+   {
+    "repo": "guysoft/OctoPi",
+    "best": "3D-printer host appliance",
+    "url": "https://github.com/guysoft/OctoPi",
+    "picked": false
+   },
+   {
+    "repo": "mainsail-crew/MainsailOS",
+    "best": "Klipper printer appliance",
+    "url": "https://github.com/mainsail-crew/MainsailOS",
+    "picked": false
+   },
+   {
+    "repo": "guysoft/FullPageOS",
+    "best": "boot-to-fullscreen-browser kiosk",
+    "url": "https://github.com/guysoft/FullPageOS",
+    "picked": false
+   },
+   {
+    "repo": "getumbrel/umbrel",
+    "best": "home-server app store OS",
+    "url": "https://github.com/getumbrel/umbrel",
+    "picked": false
+   },
+   {
+    "repo": "IceWhaleTech/CasaOS",
+    "best": "friendly personal-cloud dashboard",
+    "url": "https://github.com/IceWhaleTech/CasaOS",
+    "picked": false
+   },
+   {
+    "repo": "IceWhaleTech/ZimaOS",
+    "best": "NAS-focused personal cloud OS",
+    "url": "https://github.com/IceWhaleTech/ZimaOS",
+    "picked": false
+   },
+   {
+    "repo": "YunoHost/yunohost",
+    "best": "self-hosting OS with SSO and app catalog",
+    "url": "https://github.com/YunoHost/yunohost",
+    "picked": false
+   },
+   {
+    "repo": "nextcloud/nextcloudpi",
+    "best": "Nextcloud appliance with auto-config",
+    "url": "https://github.com/nextcloud/nextcloudpi",
+    "picked": false
+   },
+   {
+    "repo": "openmediavault/openmediavault",
+    "best": "NAS web management",
+    "url": "https://github.com/openmediavault/openmediavault",
+    "picked": false
+   },
+   {
+    "repo": "OpenMediaVault-Plugin-Developers/installScript",
+    "best": "OMV install on existing OS",
+    "url": "https://github.com/OpenMediaVault-Plugin-Developers/installScript",
+    "picked": false
+   },
+   {
+    "repo": "openhab/openhabian",
+    "best": "home-automation appliance",
+    "url": "https://github.com/openhab/openhabian",
+    "picked": false
+   },
+   {
+    "repo": "homebridge/homebridge-raspbian-image",
+    "best": "HomeKit bridge appliance",
+    "url": "https://github.com/homebridge/homebridge-raspbian-image",
+    "picked": false
+   },
+   {
+    "repo": "colloqi/piSignage",
+    "best": "digital-signage player",
+    "url": "https://github.com/colloqi/piSignage",
+    "picked": false
+   },
+   {
+    "repo": "colloqi/pisignage-server",
+    "best": "signage fleet server",
+    "url": "https://github.com/colloqi/pisignage-server",
+    "picked": false
+   },
+   {
+    "repo": "Screenly/Anthias",
+    "best": "open digital signage",
+    "url": "https://github.com/Screenly/Anthias",
+    "picked": false
+   },
+   {
+    "repo": "Start9Labs/start-os",
+    "best": "sovereign personal server OS",
+    "url": "https://github.com/Start9Labs/start-os",
+    "picked": false
+   },
+   {
+    "repo": "Start9Labs/embassy-os",
+    "best": "earlier Start9 server OS",
+    "url": "https://github.com/Start9Labs/embassy-os",
+    "picked": false
+   },
+   {
+    "repo": "mynodebtc/mynode",
+    "best": "Bitcoin/Lightning node appliance",
+    "url": "https://github.com/mynodebtc/mynode",
+    "picked": false
+   },
+   {
+    "repo": "raspiblitz/raspiblitz",
+    "best": "Lightning node appliance",
+    "url": "https://github.com/raspiblitz/raspiblitz",
+    "picked": false
+   },
+   {
+    "repo": "rootzoll/raspiblitz",
+    "best": "Lightning node (original repo)",
+    "url": "https://github.com/rootzoll/raspiblitz",
+    "picked": false
+   },
+   {
+    "repo": "raspibolt/raspibolt",
+    "best": "hand-built hardened Bitcoin node guide",
+    "url": "https://github.com/raspibolt/raspibolt",
+    "picked": false
+   },
+   {
+    "repo": "PiRogueToolSuite/pirogue-os",
+    "best": "mobile-forensics appliance",
+    "url": "https://github.com/PiRogueToolSuite/pirogue-os",
+    "picked": true
+   },
+   {
+    "repo": "PiRogueToolSuite/deb-packages",
+    "best": "PiRogue packaging",
+    "url": "https://github.com/PiRogueToolSuite/deb-packages",
+    "picked": false
+   },
+   {
+    "repo": "BlackArch/blackarch",
+    "best": "2800+ security tools repo",
+    "url": "https://github.com/BlackArch/blackarch",
+    "picked": false
+   },
+   {
+    "repo": "jiangcuo/pxvirt",
+    "best": "Proxmox VE on ARM",
+    "url": "https://github.com/jiangcuo/pxvirt",
+    "picked": false
+   },
+   {
+    "repo": "pimox/pimox7",
+    "best": "Proxmox 7 on Pi",
+    "url": "https://github.com/pimox/pimox7",
+    "picked": false
+   },
+   {
+    "repo": "evilsocket/pwnagotchi",
+    "best": "autonomous WiFi-learning pet (audit)",
+    "url": "https://github.com/evilsocket/pwnagotchi",
+    "picked": false
+   },
+   {
+    "repo": "jayofelony/pwnagotchi",
+    "best": "maintained pwnagotchi fork",
+    "url": "https://github.com/jayofelony/pwnagotchi",
+    "picked": false
+   },
+   {
+    "repo": "infinition/Bjorn",
+    "best": "autonomous network audit appliance",
+    "url": "https://github.com/infinition/Bjorn",
+    "picked": false
+   },
+   {
+    "repo": "AllskyTeam/allsky",
+    "best": "all-sky camera appliance",
+    "url": "https://github.com/AllskyTeam/allsky",
+    "picked": false
+   },
+   {
+    "repo": "thomasjacquin/allsky",
+    "best": "all-sky camera (original)",
+    "url": "https://github.com/thomasjacquin/allsky",
+    "picked": false
+   },
+   {
+    "repo": "rlancaste/AstroPi3",
+    "best": "astrophotography setup script",
+    "url": "https://github.com/rlancaste/AstroPi3",
+    "picked": false
+   },
+   {
+    "repo": "billw2/rpi-clone",
+    "best": "live clone to a new disk",
+    "url": "https://github.com/billw2/rpi-clone",
+    "picked": true
+   },
+   {
+    "repo": "framps/raspiBackup",
+    "best": "scheduled full-system backups",
+    "url": "https://github.com/framps/raspiBackup",
+    "picked": true
+   },
+   {
+    "repo": "Botspot/pi-apps",
+    "best": "curated ARM app store",
+    "url": "https://github.com/Botspot/pi-apps",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "system.research-os",
+  "domain": "SYSTEM",
+  "name": "Alternative & research kernels",
+  "fused": "Ideas Aureon borrows for hardening: Plan 9 per-process namespaces, OpenBSD pledge/unveil minimalism, capability-style isolation, bare-metal tiny trusted computing bases for the Key.",
+  "realised": "docs/ARCHITECTURE.md (design references); key/",
+  "members": [
+   {
+    "repo": "9front/9front",
+    "best": "per-process namespaces, everything-is-a-file",
+    "url": "https://github.com/9front/9front",
+    "picked": false
+   },
+   {
+    "repo": "plan9foundation/plan9",
+    "best": "original Plan 9 distributed OS",
+    "url": "https://github.com/plan9foundation/plan9",
+    "picked": false
+   },
+   {
+    "repo": "inferno-os/inferno-os",
+    "best": "portable VM-based distributed OS",
+    "url": "https://github.com/inferno-os/inferno-os",
+    "picked": false
+   },
+   {
+    "repo": "haiku/haiku",
+    "best": "responsive single-user desktop OS",
+    "url": "https://github.com/haiku/haiku",
+    "picked": false
+   },
+   {
+    "repo": "freebsd/freebsd-src",
+    "best": "jails + Capsicum capabilities",
+    "url": "https://github.com/freebsd/freebsd-src",
+    "picked": false
+   },
+   {
+    "repo": "NetBSD/src",
+    "best": "maximally portable BSD",
+    "url": "https://github.com/NetBSD/src",
+    "picked": false
+   },
+   {
+    "repo": "openbsd/src",
+    "best": "pledge/unveil, secure-by-default",
+    "url": "https://github.com/openbsd/src",
+    "picked": false
+   },
+   {
+    "repo": "rsta2/circle",
+    "best": "bare-metal C++ environment",
+    "url": "https://github.com/rsta2/circle",
+    "picked": false
+   },
+   {
+    "repo": "ultibohub/Core",
+    "best": "bare-metal Pascal unikernel",
+    "url": "https://github.com/ultibohub/Core",
+    "picked": false
+   },
+   {
+    "repo": "ultibohub/FPC",
+    "best": "Free Pascal for Ultibo",
+    "url": "https://github.com/ultibohub/FPC",
+    "picked": false
+   },
+   {
+    "repo": "RT-Thread/rt-thread",
+    "best": "IoT RTOS with rich components",
+    "url": "https://github.com/RT-Thread/rt-thread",
+    "picked": false
+   },
+   {
+    "repo": "rust-embedded/rust-raspberrypi-OS-tutorials",
+    "best": "memory-safe kernel in Rust",
+    "url": "https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials",
+    "picked": false
+   },
+   {
+    "repo": "s-matyukevich/raspberry-pi-os",
+    "best": "Linux-like kernel teaching OS",
+    "url": "https://github.com/s-matyukevich/raspberry-pi-os",
+    "picked": false
+   },
+   {
+    "repo": "bztsrc/raspi3-tutorial",
+    "best": "bare-metal peripherals tutorial",
+    "url": "https://github.com/bztsrc/raspi3-tutorial",
+    "picked": false
+   },
+   {
+    "repo": "dwelch67/raspberrypi",
+    "best": "bare-metal examples",
+    "url": "https://github.com/dwelch67/raspberrypi",
+    "picked": false
+   },
+   {
+    "repo": "dwelch67/raspberrypi-three",
+    "best": "bare-metal Pi 3 examples",
+    "url": "https://github.com/dwelch67/raspberrypi-three",
+    "picked": false
+   },
+   {
+    "repo": "mrvn/RaspberryPi-baremetal",
+    "best": "minimal bare-metal kernel",
+    "url": "https://github.com/mrvn/RaspberryPi-baremetal",
+    "picked": false
+   },
+   {
+    "repo": "jncronin/rpi-boot",
+    "best": "multiboot-style loader",
+    "url": "https://github.com/jncronin/rpi-boot",
+    "picked": false
+   },
+   {
+    "repo": "ms-iot/samples",
+    "best": "Windows IoT samples",
+    "url": "https://github.com/ms-iot/samples",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "system.knowledge",
+  "domain": "LEARN",
+  "name": "Platform knowledge base",
+  "fused": "Searchable offline docs + known-issue trackers fed into the local AI (RAG) so the assistant answers hardware questions without the internet.",
+  "realised": "deploy/offgrid kiwix + deploy/ai open-webui documents",
+  "members": [
+   {
+    "repo": "Gadgetoid/Pinout.xyz",
+    "best": "interactive GPIO pinout reference",
+    "url": "https://github.com/Gadgetoid/Pinout.xyz",
+    "picked": false
+   },
+   {
+    "repo": "pinout-xyz/Pinout.xyz",
+    "best": "Pinout.xyz (current home)",
+    "url": "https://github.com/pinout-xyz/Pinout.xyz",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/documentation",
+    "best": "official hardware/software documentation",
+    "url": "https://github.com/raspberrypi/documentation",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/bookworm-feedback",
+    "best": "known issues for Bookworm",
+    "url": "https://github.com/raspberrypi/bookworm-feedback",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/trixie-feedback",
+    "best": "known issues for Trixie",
+    "url": "https://github.com/raspberrypi/trixie-feedback",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-feedback",
+    "best": "known Pico issues",
+    "url": "https://github.com/raspberrypi/pico-feedback",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "hardware.camera",
+  "domain": "HARDWARE",
+  "name": "Camera & vision capture",
+  "fused": "Low-latency camera capture with hardware ISP feeding Aureon's AI presence detection and NVR.",
+  "realised": "deploy (Frigate in EXTENSIONS); ai layer",
+  "members": [
+   {
+    "repo": "raspberrypi/libcamera",
+    "best": "modern camera stack",
+    "url": "https://github.com/raspberrypi/libcamera",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/libpisp",
+    "best": "Pi 5 ISP back-end",
+    "url": "https://github.com/raspberrypi/libpisp",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/picamera2",
+    "best": "Python camera API",
+    "url": "https://github.com/raspberrypi/picamera2",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpicam-apps",
+    "best": "camera CLI apps",
+    "url": "https://github.com/raspberrypi/rpicam-apps",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/imx500-models",
+    "best": "on-sensor AI camera models",
+    "url": "https://github.com/raspberrypi/imx500-models",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "hardware.io",
+  "domain": "HARDWARE",
+  "name": "GPIO, sensors & displays",
+  "fused": "One HAL for buttons, tamper switches, sensors, LEDs and small screens on the Node and Key: libgpiod for correctness, gpiozero for simplicity, luma/e-paper for status screens.",
+  "realised": "key/firmware (GP14/GP15); Node status display (planned)",
+  "members": [
+   {
+    "repo": "PiSupply/PiJuice",
+    "best": "battery UPS HAT - Node survives power cuts and shuts down cleanly",
+    "url": "https://github.com/PiSupply/PiJuice",
+    "picked": true
+   },
+   {
+    "repo": "RaspberryPiFoundation/python-build-hat",
+    "best": "LEGO motor/sensor HAT",
+    "url": "https://github.com/RaspberryPiFoundation/python-build-hat",
+    "picked": false
+   },
+   {
+    "repo": "RPi-Distro/python-gpiozero",
+    "best": "packaged gpiozero",
+    "url": "https://github.com/RPi-Distro/python-gpiozero",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/rpi-sense",
+    "best": "Sense HAT driver",
+    "url": "https://github.com/raspberrypi/rpi-sense",
+    "picked": false
+   },
+   {
+    "repo": "adafruit/Adafruit_Blinka",
+    "best": "CircuitPython APIs on Linux",
+    "url": "https://github.com/adafruit/Adafruit_Blinka",
+    "picked": false
+   },
+   {
+    "repo": "adafruit/Adafruit_CircuitPython_Bundle",
+    "best": "hundreds of sensor drivers",
+    "url": "https://github.com/adafruit/Adafruit_CircuitPython_Bundle",
+    "picked": false
+   },
+   {
+    "repo": "adafruit/Adafruit_CircuitPython_DHT",
+    "best": "DHT temperature/humidity",
+    "url": "https://github.com/adafruit/Adafruit_CircuitPython_DHT",
+    "picked": false
+   },
+   {
+    "repo": "adafruit/Adafruit_Python_DHT",
+    "best": "legacy DHT driver",
+    "url": "https://github.com/adafruit/Adafruit_Python_DHT",
+    "picked": false
+   },
+   {
+    "repo": "adafruit/Raspberry-Pi-Installer-Scripts",
+    "best": "one-line HAT installers",
+    "url": "https://github.com/adafruit/Raspberry-Pi-Installer-Scripts",
+    "picked": false
+   },
+   {
+    "repo": "astro-pi/python-sense-hat",
+    "best": "Sense HAT Python API",
+    "url": "https://github.com/astro-pi/python-sense-hat",
+    "picked": false
+   },
+   {
+    "repo": "brgl/libgpiod",
+    "best": "correct kernel GPIO character-device access",
+    "url": "https://github.com/brgl/libgpiod",
+    "picked": false
+   },
+   {
+    "repo": "dotnet/iot",
+    "best": ".NET device bindings",
+    "url": "https://github.com/dotnet/iot",
+    "picked": false
+   },
+   {
+    "repo": "fivdi/onoff",
+    "best": "Node.js GPIO with interrupts",
+    "url": "https://github.com/fivdi/onoff",
+    "picked": false
+   },
+   {
+    "repo": "fivdi/pigpio",
+    "best": "Node.js pigpio wrapper",
+    "url": "https://github.com/fivdi/pigpio",
+    "picked": false
+   },
+   {
+    "repo": "geerlingguy/raspberry-pi-pcie-devices",
+    "best": "tested PCIe device database",
+    "url": "https://github.com/geerlingguy/raspberry-pi-pcie-devices",
+    "picked": false
+   },
+   {
+    "repo": "golemparts/rppal",
+    "best": "Rust peripheral access",
+    "url": "https://github.com/golemparts/rppal",
+    "picked": false
+   },
+   {
+    "repo": "goodtft/LCD-show",
+    "best": "SPI LCD drivers",
+    "url": "https://github.com/goodtft/LCD-show",
+    "picked": false
+   },
+   {
+    "repo": "gpiozero/gpiozero",
+    "best": "simplest device-oriented GPIO API",
+    "url": "https://github.com/gpiozero/gpiozero",
+    "picked": false
+   },
+   {
+    "repo": "hzeller/rpi-rgb-led-matrix",
+    "best": "fast LED matrix driving",
+    "url": "https://github.com/hzeller/rpi-rgb-led-matrix",
+    "picked": false
+   },
+   {
+    "repo": "jgarff/rpi_ws281x",
+    "best": "DMA-driven addressable LEDs",
+    "url": "https://github.com/jgarff/rpi_ws281x",
+    "picked": false
+   },
+   {
+    "repo": "joan2937/lg",
+    "best": "GPIO for Pi 5 (RP1)",
+    "url": "https://github.com/joan2937/lg",
+    "picked": false
+   },
+   {
+    "repo": "joan2937/pigpio",
+    "best": "hardware-timed PWM/servo/waveforms",
+    "url": "https://github.com/joan2937/pigpio",
+    "picked": false
+   },
+   {
+    "repo": "juj/fbcp-ili9341",
+    "best": "high-fps SPI display driver",
+    "url": "https://github.com/juj/fbcp-ili9341",
+    "picked": false
+   },
+   {
+    "repo": "nebrius/raspi-io",
+    "best": "Johnny-Five IO plugin",
+    "url": "https://github.com/nebrius/raspi-io",
+    "picked": false
+   },
+   {
+    "repo": "notro/fbtft",
+    "best": "framebuffer for small TFTs",
+    "url": "https://github.com/notro/fbtft",
+    "picked": false
+   },
+   {
+    "repo": "periph/host",
+    "best": "Go peripheral drivers",
+    "url": "https://github.com/periph/host",
+    "picked": false
+   },
+   {
+    "repo": "pi4j/pi4j-v2",
+    "best": "Java GPIO",
+    "url": "https://github.com/pi4j/pi4j-v2",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/bme280-python",
+    "best": "environment sensor",
+    "url": "https://github.com/pimoroni/bme280-python",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/displayhatmini-python",
+    "best": "small IPS display HAT",
+    "url": "https://github.com/pimoroni/displayhatmini-python",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/enviroplus-python",
+    "best": "air-quality monitoring",
+    "url": "https://github.com/pimoroni/enviroplus-python",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/fanshim-python",
+    "best": "temperature-driven fan control",
+    "url": "https://github.com/pimoroni/fanshim-python",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/inky",
+    "best": "e-paper status displays",
+    "url": "https://github.com/pimoroni/inky",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/st7789-python",
+    "best": "SPI LCD driver",
+    "url": "https://github.com/pimoroni/st7789-python",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/unicornhatmini-python",
+    "best": "RGB LED matrix",
+    "url": "https://github.com/pimoroni/unicornhatmini-python",
+    "picked": false
+   },
+   {
+    "repo": "rm-hull/luma.led_matrix",
+    "best": "LED matrix text/graphics",
+    "url": "https://github.com/rm-hull/luma.led_matrix",
+    "picked": false
+   },
+   {
+    "repo": "rm-hull/luma.oled",
+    "best": "OLED status displays",
+    "url": "https://github.com/rm-hull/luma.oled",
+    "picked": false
+   },
+   {
+    "repo": "rpi-ws281x/rpi-ws281x-python",
+    "best": "Python addressable LEDs",
+    "url": "https://github.com/rpi-ws281x/rpi-ws281x-python",
+    "picked": false
+   },
+   {
+    "repo": "rwaldron/johnny-five",
+    "best": "JS robotics/IoT framework",
+    "url": "https://github.com/rwaldron/johnny-five",
+    "picked": false
+   },
+   {
+    "repo": "stianeikeland/go-rpio",
+    "best": "Go GPIO via /dev/mem",
+    "url": "https://github.com/stianeikeland/go-rpio",
+    "picked": false
+   },
+   {
+    "repo": "tasanakorn/rpi-fbcp",
+    "best": "framebuffer mirroring",
+    "url": "https://github.com/tasanakorn/rpi-fbcp",
+    "picked": false
+   },
+   {
+    "repo": "Tieske/rpi-gpio",
+    "best": "Lua GPIO",
+    "url": "https://github.com/Tieske/rpi-gpio",
+    "picked": false
+   },
+   {
+    "repo": "waveshareteam/e-Paper",
+    "best": "e-paper drivers",
+    "url": "https://github.com/waveshareteam/e-Paper",
+    "picked": false
+   },
+   {
+    "repo": "WiringPi/WiringPi",
+    "best": "classic C GPIO library",
+    "url": "https://github.com/WiringPi/WiringPi",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "hardware.key",
+  "domain": "HARDWARE",
+  "name": "Aureon Key microcontroller platform",
+  "fused": "The Key firmware stack: pico-sdk + TinyUSB for USB identity, Embassy/rp-hal for memory-safe Rust, Zephyr for crypto/secure boot, MicroPython for rapid features, Wokwi for CI simulation.",
+  "realised": "key/firmware/main.py (built); aureon/keyagent.py, aureon/hidguard.py (built)",
+  "members": [
+   {
+    "repo": "Wren6991/PicoDVI",
+    "best": "DVI video out from RP2040",
+    "url": "https://github.com/Wren6991/PicoDVI",
+    "picked": false
+   },
+   {
+    "repo": "sekigon-gonnoc/Pico-PIO-USB",
+    "best": "USB host via PIO - lets a future Key sit inline as a USB firewall",
+    "url": "https://github.com/sekigon-gonnoc/Pico-PIO-USB",
+    "picked": true
+   },
+   {
+    "repo": "adafruit/circuitpython",
+    "best": "USB-drive-editable firmware",
+    "url": "https://github.com/adafruit/circuitpython",
+    "picked": true
+   },
+   {
+    "repo": "arduino/ArduinoCore-mbed",
+    "best": "Arduino on RP2040 via mbed",
+    "url": "https://github.com/arduino/ArduinoCore-mbed",
+    "picked": false
+   },
+   {
+    "repo": "carlk3/no-OS-FatFS-SD-SPI-RPi-Pico",
+    "best": "SD card logging without an OS",
+    "url": "https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico",
+    "picked": false
+   },
+   {
+    "repo": "dhylands/rshell",
+    "best": "remote shell to MicroPython boards",
+    "url": "https://github.com/dhylands/rshell",
+    "picked": false
+   },
+   {
+    "repo": "earlephilhower/arduino-pico",
+    "best": "fast Arduino core for RP2040/RP2350",
+    "url": "https://github.com/earlephilhower/arduino-pico",
+    "picked": false
+   },
+   {
+    "repo": "embassy-rs/embassy",
+    "best": "async memory-safe Rust firmware",
+    "url": "https://github.com/embassy-rs/embassy",
+    "picked": true
+   },
+   {
+    "repo": "FreeRTOS/FreeRTOS-Kernel",
+    "best": "SMP real-time kernel",
+    "url": "https://github.com/FreeRTOS/FreeRTOS-Kernel",
+    "picked": false
+   },
+   {
+    "repo": "hathach/tinyusb",
+    "best": "USB device/host stack (HID, CDC, MSC)",
+    "url": "https://github.com/hathach/tinyusb",
+    "picked": true
+   },
+   {
+    "repo": "micropython/micropython",
+    "best": "Python on microcontrollers",
+    "url": "https://github.com/micropython/micropython",
+    "picked": true
+   },
+   {
+    "repo": "micropython/micropython-lib",
+    "best": "MicroPython packages",
+    "url": "https://github.com/micropython/micropython-lib",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/pico-boilerplate",
+    "best": "project template",
+    "url": "https://github.com/pimoroni/pico-boilerplate",
+    "picked": false
+   },
+   {
+    "repo": "pimoroni/pimoroni-pico",
+    "best": "drivers for Pico add-ons",
+    "url": "https://github.com/pimoroni/pimoroni-pico",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/debugprobe",
+    "best": "SWD/UART debug probe firmware",
+    "url": "https://github.com/raspberrypi/debugprobe",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/openocd",
+    "best": "on-chip debugging",
+    "url": "https://github.com/raspberrypi/openocd",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/pico-examples",
+    "best": "reference code for every peripheral",
+    "url": "https://github.com/raspberrypi/pico-examples",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/pico-extras",
+    "best": "extra audio/sleep/scanvideo libs",
+    "url": "https://github.com/raspberrypi/pico-extras",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-micropython-examples",
+    "best": "MicroPython examples",
+    "url": "https://github.com/raspberrypi/pico-micropython-examples",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-playground",
+    "best": "experimental demos",
+    "url": "https://github.com/raspberrypi/pico-playground",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-sdk",
+    "best": "official C SDK",
+    "url": "https://github.com/raspberrypi/pico-sdk",
+    "picked": true
+   },
+   {
+    "repo": "raspberrypi/pico-setup",
+    "best": "toolchain setup",
+    "url": "https://github.com/raspberrypi/pico-setup",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-setup-windows",
+    "best": "Windows toolchain installer",
+    "url": "https://github.com/raspberrypi/pico-setup-windows",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/pico-vscode",
+    "best": "VS Code integration",
+    "url": "https://github.com/raspberrypi/pico-vscode",
+    "picked": false
+   },
+   {
+    "repo": "raspberrypi/picotool",
+    "best": "flash/inspect/sign binaries",
+    "url": "https://github.com/raspberrypi/picotool",
+    "picked": true
+   },
+   {
+    "repo": "rp-rs/rp-hal",
+    "best": "Rust HAL",
+    "url": "https://github.com/rp-rs/rp-hal",
+    "picked": true
+   },
+   {
+    "repo": "tinygo-org/tinygo",
+    "best": "Go on microcontrollers",
+    "url": "https://github.com/tinygo-org/tinygo",
+    "picked": false
+   },
+   {
+    "repo": "wokwi/rp2040js",
+    "best": "RP2040 emulator for CI",
+    "url": "https://github.com/wokwi/rp2040js",
+    "picked": true
+   },
+   {
+    "repo": "zephyrproject-rtos/zephyr",
+    "best": "RTOS with crypto + MCUboot secure boot",
+    "url": "https://github.com/zephyrproject-rtos/zephyr",
+    "picked": true
+   },
+   {
+    "repo": "dbisu/pico-ducky",
+    "best": "HID injection - studied to build the detector",
+    "url": "https://github.com/dbisu/pico-ducky",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.network-ids",
+  "domain": "PROTECT",
+  "name": "Network detection & prevention",
+  "fused": "Gateway IDS/IPS that combines Suricata's inline rules, Zeek's protocol logs, Snort's rule ecosystem, CrowdSec's crowd-sourced blocklists and fail2ban's log bans; ntopng-style per-device visibility on top.",
+  "realised": "deploy/shield (built): suricata, crowdsec; aureon analyst reads them",
+  "members": [
+   {
+    "repo": "OISF/suricata",
+    "best": "multi-threaded IDS/IPS + EVE JSON",
+    "url": "https://github.com/OISF/suricata",
+    "picked": true
+   },
+   {
+    "repo": "zeek/zeek",
+    "best": "deep protocol logging for hunting",
+    "url": "https://github.com/zeek/zeek",
+    "picked": true
+   },
+   {
+    "repo": "snort3/snort3",
+    "best": "mature rule ecosystem",
+    "url": "https://github.com/snort3/snort3",
+    "picked": true
+   },
+   {
+    "repo": "crowdsecurity/crowdsec",
+    "best": "crowd-sourced IP reputation + bouncers",
+    "url": "https://github.com/crowdsecurity/crowdsec",
+    "picked": true
+   },
+   {
+    "repo": "fail2ban/fail2ban",
+    "best": "log-driven bans",
+    "url": "https://github.com/fail2ban/fail2ban",
+    "picked": true
+   },
+   {
+    "repo": "ntop/ntopng",
+    "best": "per-host traffic visibility",
+    "url": "https://github.com/ntop/ntopng",
+    "picked": true
+   },
+   {
+    "repo": "DShield-ISC/dshield",
+    "best": "share sensor data with SANS ISC",
+    "url": "https://github.com/DShield-ISC/dshield",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.endpoint",
+  "domain": "PROTECT",
+  "name": "Endpoint protection (EDR + AV + app firewall)",
+  "fused": "Laptop EDR without a vendor: Wazuh FIM/rootkit/vuln checks, OSSEC fallback, ClamAV signatures, YARA hunting rules, OpenSnitch per-app outbound control, Lynis hardening score.",
+  "realised": "aureon audit (built), scripts/linux/harden.sh, scripts/windows/harden.ps1 (built)",
+  "members": [
+   {
+    "repo": "wazuh/wazuh",
+    "best": "EDR/SIEM with file integrity + vuln detection",
+    "url": "https://github.com/wazuh/wazuh",
+    "picked": true
+   },
+   {
+    "repo": "ossec/ossec-hids",
+    "best": "lightweight host IDS",
+    "url": "https://github.com/ossec/ossec-hids",
+    "picked": true
+   },
+   {
+    "repo": "Cisco-Talos/clamav",
+    "best": "open AV engine",
+    "url": "https://github.com/Cisco-Talos/clamav",
+    "picked": true
+   },
+   {
+    "repo": "VirusTotal/yara",
+    "best": "malware pattern rules",
+    "url": "https://github.com/VirusTotal/yara",
+    "picked": true
+   },
+   {
+    "repo": "CISOfy/lynis",
+    "best": "hardening audit with score",
+    "url": "https://github.com/CISOfy/lynis",
+    "picked": true
+   },
+   {
+    "repo": "evilsocket/opensnitch",
+    "best": "per-app outbound firewall",
+    "url": "https://github.com/evilsocket/opensnitch",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.deception",
+  "domain": "PROTECT",
+  "name": "Deception & tripwires",
+  "fused": "Fake services that no legitimate user touches, so any hit is a real intrusion: OpenCanary tripwires, Cowrie shell recording, T-Pot breadth.",
+  "realised": "deploy/shield opencanary (built), analyst treats hits as HIGH (built)",
+  "members": [
+   {
+    "repo": "thinkst/opencanary",
+    "best": "lightweight multi-protocol canary",
+    "url": "https://github.com/thinkst/opencanary",
+    "picked": true
+   },
+   {
+    "repo": "cowrie/cowrie",
+    "best": "SSH/Telnet honeypot with session replay",
+    "url": "https://github.com/cowrie/cowrie",
+    "picked": true
+   },
+   {
+    "repo": "telekom-security/tpotce",
+    "best": "20+ honeypots + ELK",
+    "url": "https://github.com/telekom-security/tpotce",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.mobile",
+  "domain": "PROTECT",
+  "name": "Phone spyware & traffic forensics",
+  "fused": "MVT IOC scanning + PiRogue network capture + Suricata rules = check both what is on the phone and what it talks to.",
+  "realised": "docs/PHONE.md, profiles phone-*, deploy/shield suricata",
+  "members": [
+   {
+    "repo": "mvt-project/mvt",
+    "best": "Pegasus/Predator IOC scanning",
+    "url": "https://github.com/mvt-project/mvt",
+    "picked": true
+   },
+   {
+    "repo": "PiRogueToolSuite/pirogue-cli",
+    "best": "phone traffic interception station",
+    "url": "https://github.com/PiRogueToolSuite/pirogue-cli",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.forensics",
+  "domain": "PROTECT",
+  "name": "Forensics & reverse engineering",
+  "fused": "Incident-response kit: memory (Volatility), disk (Sleuth Kit/Autopsy), packets (Wireshark), binaries/APKs (Ghidra, radare2, Cutter, pwndbg).",
+  "realised": "catalog defend layer; aureon fetch defend",
+  "members": [
+   {
+    "repo": "volatilityfoundation/volatility3",
+    "best": "memory forensics",
+    "url": "https://github.com/volatilityfoundation/volatility3",
+    "picked": true
+   },
+   {
+    "repo": "sleuthkit/sleuthkit",
+    "best": "filesystem forensics",
+    "url": "https://github.com/sleuthkit/sleuthkit",
+    "picked": true
+   },
+   {
+    "repo": "sleuthkit/autopsy",
+    "best": "forensics GUI + timeline",
+    "url": "https://github.com/sleuthkit/autopsy",
+    "picked": true
+   },
+   {
+    "repo": "wireshark/wireshark",
+    "best": "packet dissection",
+    "url": "https://github.com/wireshark/wireshark",
+    "picked": true
+   },
+   {
+    "repo": "NationalSecurityAgency/ghidra",
+    "best": "decompiler",
+    "url": "https://github.com/NationalSecurityAgency/ghidra",
+    "picked": true
+   },
+   {
+    "repo": "radareorg/radare2",
+    "best": "scriptable RE (runs on phones)",
+    "url": "https://github.com/radareorg/radare2",
+    "picked": true
+   },
+   {
+    "repo": "rizinorg/cutter",
+    "best": "RE GUI",
+    "url": "https://github.com/rizinorg/cutter",
+    "picked": true
+   },
+   {
+    "repo": "pwndbg/pwndbg",
+    "best": "exploit-aware GDB",
+    "url": "https://github.com/pwndbg/pwndbg",
+    "picked": true
+   },
+   {
+    "repo": "Gallopsled/pwntools",
+    "best": "exploit/CTF toolkit",
+    "url": "https://github.com/Gallopsled/pwntools",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.secrets",
+  "domain": "PROTECT",
+  "name": "Secrets & credentials hygiene",
+  "fused": "Find leaked keys before attackers do (gitleaks, trufflehog verification) and keep passwords in your own vault (Vaultwarden).",
+  "realised": "deploy/cloud vaultwarden (built); profile laptop-windows gitleaks",
+  "members": [
+   {
+    "repo": "gitleaks/gitleaks",
+    "best": "secret scanning in git history",
+    "url": "https://github.com/gitleaks/gitleaks",
+    "picked": true
+   },
+   {
+    "repo": "trufflesecurity/trufflehog",
+    "best": "verified credential detection",
+    "url": "https://github.com/trufflesecurity/trufflehog",
+    "picked": true
+   },
+   {
+    "repo": "dani-garcia/vaultwarden",
+    "best": "self-hosted Bitwarden server",
+    "url": "https://github.com/dani-garcia/vaultwarden",
+    "picked": true
+   },
+   {
+    "repo": "AlessandroZ/LaZagne",
+    "best": "password recovery - used to test what malware could steal",
+    "url": "https://github.com/AlessandroZ/LaZagne",
+    "picked": false
+   },
+   {
+    "repo": "gentilkiwi/mimikatz",
+    "best": "credential extraction - informs LSASS protection (ASR rule)",
+    "url": "https://github.com/gentilkiwi/mimikatz",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "protect.wireless-watch",
+  "domain": "RADIO",
+  "name": "Rogue WiFi & fake cell-tower watch",
+  "fused": "Baseline-and-compare across radios: Kismet's rogue-AP logic, kalibrate-rtl GSM survey, gr-gsm decoding, phone cell info - flags evil twins, security downgrades, 2G forcing, new LAC/TAC.",
+  "realised": "aureon rf wifi|cell|gsm (built)",
+  "members": [
+   {
+    "repo": "kismetwireless/kismet",
+    "best": "wireless IDS",
+    "url": "https://github.com/kismetwireless/kismet",
+    "picked": true
+   },
+   {
+    "repo": "ptrkrysik/gr-gsm",
+    "best": "GSM decoding",
+    "url": "https://github.com/ptrkrysik/gr-gsm",
+    "picked": true
+   },
+   {
+    "repo": "steve-m/kalibrate-rtl",
+    "best": "GSM base-station scan",
+    "url": "https://github.com/steve-m/kalibrate-rtl",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.audit",
+  "domain": "PROTECT",
+  "name": "Self-audit lab (authorized use only)",
+  "fused": "See your own devices as an attacker would: discovery, vuln scanning, web testing, password strength, WiFi strength, AD paths, OSINT exposure. Never auto-installed.",
+  "realised": "profile lab; catalog audit layer",
+  "members": [
+   {
+    "repo": "carlospolop/PEASS-ng",
+    "best": "privilege-escalation checks (run on your own hosts to find misconfig)",
+    "url": "https://github.com/carlospolop/PEASS-ng",
+    "picked": false
+   },
+   {
+    "repo": "peass-ng/PEASS-ng",
+    "best": "PEASS-ng (current home)",
+    "url": "https://github.com/peass-ng/PEASS-ng",
+    "picked": true
+   },
+   {
+    "repo": "PowerShellMafia/PowerSploit",
+    "best": "PowerShell post-exploitation (threat model for Windows hardening)",
+    "url": "https://github.com/PowerShellMafia/PowerSploit",
+    "picked": false
+   },
+   {
+    "repo": "swisskyrepo/PayloadsAllTheThings",
+    "best": "payload reference for testing your own apps",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings",
+    "picked": false
+   },
+   {
+    "repo": "nmap/nmap",
+    "best": "service/OS discovery",
+    "url": "https://github.com/nmap/nmap",
+    "picked": true
+   },
+   {
+    "repo": "RustScan/RustScan",
+    "best": "fast port discovery",
+    "url": "https://github.com/RustScan/RustScan",
+    "picked": true
+   },
+   {
+    "repo": "robertdavidgraham/masscan",
+    "best": "very fast scanning",
+    "url": "https://github.com/robertdavidgraham/masscan",
+    "picked": true
+   },
+   {
+    "repo": "zmap/zmap",
+    "best": "network surveys",
+    "url": "https://github.com/zmap/zmap",
+    "picked": true
+   },
+   {
+    "repo": "greenbone/openvas-scanner",
+    "best": "full vuln scanner",
+    "url": "https://github.com/greenbone/openvas-scanner",
+    "picked": true
+   },
+   {
+    "repo": "projectdiscovery/nuclei",
+    "best": "template vuln checks",
+    "url": "https://github.com/projectdiscovery/nuclei",
+    "picked": true
+   },
+   {
+    "repo": "projectdiscovery/httpx",
+    "best": "HTTP probing",
+    "url": "https://github.com/projectdiscovery/httpx",
+    "picked": true
+   },
+   {
+    "repo": "projectdiscovery/subfinder",
+    "best": "subdomain discovery",
+    "url": "https://github.com/projectdiscovery/subfinder",
+    "picked": true
+   },
+   {
+    "repo": "zaproxy/zaproxy",
+    "best": "web app scanner/proxy",
+    "url": "https://github.com/zaproxy/zaproxy",
+    "picked": true
+   },
+   {
+    "repo": "sullo/nikto",
+    "best": "web server misconfig",
+    "url": "https://github.com/sullo/nikto",
+    "picked": true
+   },
+   {
+    "repo": "sqlmapproject/sqlmap",
+    "best": "SQL injection testing",
+    "url": "https://github.com/sqlmapproject/sqlmap",
+    "picked": true
+   },
+   {
+    "repo": "commixproject/commix",
+    "best": "command-injection testing",
+    "url": "https://github.com/commixproject/commix",
+    "picked": false
+   },
+   {
+    "repo": "ffuf/ffuf",
+    "best": "fast fuzzing",
+    "url": "https://github.com/ffuf/ffuf",
+    "picked": true
+   },
+   {
+    "repo": "OJ/gobuster",
+    "best": "dir/DNS brute force",
+    "url": "https://github.com/OJ/gobuster",
+    "picked": true
+   },
+   {
+    "repo": "epi052/feroxbuster",
+    "best": "recursive content discovery",
+    "url": "https://github.com/epi052/feroxbuster",
+    "picked": true
+   },
+   {
+    "repo": "rapid7/metasploit-framework",
+    "best": "exploit framework",
+    "url": "https://github.com/rapid7/metasploit-framework",
+    "picked": true
+   },
+   {
+    "repo": "fortra/impacket",
+    "best": "Windows protocol library",
+    "url": "https://github.com/fortra/impacket",
+    "picked": true
+   },
+   {
+    "repo": "SecureAuthCorp/impacket",
+    "best": "impacket (older home)",
+    "url": "https://github.com/SecureAuthCorp/impacket",
+    "picked": false
+   },
+   {
+    "repo": "Pennyw0rth/NetExec",
+    "best": "network credential auditing",
+    "url": "https://github.com/Pennyw0rth/NetExec",
+    "picked": true
+   },
+   {
+    "repo": "byt3bl33d3r/CrackMapExec",
+    "best": "NetExec predecessor",
+    "url": "https://github.com/byt3bl33d3r/CrackMapExec",
+    "picked": false
+   },
+   {
+    "repo": "SpecterOps/BloodHound",
+    "best": "AD attack-path graphs",
+    "url": "https://github.com/SpecterOps/BloodHound",
+    "picked": true
+   },
+   {
+    "repo": "BloodHoundAD/BloodHound",
+    "best": "BloodHound legacy",
+    "url": "https://github.com/BloodHoundAD/BloodHound",
+    "picked": false
+   },
+   {
+    "repo": "lgandx/Responder",
+    "best": "LLMNR/NBT-NS poisoning test",
+    "url": "https://github.com/lgandx/Responder",
+    "picked": true
+   },
+   {
+    "repo": "hashcat/hashcat",
+    "best": "GPU password auditing",
+    "url": "https://github.com/hashcat/hashcat",
+    "picked": true
+   },
+   {
+    "repo": "openwall/john",
+    "best": "CPU password auditing",
+    "url": "https://github.com/openwall/john",
+    "picked": true
+   },
+   {
+    "repo": "vanhauser-thc/thc-hydra",
+    "best": "online login testing",
+    "url": "https://github.com/vanhauser-thc/thc-hydra",
+    "picked": true
+   },
+   {
+    "repo": "threat9/routersploit",
+    "best": "router vuln testing",
+    "url": "https://github.com/threat9/routersploit",
+    "picked": false
+   },
+   {
+    "repo": "mitmproxy/mitmproxy",
+    "best": "inspect your own app traffic",
+    "url": "https://github.com/mitmproxy/mitmproxy",
+    "picked": true
+   },
+   {
+    "repo": "beefproject/beef",
+    "best": "browser exploitation test",
+    "url": "https://github.com/beefproject/beef",
+    "picked": false
+   },
+   {
+    "repo": "trustedsec/social-engineer-toolkit",
+    "best": "phishing-awareness simulation",
+    "url": "https://github.com/trustedsec/social-engineer-toolkit",
+    "picked": false
+   },
+   {
+    "repo": "Ettercap/ettercap",
+    "best": "LAN MITM testing",
+    "url": "https://github.com/Ettercap/ettercap",
+    "picked": false
+   },
+   {
+    "repo": "bettercap/bettercap",
+    "best": "network/BLE/WiFi attack simulation",
+    "url": "https://github.com/bettercap/bettercap",
+    "picked": true
+   },
+   {
+    "repo": "bettercap/caplets",
+    "best": "bettercap scripts",
+    "url": "https://github.com/bettercap/caplets",
+    "picked": false
+   },
+   {
+    "repo": "LionSec/xerosploit",
+    "best": "MITM toolkit",
+    "url": "https://github.com/LionSec/xerosploit",
+    "picked": false
+   },
+   {
+    "repo": "moxie0/sslstrip",
+    "best": "HTTPS downgrade demo (why HSTS matters)",
+    "url": "https://github.com/moxie0/sslstrip",
+    "picked": false
+   },
+   {
+    "repo": "danielmiessler/SecLists",
+    "best": "wordlists",
+    "url": "https://github.com/danielmiessler/SecLists",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "protect.wifi-audit",
+  "domain": "PROTECT",
+  "name": "WiFi & RF strength testing (own networks)",
+  "fused": "Prove your own WPA key and router resist real attacks: handshake/PMKID capture, WPS checks, evil-twin simulations, then harden.",
+  "realised": "profile lab",
+  "members": [
+   {
+    "repo": "aircrack-ng/aircrack-ng",
+    "best": "WiFi audit suite",
+    "url": "https://github.com/aircrack-ng/aircrack-ng",
+    "picked": true
+   },
+   {
+    "repo": "aircrack-ng/rtl8812au",
+    "best": "monitor-mode USB WiFi driver",
+    "url": "https://github.com/aircrack-ng/rtl8812au",
+    "picked": false
+   },
+   {
+    "repo": "ZerBea/hcxdumptool",
+    "best": "PMKID/handshake capture",
+    "url": "https://github.com/ZerBea/hcxdumptool",
+    "picked": true
+   },
+   {
+    "repo": "ZerBea/hcxtools",
+    "best": "capture conversion",
+    "url": "https://github.com/ZerBea/hcxtools",
+    "picked": true
+   },
+   {
+    "repo": "derv82/wifite2",
+    "best": "automated WiFi audit",
+    "url": "https://github.com/derv82/wifite2",
+    "picked": true
+   },
+   {
+    "repo": "kimocoder/wifite2",
+    "best": "maintained wifite2",
+    "url": "https://github.com/kimocoder/wifite2",
+    "picked": false
+   },
+   {
+    "repo": "v1s1t0r1sh3r3/airgeddon",
+    "best": "menu-driven WiFi audit",
+    "url": "https://github.com/v1s1t0r1sh3r3/airgeddon",
+    "picked": true
+   },
+   {
+    "repo": "aanarchyy/bully",
+    "best": "WPS PIN testing",
+    "url": "https://github.com/aanarchyy/bully",
+    "picked": false
+   },
+   {
+    "repo": "t6x/reaver-wps-fork-t6x",
+    "best": "WPS testing",
+    "url": "https://github.com/t6x/reaver-wps-fork-t6x",
+    "picked": false
+   },
+   {
+    "repo": "wiire-a/pixiewps",
+    "best": "WPS pixie-dust test",
+    "url": "https://github.com/wiire-a/pixiewps",
+    "picked": false
+   },
+   {
+    "repo": "s0lst1c3/eaphammer",
+    "best": "WPA-Enterprise evil twin test",
+    "url": "https://github.com/s0lst1c3/eaphammer",
+    "picked": false
+   },
+   {
+    "repo": "sensepost/hostapd-mana",
+    "best": "rogue AP research",
+    "url": "https://github.com/sensepost/hostapd-mana",
+    "picked": false
+   },
+   {
+    "repo": "P0cL4bs/wifipumpkin3",
+    "best": "rogue AP framework",
+    "url": "https://github.com/P0cL4bs/wifipumpkin3",
+    "picked": false
+   },
+   {
+    "repo": "wifiphisher/wifiphisher",
+    "best": "phishing AP simulation",
+    "url": "https://github.com/wifiphisher/wifiphisher",
+    "picked": false
+   },
+   {
+    "repo": "FluxionNetwork/fluxion",
+    "best": "captive-portal attack simulation",
+    "url": "https://github.com/FluxionNetwork/fluxion",
+    "picked": false
+   },
+   {
+    "repo": "SpacehuhnTech/esp8266_deauther",
+    "best": "deauth testing (shows why WPA3/PMF matter)",
+    "url": "https://github.com/SpacehuhnTech/esp8266_deauther",
+    "picked": false
+   },
+   {
+    "repo": "justcallmekoko/ESP32Marauder",
+    "best": "ESP32 WiFi/BLE audit",
+    "url": "https://github.com/justcallmekoko/ESP32Marauder",
+    "picked": false
+   },
+   {
+    "repo": "evilsocket/arc",
+    "best": "encrypted vault on the go",
+    "url": "https://github.com/evilsocket/arc",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "protect.physical",
+  "domain": "PROTECT",
+  "name": "Physical/USB/NFC attack surface",
+  "fused": "Understand BadUSB, NFC cloning and multi-tool attacks so Aureon Key + hidguard can stop them.",
+  "realised": "aureon hidguard (built), key/ (built)",
+  "members": [
+   {
+    "repo": "RoganDawes/P4wnP1_aloa",
+    "best": "USB/WiFi/Bluetooth attack implant (threat model)",
+    "url": "https://github.com/RoganDawes/P4wnP1_aloa",
+    "picked": false
+   },
+   {
+    "repo": "mame82/P4wnP1",
+    "best": "P4wnP1 original",
+    "url": "https://github.com/mame82/P4wnP1",
+    "picked": false
+   },
+   {
+    "repo": "mame82/P4wnP1_aloa",
+    "best": "P4wnP1 A.L.O.A.",
+    "url": "https://github.com/mame82/P4wnP1_aloa",
+    "picked": false
+   },
+   {
+    "repo": "hak5/bashbunny-payloads",
+    "best": "USB attack payloads (threat model)",
+    "url": "https://github.com/hak5/bashbunny-payloads",
+    "picked": false
+   },
+   {
+    "repo": "hak5/sharkjack-payloads",
+    "best": "Ethernet implant payloads (threat model)",
+    "url": "https://github.com/hak5/sharkjack-payloads",
+    "picked": false
+   },
+   {
+    "repo": "hak5/usbrubberducky-payloads",
+    "best": "keystroke injection (threat model)",
+    "url": "https://github.com/hak5/usbrubberducky-payloads",
+    "picked": false
+   },
+   {
+    "repo": "SpacehuhnTech/WiFiDuck",
+    "best": "WiFi-controlled keystroke injector",
+    "url": "https://github.com/SpacehuhnTech/WiFiDuck",
+    "picked": false
+   },
+   {
+    "repo": "flipperdevices/flipperzero-firmware",
+    "best": "multi-protocol RF/NFC tool",
+    "url": "https://github.com/flipperdevices/flipperzero-firmware",
+    "picked": false
+   },
+   {
+    "repo": "DarkFlippers/unleashed-firmware",
+    "best": "extended Flipper firmware",
+    "url": "https://github.com/DarkFlippers/unleashed-firmware",
+    "picked": false
+   },
+   {
+    "repo": "RogueMaster/flipperzero-firmware-wPlugins",
+    "best": "Flipper with plugins",
+    "url": "https://github.com/RogueMaster/flipperzero-firmware-wPlugins",
+    "picked": false
+   },
+   {
+    "repo": "Proxmark/proxmark3",
+    "best": "RFID/NFC research",
+    "url": "https://github.com/Proxmark/proxmark3",
+    "picked": true
+   },
+   {
+    "repo": "RfidResearchGroup/proxmark3",
+    "best": "maintained Proxmark firmware",
+    "url": "https://github.com/RfidResearchGroup/proxmark3",
+    "picked": false
+   },
+   {
+    "repo": "AdamLaurie/RFIDIOt",
+    "best": "RFID Python tools",
+    "url": "https://github.com/AdamLaurie/RFIDIOt",
+    "picked": false
+   },
+   {
+    "repo": "nfc-tools/libnfc",
+    "best": "NFC library",
+    "url": "https://github.com/nfc-tools/libnfc",
+    "picked": true
+   },
+   {
+    "repo": "nfc-tools/mfoc",
+    "best": "MIFARE Classic key recovery (shows it is broken)",
+    "url": "https://github.com/nfc-tools/mfoc",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "protect.osint",
+  "domain": "PROTECT",
+  "name": "Personal exposure (OSINT on yourself)",
+  "fused": "Find what the internet knows about you: accounts by email/username, phone exposure, domain footprint - then lock it down.",
+  "realised": "profile lab; Termux setup installs holehe/sherlock",
+  "members": [
+   {
+    "repo": "s0md3v/Photon",
+    "best": "fast crawler for your own site's exposed data",
+    "url": "https://github.com/s0md3v/Photon",
+    "picked": false
+   },
+   {
+    "repo": "megadose/holehe",
+    "best": "which sites use your email",
+    "url": "https://github.com/megadose/holehe",
+    "picked": true
+   },
+   {
+    "repo": "sherlock-project/sherlock",
+    "best": "username across sites",
+    "url": "https://github.com/sherlock-project/sherlock",
+    "picked": true
+   },
+   {
+    "repo": "soxoj/maigret",
+    "best": "username dossier",
+    "url": "https://github.com/soxoj/maigret",
+    "picked": true
+   },
+   {
+    "repo": "mxrch/GHunt",
+    "best": "Google-account exposure",
+    "url": "https://github.com/mxrch/GHunt",
+    "picked": false
+   },
+   {
+    "repo": "sundowndev/phoneinfoga",
+    "best": "phone-number footprint",
+    "url": "https://github.com/sundowndev/phoneinfoga",
+    "picked": false
+   },
+   {
+    "repo": "smicallef/spiderfoot",
+    "best": "automated OSINT",
+    "url": "https://github.com/smicallef/spiderfoot",
+    "picked": true
+   },
+   {
+    "repo": "laramies/theHarvester",
+    "best": "domain emails/hosts",
+    "url": "https://github.com/laramies/theHarvester",
+    "picked": true
+   },
+   {
+    "repo": "lanmaster53/recon-ng",
+    "best": "modular recon",
+    "url": "https://github.com/lanmaster53/recon-ng",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "network.dns",
+  "domain": "NETWORK",
+  "name": "Private filtered DNS",
+  "fused": "AdGuard's encrypted DoH/DoT for phones + Pi-hole's blocklists + unbound recursion = no ISP or provider sees your queries.",
+  "realised": "deploy/shield (built)",
+  "members": [
+   {
+    "repo": "AdguardTeam/AdGuardHome",
+    "best": "DoH/DoT filtering server",
+    "url": "https://github.com/AdguardTeam/AdGuardHome",
+    "picked": true
+   },
+   {
+    "repo": "pi-hole/pi-hole",
+    "best": "DNS sinkhole",
+    "url": "https://github.com/pi-hole/pi-hole",
+    "picked": true
+   },
+   {
+    "repo": "pi-hole/FTL",
+    "best": "fast DNS engine",
+    "url": "https://github.com/pi-hole/FTL",
+    "picked": false
+   },
+   {
+    "repo": "pi-hole/web",
+    "best": "Pi-hole dashboard",
+    "url": "https://github.com/pi-hole/web",
+    "picked": false
+   },
+   {
+    "repo": "pi-hole/docker-pi-hole",
+    "best": "containerised Pi-hole",
+    "url": "https://github.com/pi-hole/docker-pi-hole",
+    "picked": false
+   },
+   {
+    "repo": "NLnetLabs/unbound",
+    "best": "recursive DNSSEC resolver",
+    "url": "https://github.com/NLnetLabs/unbound",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "network.vpn",
+  "domain": "NETWORK",
+  "name": "VPN & mesh overlay",
+  "fused": "WireGuard speed + wg-easy QR onboarding + Tailscale NAT traversal + headscale self-hosting + ZeroTier/Yggdrasil fallback meshes.",
+  "realised": "deploy/shield wg-easy (built); profiles",
+  "members": [
+   {
+    "repo": "WireGuard/wireguard-tools",
+    "best": "fast modern VPN",
+    "url": "https://github.com/WireGuard/wireguard-tools",
+    "picked": true
+   },
+   {
+    "repo": "wg-easy/wg-easy",
+    "best": "WireGuard UI with QR codes",
+    "url": "https://github.com/wg-easy/wg-easy",
+    "picked": true
+   },
+   {
+    "repo": "angristan/wireguard-install",
+    "best": "one-script WireGuard server",
+    "url": "https://github.com/angristan/wireguard-install",
+    "picked": false
+   },
+   {
+    "repo": "pivpn/pivpn",
+    "best": "guided VPN server",
+    "url": "https://github.com/pivpn/pivpn",
+    "picked": false
+   },
+   {
+    "repo": "OpenVPN/openvpn",
+    "best": "compatible fallback VPN",
+    "url": "https://github.com/OpenVPN/openvpn",
+    "picked": false
+   },
+   {
+    "repo": "Nyr/openvpn-install",
+    "best": "one-script OpenVPN",
+    "url": "https://github.com/Nyr/openvpn-install",
+    "picked": false
+   },
+   {
+    "repo": "tailscale/tailscale",
+    "best": "NAT-traversing mesh",
+    "url": "https://github.com/tailscale/tailscale",
+    "picked": true
+   },
+   {
+    "repo": "juanfont/headscale",
+    "best": "self-hosted Tailscale control",
+    "url": "https://github.com/juanfont/headscale",
+    "picked": true
+   },
+   {
+    "repo": "ZeroTier/ZeroTierOne",
+    "best": "virtual L2 network",
+    "url": "https://github.com/ZeroTier/ZeroTierOne",
+    "picked": false
+   },
+   {
+    "repo": "yggdrasil-network/yggdrasil-go",
+    "best": "encrypted IPv6 mesh",
+    "url": "https://github.com/yggdrasil-network/yggdrasil-go",
+    "picked": true
+   },
+   {
+    "repo": "cloudflare/cloudflared",
+    "best": "outbound-only tunnels",
+    "url": "https://github.com/cloudflare/cloudflared",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "network.anonymity",
+  "domain": "NETWORK",
+  "name": "Anonymity",
+  "fused": "Tor + I2P routers, transparent torification, onion file sharing.",
+  "realised": "catalog net layer; Termux tor",
+  "members": [
+   {
+    "repo": "torproject/tor",
+    "best": "onion routing",
+    "url": "https://github.com/torproject/tor",
+    "picked": true
+   },
+   {
+    "repo": "PurpleI2P/i2pd",
+    "best": "lightweight I2P",
+    "url": "https://github.com/PurpleI2P/i2pd",
+    "picked": true
+   },
+   {
+    "repo": "i2p/i2p.i2p",
+    "best": "Java I2P router",
+    "url": "https://github.com/i2p/i2p.i2p",
+    "picked": false
+   },
+   {
+    "repo": "brainfucksec/kalitorify",
+    "best": "transparent Tor proxy",
+    "url": "https://github.com/brainfucksec/kalitorify",
+    "picked": true
+   },
+   {
+    "repo": "breadtk/onion_pi",
+    "best": "Tor access point",
+    "url": "https://github.com/breadtk/onion_pi",
+    "picked": false
+   },
+   {
+    "repo": "onionshare/onionshare",
+    "best": "anonymous file sharing",
+    "url": "https://github.com/onionshare/onionshare",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "network.offgrid",
+  "domain": "RADIO",
+  "name": "Off-grid encrypted communication",
+  "fused": "Meshtastic LoRa texting + Reticulum's medium-agnostic encrypted networking + NomadNet messaging; Aureon relays alert headlines over the mesh.",
+  "realised": "deploy/offgrid (built), aureon mesh (built)",
+  "members": [
+   {
+    "repo": "meshtastic/firmware",
+    "best": "LoRa mesh radio firmware",
+    "url": "https://github.com/meshtastic/firmware",
+    "picked": true
+   },
+   {
+    "repo": "meshtastic/python",
+    "best": "Meshtastic API/CLI",
+    "url": "https://github.com/meshtastic/python",
+    "picked": true
+   },
+   {
+    "repo": "markqvist/Reticulum",
+    "best": "encrypted networking over any link",
+    "url": "https://github.com/markqvist/Reticulum",
+    "picked": true
+   },
+   {
+    "repo": "markqvist/NomadNet",
+    "best": "off-grid messaging/pages",
+    "url": "https://github.com/markqvist/NomadNet",
+    "picked": true
+   },
+   {
+    "repo": "wb2osz/direwolf",
+    "best": "software packet-radio TNC",
+    "url": "https://github.com/wb2osz/direwolf",
+    "picked": true
+   }
+  ]
+ },
+ {
+  "id": "network.access",
+  "domain": "NETWORK",
+  "name": "Access point & connectivity",
+  "fused": "Node as a secure travel router: captive WiFi onboarding, hotspot sharing, AP management.",
+  "realised": "catalog net layer",
+  "members": [
+   {
+    "repo": "RaspAP/raspap-webgui",
+    "best": "router/AP web UI",
+    "url": "https://github.com/RaspAP/raspap-webgui",
+    "picked": true
+   },
+   {
+    "repo": "billz/raspap-webgui",
+    "best": "RaspAP (original)",
+    "url": "https://github.com/billz/raspap-webgui",
+    "picked": false
+   },
+   {
+    "repo": "balena-io/wifi-connect",
+    "best": "captive-portal WiFi setup",
+    "url": "https://github.com/balena-io/wifi-connect",
+    "picked": false
+   },
+   {
+    "repo": "balena-os/wifi-connect",
+    "best": "wifi-connect (moved)",
+    "url": "https://github.com/balena-os/wifi-connect",
+    "picked": false
+   },
+   {
+    "repo": "jasbur/RaspiWiFi",
+    "best": "AP-mode WiFi setup",
+    "url": "https://github.com/jasbur/RaspiWiFi",
+    "picked": false
+   },
+   {
+    "repo": "sabhiram/raspberry-wifi-conf",
+    "best": "WiFi config via AP",
+    "url": "https://github.com/sabhiram/raspberry-wifi-conf",
+    "picked": false
+   },
+   {
+    "repo": "lakinduakash/linux-wifi-hotspot",
+    "best": "laptop hotspot",
+    "url": "https://github.com/lakinduakash/linux-wifi-hotspot",
+    "picked": true
+   },
+   {
+    "repo": "oblique/create_ap",
+    "best": "one-command AP",
+    "url": "https://github.com/oblique/create_ap",
+    "picked": false
+   },
+   {
+    "repo": "netbootxyz/netboot.xyz",
+    "best": "network-boot any OS installer",
+    "url": "https://github.com/netbootxyz/netboot.xyz",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "network.storage",
+  "domain": "NETWORK",
+  "name": "Sync, sharing & transfer",
+  "fused": "Syncthing P2P between phone and laptop, rclone-crypt backups anywhere, SMB/AFP for legacy, IPFS for content addressing, torrent clients for large public data.",
+  "realised": "profiles (syncthing); profile node backups (rclone)",
+  "members": [
+   {
+    "repo": "Prowlarr/Prowlarr",
+    "best": "indexer manager",
+    "url": "https://github.com/Prowlarr/Prowlarr",
+    "picked": false
+   },
+   {
+    "repo": "syncthing/syncthing",
+    "best": "P2P encrypted sync",
+    "url": "https://github.com/syncthing/syncthing",
+    "picked": true
+   },
+   {
+    "repo": "rclone/rclone",
+    "best": "encrypted cloud backup",
+    "url": "https://github.com/rclone/rclone",
+    "picked": true
+   },
+   {
+    "repo": "samba-team/samba",
+    "best": "Windows file sharing",
+    "url": "https://github.com/samba-team/samba",
+    "picked": false
+   },
+   {
+    "repo": "netatalk/netatalk",
+    "best": "AFP/Time Machine",
+    "url": "https://github.com/netatalk/netatalk",
+    "picked": false
+   },
+   {
+    "repo": "ipfs/kubo",
+    "best": "content-addressed storage",
+    "url": "https://github.com/ipfs/kubo",
+    "picked": false
+   },
+   {
+    "repo": "qbittorrent/qBittorrent",
+    "best": "BitTorrent client",
+    "url": "https://github.com/qbittorrent/qBittorrent",
+    "picked": false
+   },
+   {
+    "repo": "transmission/transmission",
+    "best": "light BitTorrent daemon",
+    "url": "https://github.com/transmission/transmission",
+    "picked": false
+   },
+   {
+    "repo": "Radarr/Radarr",
+    "best": "media library automation",
+    "url": "https://github.com/Radarr/Radarr",
+    "picked": false
+   },
+   {
+    "repo": "Sonarr/Sonarr",
+    "best": "series library automation",
+    "url": "https://github.com/Sonarr/Sonarr",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "network.crypto-nodes",
+  "domain": "NETWORK",
+  "name": "Sovereign money nodes",
+  "fused": "Validate your own transactions with full nodes - no third-party wallet servers learning your addresses.",
+  "realised": "catalog only (optional Node personality)",
+  "members": [
+   {
+    "repo": "bitcoin/bitcoin",
+    "best": "full node",
+    "url": "https://github.com/bitcoin/bitcoin",
+    "picked": false
+   },
+   {
+    "repo": "ElementsProject/lightning",
+    "best": "Core Lightning",
+    "url": "https://github.com/ElementsProject/lightning",
+    "picked": false
+   },
+   {
+    "repo": "lightningnetwork/lnd",
+    "best": "LND Lightning",
+    "url": "https://github.com/lightningnetwork/lnd",
+    "picked": false
+   },
+   {
+    "repo": "monero-project/monero",
+    "best": "private-by-default node",
+    "url": "https://github.com/monero-project/monero",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.cloud",
+  "domain": "FREEDOM",
+  "name": "Personal cloud",
+  "fused": "Replace Google/Apple/Microsoft services: files, photos, docs, notes, wiki, finance, recipes, RSS - all on the Node, behind Caddy TLS and WireGuard.",
+  "realised": "deploy/cloud (built): Immich, Nextcloud, Vaultwarden, Caddy",
+  "members": [
+   {
+    "repo": "nextcloud/server",
+    "best": "files/calendar/contacts",
+    "url": "https://github.com/nextcloud/server",
+    "picked": true
+   },
+   {
+    "repo": "nextcloud/all-in-one",
+    "best": "one-container Nextcloud",
+    "url": "https://github.com/nextcloud/all-in-one",
+    "picked": false
+   },
+   {
+    "repo": "owncloud/core",
+    "best": "ownCloud file sync",
+    "url": "https://github.com/owncloud/core",
+    "picked": false
+   },
+   {
+    "repo": "haiwen/seafile",
+    "best": "fast block-level file sync",
+    "url": "https://github.com/haiwen/seafile",
+    "picked": false
+   },
+   {
+    "repo": "immich-app/immich",
+    "best": "phone photo backup with local ML",
+    "url": "https://github.com/immich-app/immich",
+    "picked": true
+   },
+   {
+    "repo": "PhotoPrism/photoprism",
+    "best": "AI photo library",
+    "url": "https://github.com/PhotoPrism/photoprism",
+    "picked": false
+   },
+   {
+    "repo": "paperless-ngx/paperless-ngx",
+    "best": "OCR document archive",
+    "url": "https://github.com/paperless-ngx/paperless-ngx",
+    "picked": true
+   },
+   {
+    "repo": "BookStackApp/BookStack",
+    "best": "structured wiki",
+    "url": "https://github.com/BookStackApp/BookStack",
+    "picked": false
+   },
+   {
+    "repo": "requarks/wiki",
+    "best": "Wiki.js",
+    "url": "https://github.com/requarks/wiki",
+    "picked": false
+   },
+   {
+    "repo": "Jermolene/TiddlyWiki5",
+    "best": "single-file notebook",
+    "url": "https://github.com/Jermolene/TiddlyWiki5",
+    "picked": false
+   },
+   {
+    "repo": "FreshRSS/FreshRSS",
+    "best": "RSS reader",
+    "url": "https://github.com/FreshRSS/FreshRSS",
+    "picked": false
+   },
+   {
+    "repo": "miniflux/v2",
+    "best": "minimal RSS reader",
+    "url": "https://github.com/miniflux/v2",
+    "picked": false
+   },
+   {
+    "repo": "wallabag/wallabag",
+    "best": "read-it-later",
+    "url": "https://github.com/wallabag/wallabag",
+    "picked": false
+   },
+   {
+    "repo": "mealie-recipes/mealie",
+    "best": "recipe manager",
+    "url": "https://github.com/mealie-recipes/mealie",
+    "picked": false
+   },
+   {
+    "repo": "actualbudget/actual",
+    "best": "local-first budgeting",
+    "url": "https://github.com/actualbudget/actual",
+    "picked": false
+   },
+   {
+    "repo": "firefly-iii/firefly-iii",
+    "best": "personal finance",
+    "url": "https://github.com/firefly-iii/firefly-iii",
+    "picked": false
+   },
+   {
+    "repo": "filebrowser/filebrowser",
+    "best": "web file manager",
+    "url": "https://github.com/filebrowser/filebrowser",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.comms",
+  "domain": "FREEDOM",
+  "name": "Own communications",
+  "fused": "Encrypted chat, video and voice you host: Matrix federation, Jitsi calls, Mumble low-latency voice, community servers.",
+  "realised": "catalog cloud layer (deploy planned)",
+  "members": [
+   {
+    "repo": "element-hq/synapse",
+    "best": "Matrix homeserver",
+    "url": "https://github.com/element-hq/synapse",
+    "picked": true
+   },
+   {
+    "repo": "matrix-org/synapse",
+    "best": "Synapse (previous home)",
+    "url": "https://github.com/matrix-org/synapse",
+    "picked": false
+   },
+   {
+    "repo": "jitsi/jitsi-meet",
+    "best": "video conferencing",
+    "url": "https://github.com/jitsi/jitsi-meet",
+    "picked": true
+   },
+   {
+    "repo": "mumble-voip/mumble",
+    "best": "low-latency voice",
+    "url": "https://github.com/mumble-voip/mumble",
+    "picked": false
+   },
+   {
+    "repo": "RocketChat/Rocket.Chat",
+    "best": "team chat",
+    "url": "https://github.com/RocketChat/Rocket.Chat",
+    "picked": false
+   },
+   {
+    "repo": "zulip/zulip",
+    "best": "threaded team chat",
+    "url": "https://github.com/zulip/zulip",
+    "picked": false
+   },
+   {
+    "repo": "mastodon/mastodon",
+    "best": "federated social",
+    "url": "https://github.com/mastodon/mastodon",
+    "picked": false
+   },
+   {
+    "repo": "LemmyNet/lemmy",
+    "best": "federated forums",
+    "url": "https://github.com/LemmyNet/lemmy",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.web",
+  "domain": "FREEDOM",
+  "name": "Web serving & reverse proxy",
+  "fused": "Caddy's automatic TLS + Traefik's container discovery + Nginx speed; NPM for click-ops.",
+  "realised": "deploy/cloud Caddyfile (built)",
+  "members": [
+   {
+    "repo": "caddyserver/caddy",
+    "best": "automatic HTTPS",
+    "url": "https://github.com/caddyserver/caddy",
+    "picked": true
+   },
+   {
+    "repo": "traefik/traefik",
+    "best": "dynamic container routing",
+    "url": "https://github.com/traefik/traefik",
+    "picked": false
+   },
+   {
+    "repo": "nginx/nginx",
+    "best": "high-performance server",
+    "url": "https://github.com/nginx/nginx",
+    "picked": false
+   },
+   {
+    "repo": "apache/httpd",
+    "best": "module-rich server",
+    "url": "https://github.com/apache/httpd",
+    "picked": false
+   },
+   {
+    "repo": "NginxProxyManager/nginx-proxy-manager",
+    "best": "GUI reverse proxy",
+    "url": "https://github.com/NginxProxyManager/nginx-proxy-manager",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.data",
+  "domain": "FREEDOM",
+  "name": "Databases",
+  "fused": "Reliable storage engines behind every Aureon service.",
+  "realised": "deploy/cloud (postgres, redis)",
+  "members": [
+   {
+    "repo": "postgres/postgres",
+    "best": "relational DB with extensions",
+    "url": "https://github.com/postgres/postgres",
+    "picked": false
+   },
+   {
+    "repo": "MariaDB/server",
+    "best": "MySQL-compatible DB",
+    "url": "https://github.com/MariaDB/server",
+    "picked": false
+   },
+   {
+    "repo": "redis/redis",
+    "best": "in-memory cache/queue",
+    "url": "https://github.com/redis/redis",
+    "picked": false
+   },
+   {
+    "repo": "influxdata/influxdb",
+    "best": "time-series metrics",
+    "url": "https://github.com/influxdata/influxdb",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.business",
+  "domain": "FREEDOM",
+  "name": "Business apps",
+  "fused": "ERP/CRM/accounting if the Node runs a small business.",
+  "realised": "catalog only",
+  "members": [
+   {
+    "repo": "frappe/erpnext",
+    "best": "ERP",
+    "url": "https://github.com/frappe/erpnext",
+    "picked": false
+   },
+   {
+    "repo": "odoo/odoo",
+    "best": "business suite",
+    "url": "https://github.com/odoo/odoo",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.dev",
+  "domain": "FREEDOM",
+  "name": "Own dev platform",
+  "fused": "Private git, browser IDE, notebooks, automation - code from phone or laptop against the Node.",
+  "realised": "catalog cloud layer",
+  "members": [
+   {
+    "repo": "go-gitea/gitea",
+    "best": "lightweight git forge",
+    "url": "https://github.com/go-gitea/gitea",
+    "picked": true
+   },
+   {
+    "repo": "gogs/gogs",
+    "best": "minimal git service",
+    "url": "https://github.com/gogs/gogs",
+    "picked": false
+   },
+   {
+    "repo": "coder/code-server",
+    "best": "VS Code in browser",
+    "url": "https://github.com/coder/code-server",
+    "picked": true
+   },
+   {
+    "repo": "VSCodium/vscodium",
+    "best": "telemetry-free VS Code",
+    "url": "https://github.com/VSCodium/vscodium",
+    "picked": true
+   },
+   {
+    "repo": "microsoft/vscode",
+    "best": "VS Code source",
+    "url": "https://github.com/microsoft/vscode",
+    "picked": false
+   },
+   {
+    "repo": "jupyter/notebook",
+    "best": "notebooks",
+    "url": "https://github.com/jupyter/notebook",
+    "picked": false
+   },
+   {
+    "repo": "jupyterlab/jupyterlab",
+    "best": "notebook IDE",
+    "url": "https://github.com/jupyterlab/jupyterlab",
+    "picked": false
+   },
+   {
+    "repo": "n8n-io/n8n",
+    "best": "workflow automation",
+    "url": "https://github.com/n8n-io/n8n",
+    "picked": true
+   },
+   {
+    "repo": "huginn/huginn",
+    "best": "agents that watch the web",
+    "url": "https://github.com/huginn/huginn",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.remote",
+  "domain": "PERFORM",
+  "name": "Remote access & rescue",
+  "fused": "Reach any device from any device: RustDesk remote desktop, Guacamole in a browser, VNC/RDP, plus below-OS rescue via PiKVM/TinyPilot.",
+  "realised": "aureon rescue (built) for PiKVM; profiles RustDesk",
+  "members": [
+   {
+    "repo": "rustdesk/rustdesk",
+    "best": "self-hostable remote desktop",
+    "url": "https://github.com/rustdesk/rustdesk",
+    "picked": true
+   },
+   {
+    "repo": "apache/guacamole-server",
+    "best": "clientless browser remote desktop",
+    "url": "https://github.com/apache/guacamole-server",
+    "picked": true
+   },
+   {
+    "repo": "novnc/noVNC",
+    "best": "VNC in the browser",
+    "url": "https://github.com/novnc/noVNC",
+    "picked": false
+   },
+   {
+    "repo": "TigerVNC/tigervnc",
+    "best": "fast VNC",
+    "url": "https://github.com/TigerVNC/tigervnc",
+    "picked": false
+   },
+   {
+    "repo": "LibVNC/x11vnc",
+    "best": "share an existing X display",
+    "url": "https://github.com/LibVNC/x11vnc",
+    "picked": false
+   },
+   {
+    "repo": "neutrinolabs/xrdp",
+    "best": "RDP server for Linux",
+    "url": "https://github.com/neutrinolabs/xrdp",
+    "picked": false
+   },
+   {
+    "repo": "pikvm/kvmd",
+    "best": "KVM-over-IP daemon (ATX, HID, MSD)",
+    "url": "https://github.com/pikvm/kvmd",
+    "picked": true
+   },
+   {
+    "repo": "pikvm/os",
+    "best": "PiKVM OS",
+    "url": "https://github.com/pikvm/os",
+    "picked": true
+   },
+   {
+    "repo": "pikvm/pikvm",
+    "best": "PiKVM hardware/project",
+    "url": "https://github.com/pikvm/pikvm",
+    "picked": false
+   },
+   {
+    "repo": "pikvm/ustreamer",
+    "best": "low-latency MJPEG streamer",
+    "url": "https://github.com/pikvm/ustreamer",
+    "picked": true
+   },
+   {
+    "repo": "tiny-pilot/tinypilot",
+    "best": "simple KVM-over-IP",
+    "url": "https://github.com/tiny-pilot/tinypilot",
+    "picked": true
+   },
+   {
+    "repo": "cockpit-project/cockpit",
+    "best": "web Linux admin",
+    "url": "https://github.com/cockpit-project/cockpit",
+    "picked": true
+   },
+   {
+    "repo": "webmin/webmin",
+    "best": "web system admin",
+    "url": "https://github.com/webmin/webmin",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "freedom.dashboard",
+  "domain": "PERFORM",
+  "name": "Dashboards",
+  "fused": "One start page for every Aureon service.",
+  "realised": "catalog (homepage planned in deploy)",
+  "members": [
+   {
+    "repo": "gethomepage/homepage",
+    "best": "service dashboard with widgets",
+    "url": "https://github.com/gethomepage/homepage",
+    "picked": true
+   },
+   {
+    "repo": "bastienwirtz/homer",
+    "best": "static dashboard",
+    "url": "https://github.com/bastienwirtz/homer",
+    "picked": false
+   },
+   {
+    "repo": "Lissy93/dashy",
+    "best": "configurable dashboard",
+    "url": "https://github.com/Lissy93/dashy",
+    "picked": false
+   },
+   {
+    "repo": "linuxserver/Heimdall",
+    "best": "app launcher",
+    "url": "https://github.com/linuxserver/Heimdall",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "perform.observe",
+  "domain": "PERFORM",
+  "name": "Observability & health",
+  "fused": "Per-second metrics + ML anomaly detection (Netdata), long-term Prometheus/Grafana, uptime alerts, TUI monitors on every device.",
+  "realised": "deploy/shield netdata (built); aureon audit perf checks (built)",
+  "members": [
+   {
+    "repo": "netdata/netdata",
+    "best": "per-second metrics + anomaly ML",
+    "url": "https://github.com/netdata/netdata",
+    "picked": true
+   },
+   {
+    "repo": "prometheus/prometheus",
+    "best": "metrics TSDB + alerting",
+    "url": "https://github.com/prometheus/prometheus",
+    "picked": true
+   },
+   {
+    "repo": "prometheus/node_exporter",
+    "best": "host metrics",
+    "url": "https://github.com/prometheus/node_exporter",
+    "picked": true
+   },
+   {
+    "repo": "grafana/grafana",
+    "best": "dashboards",
+    "url": "https://github.com/grafana/grafana",
+    "picked": true
+   },
+   {
+    "repo": "influxdata/telegraf",
+    "best": "metrics collection agent",
+    "url": "https://github.com/influxdata/telegraf",
+    "picked": false
+   },
+   {
+    "repo": "louislam/uptime-kuma",
+    "best": "uptime monitoring",
+    "url": "https://github.com/louislam/uptime-kuma",
+    "picked": true
+   },
+   {
+    "repo": "nicolargo/glances",
+    "best": "cross-platform monitor + API",
+    "url": "https://github.com/nicolargo/glances",
+    "picked": true
+   },
+   {
+    "repo": "aristocratos/btop",
+    "best": "rich resource TUI",
+    "url": "https://github.com/aristocratos/btop",
+    "picked": true
+   },
+   {
+    "repo": "ClementTsang/bottom",
+    "best": "cross-platform TUI",
+    "url": "https://github.com/ClementTsang/bottom",
+    "picked": true
+   },
+   {
+    "repo": "htop-dev/htop",
+    "best": "process viewer",
+    "url": "https://github.com/htop-dev/htop",
+    "picked": false
+   },
+   {
+    "repo": "XavierBerger/RPi-Monitor",
+    "best": "Pi health web UI",
+    "url": "https://github.com/XavierBerger/RPi-Monitor",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "perform.compute",
+  "domain": "PERFORM",
+  "name": "Containers, VMs & clusters",
+  "fused": "Sandbox and scale: rootless Podman, Incus system containers/VMs, k3s clusters across Node + laptops, Ansible to provision all of it.",
+  "realised": "deploy/* compose (built); ops layer",
+  "members": [
+   {
+    "repo": "containers/podman",
+    "best": "rootless containers",
+    "url": "https://github.com/containers/podman",
+    "picked": true
+   },
+   {
+    "repo": "moby/moby",
+    "best": "Docker engine",
+    "url": "https://github.com/moby/moby",
+    "picked": false
+   },
+   {
+    "repo": "docker/compose",
+    "best": "multi-container apps",
+    "url": "https://github.com/docker/compose",
+    "picked": true
+   },
+   {
+    "repo": "docker/docker-install",
+    "best": "Docker install script",
+    "url": "https://github.com/docker/docker-install",
+    "picked": false
+   },
+   {
+    "repo": "lxc/lxc",
+    "best": "system containers",
+    "url": "https://github.com/lxc/lxc",
+    "picked": false
+   },
+   {
+    "repo": "lxc/incus",
+    "best": "containers + VMs manager",
+    "url": "https://github.com/lxc/incus",
+    "picked": true
+   },
+   {
+    "repo": "k3s-io/k3s",
+    "best": "lightweight Kubernetes",
+    "url": "https://github.com/k3s-io/k3s",
+    "picked": true
+   },
+   {
+    "repo": "k3s-io/k3s-ansible",
+    "best": "k3s via Ansible",
+    "url": "https://github.com/k3s-io/k3s-ansible",
+    "picked": false
+   },
+   {
+    "repo": "kubernetes/kubernetes",
+    "best": "Kubernetes",
+    "url": "https://github.com/kubernetes/kubernetes",
+    "picked": false
+   },
+   {
+    "repo": "canonical/microk8s",
+    "best": "snap Kubernetes",
+    "url": "https://github.com/canonical/microk8s",
+    "picked": false
+   },
+   {
+    "repo": "rancher/rancher",
+    "best": "cluster management",
+    "url": "https://github.com/rancher/rancher",
+    "picked": false
+   },
+   {
+    "repo": "hashicorp/nomad",
+    "best": "simple orchestrator",
+    "url": "https://github.com/hashicorp/nomad",
+    "picked": false
+   },
+   {
+    "repo": "openfaas/faas",
+    "best": "functions as a service",
+    "url": "https://github.com/openfaas/faas",
+    "picked": false
+   },
+   {
+    "repo": "openfaas/faasd",
+    "best": "FaaS without Kubernetes",
+    "url": "https://github.com/openfaas/faasd",
+    "picked": false
+   },
+   {
+    "repo": "portainer/portainer",
+    "best": "container UI",
+    "url": "https://github.com/portainer/portainer",
+    "picked": true
+   },
+   {
+    "repo": "containrrr/watchtower",
+    "best": "container auto-update",
+    "url": "https://github.com/containrrr/watchtower",
+    "picked": true
+   },
+   {
+    "repo": "ansible/ansible",
+    "best": "agentless provisioning",
+    "url": "https://github.com/ansible/ansible",
+    "picked": true
+   },
+   {
+    "repo": "geerlingguy/ansible-role-docker_arm",
+    "best": "Docker on ARM role",
+    "url": "https://github.com/geerlingguy/ansible-role-docker_arm",
+    "picked": false
+   },
+   {
+    "repo": "geerlingguy/pi-cluster",
+    "best": "Pi cluster playbooks",
+    "url": "https://github.com/geerlingguy/pi-cluster",
+    "picked": false
+   },
+   {
+    "repo": "geerlingguy/raspberry-pi-dramble",
+    "best": "Pi Kubernetes cluster",
+    "url": "https://github.com/geerlingguy/raspberry-pi-dramble",
+    "picked": false
+   },
+   {
+    "repo": "geerlingguy/turing-pi-2-cluster",
+    "best": "Turing Pi cluster",
+    "url": "https://github.com/geerlingguy/turing-pi-2-cluster",
+    "picked": false
+   },
+   {
+    "repo": "alexellis/arkade",
+    "best": "Kubernetes app installer",
+    "url": "https://github.com/alexellis/arkade",
+    "picked": false
+   },
+   {
+    "repo": "alexellis/k3sup",
+    "best": "k3s over SSH",
+    "url": "https://github.com/alexellis/k3sup",
+    "picked": false
+   },
+   {
+    "repo": "balena-io/balena-cli",
+    "best": "fleet deploys",
+    "url": "https://github.com/balena-io/balena-cli",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "perform.compat",
+  "domain": "PERFORM",
+  "name": "Run any software anywhere",
+  "fused": "x86 on ARM (FEX, box64/box86), Windows apps on Linux (Wine, Hangover), GL on mobile GPUs (gl4es), full emulation (QEMU), packaged sandboxes (Flatpak/Snap).",
+  "realised": "profile laptop-linux steps (built)",
+  "members": [
+   {
+    "repo": "FEX-Emu/FEX",
+    "best": "fast x86-64 on ARM64",
+    "url": "https://github.com/FEX-Emu/FEX",
+    "picked": true
+   },
+   {
+    "repo": "ptitSeb/box64",
+    "best": "x86-64 Linux userspace on ARM64",
+    "url": "https://github.com/ptitSeb/box64",
+    "picked": true
+   },
+   {
+    "repo": "ptitSeb/box86",
+    "best": "x86 Linux userspace on ARM",
+    "url": "https://github.com/ptitSeb/box86",
+    "picked": true
+   },
+   {
+    "repo": "ptitSeb/gl4es",
+    "best": "OpenGL on GLES",
+    "url": "https://github.com/ptitSeb/gl4es",
+    "picked": true
+   },
+   {
+    "repo": "wine-mirror/wine",
+    "best": "Windows API on Linux",
+    "url": "https://github.com/wine-mirror/wine",
+    "picked": true
+   },
+   {
+    "repo": "AndreRH/hangover",
+    "best": "Windows x86 apps on ARM",
+    "url": "https://github.com/AndreRH/hangover",
+    "picked": true
+   },
+   {
+    "repo": "qemu/qemu",
+    "best": "full-system emulation",
+    "url": "https://github.com/qemu/qemu",
+    "picked": true
+   },
+   {
+    "repo": "dhruvvyas90/qemu-rpi-kernel",
+    "best": "Pi kernels for QEMU",
+    "url": "https://github.com/dhruvvyas90/qemu-rpi-kernel",
+    "picked": false
+   },
+   {
+    "repo": "carlosperate/docker-qemu-rpi-os",
+    "best": "Pi OS in Docker",
+    "url": "https://github.com/carlosperate/docker-qemu-rpi-os",
+    "picked": false
+   },
+   {
+    "repo": "lukechilds/dockerpi",
+    "best": "Pi in a container",
+    "url": "https://github.com/lukechilds/dockerpi",
+    "picked": false
+   },
+   {
+    "repo": "flatpak/flatpak",
+    "best": "sandboxed desktop apps",
+    "url": "https://github.com/flatpak/flatpak",
+    "picked": true
+   },
+   {
+    "repo": "snapcore/snapd",
+    "best": "confined snap packages",
+    "url": "https://github.com/snapcore/snapd",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "perform.desktop",
+  "domain": "PERFORM",
+  "name": "Fast, light desktop & UI",
+  "fused": "Low-RAM Wayland sessions, kiosk lockdown mode, efficient terminal tools, and UI toolkits for Aureon's own screens.",
+  "realised": "profile laptop-linux (sway/labwc)",
+  "members": [
+   {
+    "repo": "swaywm/sway",
+    "best": "tiling Wayland compositor",
+    "url": "https://github.com/swaywm/sway",
+    "picked": true
+   },
+   {
+    "repo": "labwc/labwc",
+    "best": "light stacking compositor",
+    "url": "https://github.com/labwc/labwc",
+    "picked": true
+   },
+   {
+    "repo": "WayfireWM/wayfire",
+    "best": "3D compositor that stays light",
+    "url": "https://github.com/WayfireWM/wayfire",
+    "picked": true
+   },
+   {
+    "repo": "cage-kiosk/cage",
+    "best": "single-app kiosk",
+    "url": "https://github.com/cage-kiosk/cage",
+    "picked": true
+   },
+   {
+    "repo": "lxqt/lxqt",
+    "best": "light Qt desktop",
+    "url": "https://github.com/lxqt/lxqt",
+    "picked": false
+   },
+   {
+    "repo": "lxde/lxpanel",
+    "best": "light panel",
+    "url": "https://github.com/lxde/lxpanel",
+    "picked": false
+   },
+   {
+    "repo": "neovim/neovim",
+    "best": "fast extensible editor",
+    "url": "https://github.com/neovim/neovim",
+    "picked": true
+   },
+   {
+    "repo": "vim/vim",
+    "best": "ubiquitous editor",
+    "url": "https://github.com/vim/vim",
+    "picked": false
+   },
+   {
+    "repo": "tmux/tmux",
+    "best": "terminal multiplexer",
+    "url": "https://github.com/tmux/tmux",
+    "picked": true
+   },
+   {
+    "repo": "jesseduffield/lazygit",
+    "best": "git TUI",
+    "url": "https://github.com/jesseduffield/lazygit",
+    "picked": true
+   },
+   {
+    "repo": "ranger/ranger",
+    "best": "TUI file manager",
+    "url": "https://github.com/ranger/ranger",
+    "picked": true
+   },
+   {
+    "repo": "cmus/cmus",
+    "best": "TUI music player",
+    "url": "https://github.com/cmus/cmus",
+    "picked": false
+   },
+   {
+    "repo": "geany/geany",
+    "best": "light IDE",
+    "url": "https://github.com/geany/geany",
+    "picked": false
+   },
+   {
+    "repo": "LVGL/lvgl",
+    "best": "embedded GUI library",
+    "url": "https://github.com/LVGL/lvgl",
+    "picked": false
+   },
+   {
+    "repo": "lvgl/lv_port_linux",
+    "best": "LVGL on Linux framebuffer",
+    "url": "https://github.com/lvgl/lv_port_linux",
+    "picked": false
+   },
+   {
+    "repo": "slint-ui/slint",
+    "best": "declarative native UI",
+    "url": "https://github.com/slint-ui/slint",
+    "picked": false
+   },
+   {
+    "repo": "ardera/flutter-pi",
+    "best": "Flutter without X/Wayland",
+    "url": "https://github.com/ardera/flutter-pi",
+    "picked": false
+   },
+   {
+    "repo": "sony/flutter-elinux",
+    "best": "Flutter for embedded Linux",
+    "url": "https://github.com/sony/flutter-elinux",
+    "picked": false
+   },
+   {
+    "repo": "kivy/kivy",
+    "best": "Python touch UI",
+    "url": "https://github.com/kivy/kivy",
+    "picked": false
+   },
+   {
+    "repo": "dividuum/info-beamer",
+    "best": "GPU-accelerated signage",
+    "url": "https://github.com/dividuum/info-beamer",
+    "picked": false
+   },
+   {
+    "repo": "info-beamer/package-sdk",
+    "best": "info-beamer packages",
+    "url": "https://github.com/info-beamer/package-sdk",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "perform.stream",
+  "domain": "PERFORM",
+  "name": "Game & desktop streaming",
+  "fused": "Laptop-phone fusion: stream the laptop desktop/games to the phone at low latency.",
+  "realised": "profiles laptop-windows / phone-android (Sunshine + Moonlight)",
+  "members": [
+   {
+    "repo": "LizardByte/Sunshine",
+    "best": "low-latency game/desktop streaming host",
+    "url": "https://github.com/LizardByte/Sunshine",
+    "picked": true
+   },
+   {
+    "repo": "moonlight-stream/moonlight-qt",
+    "best": "Moonlight desktop/mobile client",
+    "url": "https://github.com/moonlight-stream/moonlight-qt",
+    "picked": true
+   },
+   {
+    "repo": "moonlight-stream/moonlight-embedded",
+    "best": "Moonlight for embedded",
+    "url": "https://github.com/moonlight-stream/moonlight-embedded",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "intel.llm",
+  "domain": "INTELLIGENCE",
+  "name": "Local LLM brain",
+  "fused": "Private assistant + security analyst: llama.cpp efficiency, Ollama model management, Open WebUI chat/RAG, LocalAI OpenAI-compatible API, llamafile portability.",
+  "realised": "deploy/ai (built), aureon analyst (built)",
+  "members": [
+   {
+    "repo": "ggml-org/llama.cpp",
+    "best": "quantised LLM inference everywhere",
+    "url": "https://github.com/ggml-org/llama.cpp",
+    "picked": true
+   },
+   {
+    "repo": "ollama/ollama",
+    "best": "model manager + API",
+    "url": "https://github.com/ollama/ollama",
+    "picked": true
+   },
+   {
+    "repo": "open-webui/open-webui",
+    "best": "chat UI + RAG",
+    "url": "https://github.com/open-webui/open-webui",
+    "picked": true
+   },
+   {
+    "repo": "mudler/LocalAI",
+    "best": "OpenAI-compatible local API",
+    "url": "https://github.com/mudler/LocalAI",
+    "picked": true
+   },
+   {
+    "repo": "Mozilla-Ocho/llamafile",
+    "best": "single-file LLM",
+    "url": "https://github.com/Mozilla-Ocho/llamafile",
+    "picked": true
+   },
+   {
+    "repo": "nomic-ai/gpt4all",
+    "best": "desktop local chat",
+    "url": "https://github.com/nomic-ai/gpt4all",
+    "picked": false
+   },
+   {
+    "repo": "leon-ai/leon",
+    "best": "personal assistant framework",
+    "url": "https://github.com/leon-ai/leon",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "intel.voice",
+  "domain": "INTELLIGENCE",
+  "name": "Offline voice",
+  "fused": "Wake word -> speech-to-text -> LLM -> text-to-speech fully offline, glued by the Wyoming protocol.",
+  "realised": "catalog ai layer (voice pipeline planned)",
+  "members": [
+   {
+    "repo": "ggml-org/whisper.cpp",
+    "best": "fast offline STT",
+    "url": "https://github.com/ggml-org/whisper.cpp",
+    "picked": true
+   },
+   {
+    "repo": "openai/whisper",
+    "best": "accurate STT reference",
+    "url": "https://github.com/openai/whisper",
+    "picked": false
+   },
+   {
+    "repo": "SYSTRAN/faster-whisper",
+    "best": "CTranslate2 STT",
+    "url": "https://github.com/SYSTRAN/faster-whisper",
+    "picked": true
+   },
+   {
+    "repo": "alphacep/vosk-api",
+    "best": "tiny STT for phones",
+    "url": "https://github.com/alphacep/vosk-api",
+    "picked": true
+   },
+   {
+    "repo": "mozilla/DeepSpeech",
+    "best": "legacy STT",
+    "url": "https://github.com/mozilla/DeepSpeech",
+    "picked": false
+   },
+   {
+    "repo": "rhasspy/piper",
+    "best": "fast neural TTS",
+    "url": "https://github.com/rhasspy/piper",
+    "picked": true
+   },
+   {
+    "repo": "coqui-ai/TTS",
+    "best": "high-quality TTS",
+    "url": "https://github.com/coqui-ai/TTS",
+    "picked": false
+   },
+   {
+    "repo": "dscripka/openWakeWord",
+    "best": "open wake words",
+    "url": "https://github.com/dscripka/openWakeWord",
+    "picked": true
+   },
+   {
+    "repo": "picovoice/porcupine",
+    "best": "efficient wake word",
+    "url": "https://github.com/picovoice/porcupine",
+    "picked": false
+   },
+   {
+    "repo": "picovoice/picovoice",
+    "best": "on-device voice platform",
+    "url": "https://github.com/picovoice/picovoice",
+    "picked": false
+   },
+   {
+    "repo": "rhasspy/rhasspy",
+    "best": "offline voice assistant",
+    "url": "https://github.com/rhasspy/rhasspy",
+    "picked": false
+   },
+   {
+    "repo": "rhasspy/rhasspy3",
+    "best": "modular voice pipeline",
+    "url": "https://github.com/rhasspy/rhasspy3",
+    "picked": false
+   },
+   {
+    "repo": "rhasspy/wyoming",
+    "best": "voice service protocol",
+    "url": "https://github.com/rhasspy/wyoming",
+    "picked": true
+   },
+   {
+    "repo": "rhasspy/wyoming-faster-whisper",
+    "best": "Wyoming STT server",
+    "url": "https://github.com/rhasspy/wyoming-faster-whisper",
+    "picked": false
+   },
+   {
+    "repo": "rhasspy/wyoming-openwakeword",
+    "best": "Wyoming wake word",
+    "url": "https://github.com/rhasspy/wyoming-openwakeword",
+    "picked": false
+   },
+   {
+    "repo": "rhasspy/wyoming-satellite",
+    "best": "remote voice satellites",
+    "url": "https://github.com/rhasspy/wyoming-satellite",
+    "picked": false
+   },
+   {
+    "repo": "OpenVoiceOS/ovos-core",
+    "best": "open voice assistant",
+    "url": "https://github.com/OpenVoiceOS/ovos-core",
+    "picked": true
+   },
+   {
+    "repo": "OpenVoiceOS/ovos-installer",
+    "best": "OVOS installer",
+    "url": "https://github.com/OpenVoiceOS/ovos-installer",
+    "picked": false
+   },
+   {
+    "repo": "OpenVoiceOS/raspOVOS",
+    "best": "OVOS image",
+    "url": "https://github.com/OpenVoiceOS/raspOVOS",
+    "picked": false
+   },
+   {
+    "repo": "MycroftAI/mycroft-core",
+    "best": "Mycroft assistant",
+    "url": "https://github.com/MycroftAI/mycroft-core",
+    "picked": false
+   },
+   {
+    "repo": "MycroftAI/enclosure-picroft",
+    "best": "Mycroft on Pi",
+    "url": "https://github.com/MycroftAI/enclosure-picroft",
+    "picked": false
+   },
+   {
+    "repo": "NeonGeckoCom/NeonCore",
+    "best": "Neon assistant",
+    "url": "https://github.com/NeonGeckoCom/NeonCore",
+    "picked": false
+   },
+   {
+    "repo": "kalliope-project/kalliope",
+    "best": "modular assistant",
+    "url": "https://github.com/kalliope-project/kalliope",
+    "picked": false
+   },
+   {
+    "repo": "alexa/avs-device-sdk",
+    "best": "Alexa SDK (reference)",
+    "url": "https://github.com/alexa/avs-device-sdk",
+    "picked": false
+   },
+   {
+    "repo": "googlesamples/assistant-sdk-python",
+    "best": "Google Assistant SDK (reference)",
+    "url": "https://github.com/googlesamples/assistant-sdk-python",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "intel.vision",
+  "domain": "INTELLIGENCE",
+  "name": "Vision & presence",
+  "fused": "Camera intelligence for physical security: YOLO detection, Frigate NVR, face presence, MediaPipe pose/hands.",
+  "realised": "EXTENSIONS camera presence; catalog ai layer",
+  "members": [
+   {
+    "repo": "opencv/opencv",
+    "best": "computer vision core",
+    "url": "https://github.com/opencv/opencv",
+    "picked": true
+   },
+   {
+    "repo": "opencv/opencv_contrib",
+    "best": "extra CV modules",
+    "url": "https://github.com/opencv/opencv_contrib",
+    "picked": false
+   },
+   {
+    "repo": "ultralytics/ultralytics",
+    "best": "YOLO detection",
+    "url": "https://github.com/ultralytics/ultralytics",
+    "picked": true
+   },
+   {
+    "repo": "blakeblackshear/frigate",
+    "best": "AI NVR",
+    "url": "https://github.com/blakeblackshear/frigate",
+    "picked": true
+   },
+   {
+    "repo": "ageitgey/face_recognition",
+    "best": "face recognition",
+    "url": "https://github.com/ageitgey/face_recognition",
+    "picked": true
+   },
+   {
+    "repo": "davisking/dlib",
+    "best": "face landmarks + ML",
+    "url": "https://github.com/davisking/dlib",
+    "picked": false
+   },
+   {
+    "repo": "google-ai-edge/mediapipe",
+    "best": "on-device vision pipelines",
+    "url": "https://github.com/google-ai-edge/mediapipe",
+    "picked": true
+   },
+   {
+    "repo": "EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi",
+    "best": "TFLite detection recipe",
+    "url": "https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi",
+    "picked": false
+   },
+   {
+    "repo": "edgeimpulse/edge-impulse-linux-cli",
+    "best": "edge model deploy",
+    "url": "https://github.com/edgeimpulse/edge-impulse-linux-cli",
+    "picked": false
+   },
+   {
+    "repo": "edgeimpulse/linux-sdk-python",
+    "best": "edge inference SDK",
+    "url": "https://github.com/edgeimpulse/linux-sdk-python",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "intel.accel",
+  "domain": "INTELLIGENCE",
+  "name": "AI acceleration",
+  "fused": "Use whatever silicon exists: NPUs (Hailo, Intel NPU via OpenVINO), TPUs (Coral), GPUs (Vulkan ncnn), CPUs (ONNX Runtime, LiteRT, TVM).",
+  "realised": "profile notes; catalog ai layer",
+  "members": [
+   {
+    "repo": "PaddlePaddle/Paddle-Lite",
+    "best": "lightweight mobile inference",
+    "url": "https://github.com/PaddlePaddle/Paddle-Lite",
+    "picked": false
+   },
+   {
+    "repo": "microsoft/onnxruntime",
+    "best": "cross-hardware inference",
+    "url": "https://github.com/microsoft/onnxruntime",
+    "picked": true
+   },
+   {
+    "repo": "openvinotoolkit/openvino",
+    "best": "Intel CPU/GPU/NPU",
+    "url": "https://github.com/openvinotoolkit/openvino",
+    "picked": true
+   },
+   {
+    "repo": "google-ai-edge/LiteRT",
+    "best": "on-device ML runtime",
+    "url": "https://github.com/google-ai-edge/LiteRT",
+    "picked": true
+   },
+   {
+    "repo": "tensorflow/tensorflow",
+    "best": "training + TFLite",
+    "url": "https://github.com/tensorflow/tensorflow",
+    "picked": false
+   },
+   {
+    "repo": "pytorch/pytorch",
+    "best": "training framework",
+    "url": "https://github.com/pytorch/pytorch",
+    "picked": false
+   },
+   {
+    "repo": "apache/tvm",
+    "best": "model compiler for any target",
+    "url": "https://github.com/apache/tvm",
+    "picked": false
+   },
+   {
+    "repo": "Tencent/ncnn",
+    "best": "Vulkan mobile inference",
+    "url": "https://github.com/Tencent/ncnn",
+    "picked": true
+   },
+   {
+    "repo": "google-coral/edgetpu",
+    "best": "Edge TPU runtime",
+    "url": "https://github.com/google-coral/edgetpu",
+    "picked": false
+   },
+   {
+    "repo": "google-coral/pycoral",
+    "best": "Edge TPU Python API",
+    "url": "https://github.com/google-coral/pycoral",
+    "picked": true
+   },
+   {
+    "repo": "google-coral/tflite",
+    "best": "Coral TFLite examples",
+    "url": "https://github.com/google-coral/tflite",
+    "picked": false
+   },
+   {
+    "repo": "hailo-ai/hailort",
+    "best": "Hailo NPU runtime",
+    "url": "https://github.com/hailo-ai/hailort",
+    "picked": true
+   },
+   {
+    "repo": "hailo-ai/hailort-drivers",
+    "best": "Hailo PCIe driver",
+    "url": "https://github.com/hailo-ai/hailort-drivers",
+    "picked": false
+   },
+   {
+    "repo": "hailo-ai/tappas",
+    "best": "Hailo pipelines",
+    "url": "https://github.com/hailo-ai/tappas",
+    "picked": false
+   },
+   {
+    "repo": "hailo-ai/hailo-apps-infra",
+    "best": "Hailo app infra",
+    "url": "https://github.com/hailo-ai/hailo-apps-infra",
+    "picked": false
+   },
+   {
+    "repo": "hailo-ai/hailo-rpi5-examples",
+    "best": "Hailo on Pi 5",
+    "url": "https://github.com/hailo-ai/hailo-rpi5-examples",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "intel.robotics",
+  "domain": "INTELLIGENCE",
+  "name": "Robotics & drones",
+  "fused": "Autonomy stack for future Aureon field units: ROS 2, ArduPilot, MAVLink, long-range video links.",
+  "realised": "catalog only",
+  "members": [
+   {
+    "repo": "PX4/PX4-Autopilot",
+    "best": "professional drone autopilot",
+    "url": "https://github.com/PX4/PX4-Autopilot",
+    "picked": false
+   },
+   {
+    "repo": "ros/ros_comm",
+    "best": "ROS 1 communications",
+    "url": "https://github.com/ros/ros_comm",
+    "picked": false
+   },
+   {
+    "repo": "ros2/ros2",
+    "best": "ROS 2",
+    "url": "https://github.com/ros2/ros2",
+    "picked": false
+   },
+   {
+    "repo": "ros2/rclpy",
+    "best": "ROS 2 Python",
+    "url": "https://github.com/ros2/rclpy",
+    "picked": false
+   },
+   {
+    "repo": "ArduPilot/ardupilot",
+    "best": "autopilot",
+    "url": "https://github.com/ArduPilot/ardupilot",
+    "picked": false
+   },
+   {
+    "repo": "ArduPilot/MAVProxy",
+    "best": "ground station",
+    "url": "https://github.com/ArduPilot/MAVProxy",
+    "picked": false
+   },
+   {
+    "repo": "mavlink/MAVSDK",
+    "best": "drone SDK",
+    "url": "https://github.com/mavlink/MAVSDK",
+    "picked": false
+   },
+   {
+    "repo": "mavlink-router/mavlink-router",
+    "best": "MAVLink routing",
+    "url": "https://github.com/mavlink-router/mavlink-router",
+    "picked": false
+   },
+   {
+    "repo": "OpenHD/OpenHD",
+    "best": "long-range HD video link",
+    "url": "https://github.com/OpenHD/OpenHD",
+    "picked": false
+   },
+   {
+    "repo": "rodizio1/EZ-WifiBroadcast",
+    "best": "WiFi broadcast video",
+    "url": "https://github.com/rodizio1/EZ-WifiBroadcast",
+    "picked": false
+   },
+   {
+    "repo": "svpcom/wfb-ng",
+    "best": "WiFi broadcast next-gen",
+    "url": "https://github.com/svpcom/wfb-ng",
+    "picked": false
+   },
+   {
+    "repo": "bluerobotics/BlueOS",
+    "best": "underwater vehicle OS",
+    "url": "https://github.com/bluerobotics/BlueOS",
+    "picked": false
+   },
+   {
+    "repo": "bluerobotics/companion",
+    "best": "ROV companion",
+    "url": "https://github.com/bluerobotics/companion",
+    "picked": false
+   },
+   {
+    "repo": "autorope/donkeycar",
+    "best": "self-driving RC car",
+    "url": "https://github.com/autorope/donkeycar",
+    "picked": false
+   },
+   {
+    "repo": "DexterInd/BrickPi3",
+    "best": "LEGO robotics",
+    "url": "https://github.com/DexterInd/BrickPi3",
+    "picked": false
+   },
+   {
+    "repo": "DexterInd/GoPiGo3",
+    "best": "robot car",
+    "url": "https://github.com/DexterInd/GoPiGo3",
+    "picked": false
+   },
+   {
+    "repo": "Freenove/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi",
+    "best": "robot car kit",
+    "url": "https://github.com/Freenove/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi",
+    "picked": false
+   },
+   {
+    "repo": "PetoiCamp/OpenCat",
+    "best": "quadruped robot",
+    "url": "https://github.com/PetoiCamp/OpenCat",
+    "picked": false
+   },
+   {
+    "repo": "sunfounder/picar-x",
+    "best": "robot car",
+    "url": "https://github.com/sunfounder/picar-x",
+    "picked": false
+   },
+   {
+    "repo": "sunfounder/robot-hat",
+    "best": "robot HAT",
+    "url": "https://github.com/sunfounder/robot-hat",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "home.automation",
+  "domain": "HOME",
+  "name": "Device automation & presence",
+  "fused": "Aureon reacts to the physical world: Home Assistant automations, Zigbee/Z-Wave without vendor clouds, MQTT bus, Node-RED flows - e.g. lock laptops when you leave, alert on door sensors.",
+  "realised": "catalog cloud layer (home-assistant)",
+  "members": [
+   {
+    "repo": "home-assistant/core",
+    "best": "home automation engine",
+    "url": "https://github.com/home-assistant/core",
+    "picked": true
+   },
+   {
+    "repo": "home-assistant/frontend",
+    "best": "HA UI",
+    "url": "https://github.com/home-assistant/frontend",
+    "picked": false
+   },
+   {
+    "repo": "home-assistant/addons",
+    "best": "HA add-ons",
+    "url": "https://github.com/home-assistant/addons",
+    "picked": false
+   },
+   {
+    "repo": "home-assistant/supervised-installer",
+    "best": "HA supervised install",
+    "url": "https://github.com/home-assistant/supervised-installer",
+    "picked": false
+   },
+   {
+    "repo": "openhab/openhab-core",
+    "best": "openHAB engine",
+    "url": "https://github.com/openhab/openhab-core",
+    "picked": false
+   },
+   {
+    "repo": "openhab/openhab-distro",
+    "best": "openHAB distribution",
+    "url": "https://github.com/openhab/openhab-distro",
+    "picked": false
+   },
+   {
+    "repo": "domoticz/domoticz",
+    "best": "light home automation",
+    "url": "https://github.com/domoticz/domoticz",
+    "picked": false
+   },
+   {
+    "repo": "ioBroker/ioBroker",
+    "best": "integration platform",
+    "url": "https://github.com/ioBroker/ioBroker",
+    "picked": false
+   },
+   {
+    "repo": "nymea/nymea",
+    "best": "IoT edge server",
+    "url": "https://github.com/nymea/nymea",
+    "picked": false
+   },
+   {
+    "repo": "homebridge/homebridge",
+    "best": "HomeKit for anything",
+    "url": "https://github.com/homebridge/homebridge",
+    "picked": false
+   },
+   {
+    "repo": "homebridge/homebridge-config-ui-x",
+    "best": "Homebridge UI",
+    "url": "https://github.com/homebridge/homebridge-config-ui-x",
+    "picked": false
+   },
+   {
+    "repo": "node-red/node-red",
+    "best": "flow-based wiring",
+    "url": "https://github.com/node-red/node-red",
+    "picked": false
+   },
+   {
+    "repo": "node-red/node-red-nodes",
+    "best": "extra nodes",
+    "url": "https://github.com/node-red/node-red-nodes",
+    "picked": false
+   },
+   {
+    "repo": "node-red/linux-installers",
+    "best": "Node-RED installer",
+    "url": "https://github.com/node-red/linux-installers",
+    "picked": false
+   },
+   {
+    "repo": "node-red/raspbian-deb-package",
+    "best": "Node-RED packaging",
+    "url": "https://github.com/node-red/raspbian-deb-package",
+    "picked": false
+   },
+   {
+    "repo": "Koenkk/zigbee2mqtt",
+    "best": "Zigbee without vendor hubs",
+    "url": "https://github.com/Koenkk/zigbee2mqtt",
+    "picked": false
+   },
+   {
+    "repo": "zigbee2mqtt/hassio-zigbee2mqtt",
+    "best": "Z2M HA add-on",
+    "url": "https://github.com/zigbee2mqtt/hassio-zigbee2mqtt",
+    "picked": false
+   },
+   {
+    "repo": "zwave-js/node-zwave-js",
+    "best": "Z-Wave driver",
+    "url": "https://github.com/zwave-js/node-zwave-js",
+    "picked": false
+   },
+   {
+    "repo": "zwave-js/zwave-js-ui",
+    "best": "Z-Wave control panel",
+    "url": "https://github.com/zwave-js/zwave-js-ui",
+    "picked": false
+   },
+   {
+    "repo": "eclipse-mosquitto/mosquitto",
+    "best": "MQTT broker",
+    "url": "https://github.com/eclipse-mosquitto/mosquitto",
+    "picked": false
+   },
+   {
+    "repo": "eclipse/mosquitto",
+    "best": "Mosquitto (old home)",
+    "url": "https://github.com/eclipse/mosquitto",
+    "picked": false
+   },
+   {
+    "repo": "emqx/emqx",
+    "best": "scalable MQTT broker",
+    "url": "https://github.com/emqx/emqx",
+    "picked": false
+   },
+   {
+    "repo": "esphome/esphome",
+    "best": "YAML firmware for ESP sensors",
+    "url": "https://github.com/esphome/esphome",
+    "picked": false
+   },
+   {
+    "repo": "arendst/Tasmota",
+    "best": "open firmware for smart plugs",
+    "url": "https://github.com/arendst/Tasmota",
+    "picked": false
+   },
+   {
+    "repo": "mysensors/MySensors",
+    "best": "DIY wireless sensors",
+    "url": "https://github.com/mysensors/MySensors",
+    "picked": false
+   },
+   {
+    "repo": "thingsboard/thingsboard",
+    "best": "IoT platform",
+    "url": "https://github.com/thingsboard/thingsboard",
+    "picked": false
+   },
+   {
+    "repo": "weewx/weewx",
+    "best": "weather station",
+    "url": "https://github.com/weewx/weewx",
+    "picked": false
+   },
+   {
+    "repo": "MagicMirrorOrg/MagicMirror",
+    "best": "smart mirror",
+    "url": "https://github.com/MagicMirrorOrg/MagicMirror",
+    "picked": false
+   },
+   {
+    "repo": "MichMich/MagicMirror",
+    "best": "MagicMirror (old home)",
+    "url": "https://github.com/MichMich/MagicMirror",
+    "picked": false
+   },
+   {
+    "repo": "sdetweil/MagicMirror_scripts",
+    "best": "MagicMirror install scripts",
+    "url": "https://github.com/sdetweil/MagicMirror_scripts",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "radio.sdr",
+  "domain": "RADIO",
+  "name": "Software-defined radio core",
+  "fused": "Hear the spectrum: one SDR abstraction (SoapySDR) over RTL-SDR/HackRF/bladeRF, DSP (GNU Radio, liquid-dsp), receivers and protocol reverse engineering - powering Aureon's RF watch.",
+  "realised": "aureon rf gsm consumes kalibrate-rtl output (built)",
+  "members": [
+   {
+    "repo": "osmocom/rtl-sdr",
+    "best": "RTL2832U SDR driver",
+    "url": "https://github.com/osmocom/rtl-sdr",
+    "picked": true
+   },
+   {
+    "repo": "rtlsdrblog/rtl-sdr-blog",
+    "best": "improved RTL-SDR driver",
+    "url": "https://github.com/rtlsdrblog/rtl-sdr-blog",
+    "picked": true
+   },
+   {
+    "repo": "greatscottgadgets/hackrf",
+    "best": "HackRF tools/firmware",
+    "url": "https://github.com/greatscottgadgets/hackrf",
+    "picked": false
+   },
+   {
+    "repo": "Nuand/bladeRF",
+    "best": "bladeRF tools",
+    "url": "https://github.com/Nuand/bladeRF",
+    "picked": false
+   },
+   {
+    "repo": "pothosware/SoapySDR",
+    "best": "SDR abstraction",
+    "url": "https://github.com/pothosware/SoapySDR",
+    "picked": true
+   },
+   {
+    "repo": "gnuradio/gnuradio",
+    "best": "signal processing framework",
+    "url": "https://github.com/gnuradio/gnuradio",
+    "picked": true
+   },
+   {
+    "repo": "jgaeddert/liquid-dsp",
+    "best": "DSP library",
+    "url": "https://github.com/jgaeddert/liquid-dsp",
+    "picked": false
+   },
+   {
+    "repo": "AlexandreRouma/SDRPlusPlus",
+    "best": "SDR receiver",
+    "url": "https://github.com/AlexandreRouma/SDRPlusPlus",
+    "picked": true
+   },
+   {
+    "repo": "gqrx-sdr/gqrx",
+    "best": "SDR receiver",
+    "url": "https://github.com/gqrx-sdr/gqrx",
+    "picked": false
+   },
+   {
+    "repo": "f4exb/sdrangel",
+    "best": "SDR receiver/transmitter suite",
+    "url": "https://github.com/f4exb/sdrangel",
+    "picked": false
+   },
+   {
+    "repo": "jketterl/openwebrx",
+    "best": "web SDR receiver",
+    "url": "https://github.com/jketterl/openwebrx",
+    "picked": false
+   },
+   {
+    "repo": "luarvique/openwebrx",
+    "best": "OpenWebRX+ fork",
+    "url": "https://github.com/luarvique/openwebrx",
+    "picked": false
+   },
+   {
+    "repo": "miek/inspectrum",
+    "best": "signal analysis",
+    "url": "https://github.com/miek/inspectrum",
+    "picked": false
+   },
+   {
+    "repo": "jopohl/urh",
+    "best": "wireless protocol reverse engineering",
+    "url": "https://github.com/jopohl/urh",
+    "picked": true
+   },
+   {
+    "repo": "merbanan/rtl_433",
+    "best": "decode 433/868 MHz devices (find hidden transmitters)",
+    "url": "https://github.com/merbanan/rtl_433",
+    "picked": true
+   },
+   {
+    "repo": "EliasOenal/multimon-ng",
+    "best": "pager/digital mode decoder",
+    "url": "https://github.com/EliasOenal/multimon-ng",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "radio.aviation-space",
+  "domain": "RADIO",
+  "name": "Aviation, weather & space reception",
+  "fused": "Situational awareness from the sky: aircraft, balloons, satellites - optional Node personality.",
+  "realised": "catalog only",
+  "members": [
+   {
+    "repo": "antirez/dump1090",
+    "best": "ADS-B decoder",
+    "url": "https://github.com/antirez/dump1090",
+    "picked": false
+   },
+   {
+    "repo": "flightaware/dump1090",
+    "best": "FlightAware dump1090",
+    "url": "https://github.com/flightaware/dump1090",
+    "picked": false
+   },
+   {
+    "repo": "flightaware/piaware",
+    "best": "FlightAware feeder",
+    "url": "https://github.com/flightaware/piaware",
+    "picked": false
+   },
+   {
+    "repo": "flightaware/piaware_builder",
+    "best": "piaware build",
+    "url": "https://github.com/flightaware/piaware_builder",
+    "picked": false
+   },
+   {
+    "repo": "wiedehopf/readsb",
+    "best": "ADS-B decoder",
+    "url": "https://github.com/wiedehopf/readsb",
+    "picked": false
+   },
+   {
+    "repo": "wiedehopf/tar1090",
+    "best": "aircraft map",
+    "url": "https://github.com/wiedehopf/tar1090",
+    "picked": false
+   },
+   {
+    "repo": "wiedehopf/graphs1090",
+    "best": "ADS-B statistics",
+    "url": "https://github.com/wiedehopf/graphs1090",
+    "picked": false
+   },
+   {
+    "repo": "ADSBexchange/adsbx-update",
+    "best": "ADSBx feeder",
+    "url": "https://github.com/ADSBexchange/adsbx-update",
+    "picked": false
+   },
+   {
+    "repo": "dirkhh/adsb-feeder-image",
+    "best": "multi-feeder image",
+    "url": "https://github.com/dirkhh/adsb-feeder-image",
+    "picked": false
+   },
+   {
+    "repo": "sdr-enthusiasts/docker-adsb-ultrafeeder",
+    "best": "containerised feeder",
+    "url": "https://github.com/sdr-enthusiasts/docker-adsb-ultrafeeder",
+    "picked": false
+   },
+   {
+    "repo": "szpajder/dumpvdl2",
+    "best": "VDL2 decoder",
+    "url": "https://github.com/szpajder/dumpvdl2",
+    "picked": false
+   },
+   {
+    "repo": "TLeconte/acarsdec",
+    "best": "ACARS decoder",
+    "url": "https://github.com/TLeconte/acarsdec",
+    "picked": false
+   },
+   {
+    "repo": "charlie-foxtrot/RTLSDR-Airband",
+    "best": "airband audio",
+    "url": "https://github.com/charlie-foxtrot/RTLSDR-Airband",
+    "picked": false
+   },
+   {
+    "repo": "szpajder/RTLSDR-Airband",
+    "best": "airband (old home)",
+    "url": "https://github.com/szpajder/RTLSDR-Airband",
+    "picked": false
+   },
+   {
+    "repo": "altillimity/SatDump",
+    "best": "satellite decoder",
+    "url": "https://github.com/altillimity/SatDump",
+    "picked": false
+   },
+   {
+    "repo": "SatDump/SatDump",
+    "best": "satellite decoder (current)",
+    "url": "https://github.com/SatDump/SatDump",
+    "picked": false
+   },
+   {
+    "repo": "dbdexter-dev/meteor_demod",
+    "best": "Meteor-M demodulator",
+    "url": "https://github.com/dbdexter-dev/meteor_demod",
+    "picked": false
+   },
+   {
+    "repo": "projecthorus/radiosonde_auto_rx",
+    "best": "weather balloon tracking",
+    "url": "https://github.com/projecthorus/radiosonde_auto_rx",
+    "picked": false
+   },
+   {
+    "repo": "projecthorus/horusdemodlib",
+    "best": "Horus telemetry",
+    "url": "https://github.com/projecthorus/horusdemodlib",
+    "picked": false
+   },
+   {
+    "repo": "dl9rdz/rdz_ttgo_sonde",
+    "best": "radiosonde on ESP32",
+    "url": "https://github.com/dl9rdz/rdz_ttgo_sonde",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "radio.ham",
+  "domain": "RADIO",
+  "name": "Amateur radio & emergency comms",
+  "fused": "Licensed long-range comms when everything else is down: digital voice, Winlink email, WSPR/FT8 propagation, rig control.",
+  "realised": "catalog only (pairs with network.offgrid)",
+  "members": [
+   {
+    "repo": "AndyTaylorTweet/Pi-Star_DV_Dash",
+    "best": "digital-voice hotspot dashboard",
+    "url": "https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash",
+    "picked": false
+   },
+   {
+    "repo": "ChristopheJacquet/PiFmRds",
+    "best": "FM + RDS transmitter (licensed use)",
+    "url": "https://github.com/ChristopheJacquet/PiFmRds",
+    "picked": false
+   },
+   {
+    "repo": "AllStarLink/ASL3",
+    "best": "linked repeater network",
+    "url": "https://github.com/AllStarLink/ASL3",
+    "picked": false
+   },
+   {
+    "repo": "g4klx/MMDVM",
+    "best": "digital voice modem firmware",
+    "url": "https://github.com/g4klx/MMDVM",
+    "picked": false
+   },
+   {
+    "repo": "g4klx/MMDVMHost",
+    "best": "digital voice host",
+    "url": "https://github.com/g4klx/MMDVMHost",
+    "picked": false
+   },
+   {
+    "repo": "Hamlib/Hamlib",
+    "best": "rig control",
+    "url": "https://github.com/Hamlib/Hamlib",
+    "picked": false
+   },
+   {
+    "repo": "la5nta/pat",
+    "best": "Winlink email over radio",
+    "url": "https://github.com/la5nta/pat",
+    "picked": false
+   },
+   {
+    "repo": "kgoba/ft8_lib",
+    "best": "FT8 weak-signal mode",
+    "url": "https://github.com/kgoba/ft8_lib",
+    "picked": false
+   },
+   {
+    "repo": "Guenael/rtlsdr-wsprd",
+    "best": "WSPR receiver",
+    "url": "https://github.com/Guenael/rtlsdr-wsprd",
+    "picked": false
+   },
+   {
+    "repo": "F5OEO/rpitx",
+    "best": "GPIO RF transmitter (licensed use)",
+    "url": "https://github.com/F5OEO/rpitx",
+    "picked": false
+   },
+   {
+    "repo": "F5OEO/librpitx",
+    "best": "rpitx library",
+    "url": "https://github.com/F5OEO/librpitx",
+    "picked": false
+   },
+   {
+    "repo": "markondej/fm_transmitter",
+    "best": "GPIO FM transmitter (licensed use)",
+    "url": "https://github.com/markondej/fm_transmitter",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "media.center",
+  "domain": "MEDIA",
+  "name": "Media, music & cameras",
+  "fused": "Own your media and cameras: Jellyfin streaming, multi-room audio, AirPlay/Spotify endpoints, camera NVR, photo sync.",
+  "realised": "catalog (Immich in deploy/cloud)",
+  "members": [
+   {
+    "repo": "xbmc/xbmc",
+    "best": "Kodi media center",
+    "url": "https://github.com/xbmc/xbmc",
+    "picked": false
+   },
+   {
+    "repo": "jellyfin/jellyfin",
+    "best": "media server",
+    "url": "https://github.com/jellyfin/jellyfin",
+    "picked": true
+   },
+   {
+    "repo": "jellyfin/jellyfin-web",
+    "best": "Jellyfin UI",
+    "url": "https://github.com/jellyfin/jellyfin-web",
+    "picked": false
+   },
+   {
+    "repo": "navidrome/navidrome",
+    "best": "music streaming server",
+    "url": "https://github.com/navidrome/navidrome",
+    "picked": true
+   },
+   {
+    "repo": "MusicPlayerDaemon/MPD",
+    "best": "music daemon",
+    "url": "https://github.com/MusicPlayerDaemon/MPD",
+    "picked": false
+   },
+   {
+    "repo": "mopidy/mopidy",
+    "best": "extensible music server",
+    "url": "https://github.com/mopidy/mopidy",
+    "picked": false
+   },
+   {
+    "repo": "jaedb/Iris",
+    "best": "Mopidy UI",
+    "url": "https://github.com/jaedb/Iris",
+    "picked": false
+   },
+   {
+    "repo": "LMS-Community/slimserver",
+    "best": "Lyrion music server",
+    "url": "https://github.com/LMS-Community/slimserver",
+    "picked": false
+   },
+   {
+    "repo": "ralph-irving/squeezelite",
+    "best": "Squeezebox player",
+    "url": "https://github.com/ralph-irving/squeezelite",
+    "picked": false
+   },
+   {
+    "repo": "owntone/owntone-server",
+    "best": "AirPlay/Remote server",
+    "url": "https://github.com/owntone/owntone-server",
+    "picked": false
+   },
+   {
+    "repo": "badaix/snapcast",
+    "best": "synchronous multi-room audio",
+    "url": "https://github.com/badaix/snapcast",
+    "picked": false
+   },
+   {
+    "repo": "mikebrady/shairport-sync",
+    "best": "AirPlay receiver",
+    "url": "https://github.com/mikebrady/shairport-sync",
+    "picked": false
+   },
+   {
+    "repo": "dtcooper/raspotify",
+    "best": "Spotify Connect",
+    "url": "https://github.com/dtcooper/raspotify",
+    "picked": false
+   },
+   {
+    "repo": "librespot-org/librespot",
+    "best": "open Spotify client",
+    "url": "https://github.com/librespot-org/librespot",
+    "picked": false
+   },
+   {
+    "repo": "spocon/spocon",
+    "best": "Spotify Connect daemon",
+    "url": "https://github.com/spocon/spocon",
+    "picked": false
+   },
+   {
+    "repo": "Arkq/bluez-alsa",
+    "best": "Bluetooth audio",
+    "url": "https://github.com/Arkq/bluez-alsa",
+    "picked": false
+   },
+   {
+    "repo": "balena-io-experimental/balena-sound",
+    "best": "multi-room audio (old)",
+    "url": "https://github.com/balena-io-experimental/balena-sound",
+    "picked": false
+   },
+   {
+    "repo": "balena-labs-projects/balena-sound",
+    "best": "multi-room audio",
+    "url": "https://github.com/balena-labs-projects/balena-sound",
+    "picked": false
+   },
+   {
+    "repo": "volumio/Volumio2",
+    "best": "music player",
+    "url": "https://github.com/volumio/Volumio2",
+    "picked": false
+   },
+   {
+    "repo": "volumio/volumio3-backend",
+    "best": "Volumio backend",
+    "url": "https://github.com/volumio/volumio3-backend",
+    "picked": false
+   },
+   {
+    "repo": "MiczFlor/RPi-Jukebox-RFID",
+    "best": "RFID jukebox",
+    "url": "https://github.com/MiczFlor/RPi-Jukebox-RFID",
+    "picked": false
+   },
+   {
+    "repo": "mpv-player/mpv",
+    "best": "GPU-accelerated player",
+    "url": "https://github.com/mpv-player/mpv",
+    "picked": true
+   },
+   {
+    "repo": "popcornmix/omxplayer",
+    "best": "legacy HW player",
+    "url": "https://github.com/popcornmix/omxplayer",
+    "picked": false
+   },
+   {
+    "repo": "sonic-pi-net/sonic-pi",
+    "best": "live-coded music",
+    "url": "https://github.com/sonic-pi-net/sonic-pi",
+    "picked": false
+   },
+   {
+    "repo": "bluenviron/mediamtx",
+    "best": "universal media server (RTSP/WebRTC)",
+    "url": "https://github.com/bluenviron/mediamtx",
+    "picked": false
+   },
+   {
+    "repo": "aler9/rtsp-simple-server",
+    "best": "mediamtx (old name)",
+    "url": "https://github.com/aler9/rtsp-simple-server",
+    "picked": false
+   },
+   {
+    "repo": "AlexxIT/go2rtc",
+    "best": "camera streaming hub",
+    "url": "https://github.com/AlexxIT/go2rtc",
+    "picked": false
+   },
+   {
+    "repo": "ayufan/camera-streamer",
+    "best": "low-latency Pi camera streaming",
+    "url": "https://github.com/ayufan/camera-streamer",
+    "picked": false
+   },
+   {
+    "repo": "jacksonliam/mjpg-streamer",
+    "best": "MJPEG streaming",
+    "url": "https://github.com/jacksonliam/mjpg-streamer",
+    "picked": false
+   },
+   {
+    "repo": "Motion-Project/motion",
+    "best": "motion detection",
+    "url": "https://github.com/Motion-Project/motion",
+    "picked": false
+   },
+   {
+    "repo": "motioneye-project/motioneye",
+    "best": "camera web UI",
+    "url": "https://github.com/motioneye-project/motioneye",
+    "picked": false
+   },
+   {
+    "repo": "ccrisan/motioneye",
+    "best": "motionEye (old home)",
+    "url": "https://github.com/ccrisan/motioneye",
+    "picked": false
+   },
+   {
+    "repo": "kerberos-io/agent",
+    "best": "video surveillance agent",
+    "url": "https://github.com/kerberos-io/agent",
+    "picked": false
+   },
+   {
+    "repo": "ZoneMinder/zoneminder",
+    "best": "full NVR",
+    "url": "https://github.com/ZoneMinder/zoneminder",
+    "picked": false
+   },
+   {
+    "repo": "silvanmelchior/RPi_Cam_Web_Interface",
+    "best": "Pi camera web UI",
+    "url": "https://github.com/silvanmelchior/RPi_Cam_Web_Interface",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "media.play",
+  "domain": "MEDIA",
+  "name": "Gaming & emulation",
+  "fused": "Turn idle hardware into a console: RetroArch cores, standalone emulators, source ports.",
+  "realised": "catalog only",
+  "members": [
+   {
+    "repo": "libretro/RetroArch",
+    "best": "unified emulator frontend",
+    "url": "https://github.com/libretro/RetroArch",
+    "picked": false
+   },
+   {
+    "repo": "libretro/libretro-super",
+    "best": "build all cores",
+    "url": "https://github.com/libretro/libretro-super",
+    "picked": false
+   },
+   {
+    "repo": "libretro/beetle-psx-libretro",
+    "best": "accurate PS1",
+    "url": "https://github.com/libretro/beetle-psx-libretro",
+    "picked": false
+   },
+   {
+    "repo": "libretro/fbneo",
+    "best": "arcade",
+    "url": "https://github.com/libretro/fbneo",
+    "picked": false
+   },
+   {
+    "repo": "libretro/mame",
+    "best": "MAME core",
+    "url": "https://github.com/libretro/mame",
+    "picked": false
+   },
+   {
+    "repo": "libretro/mupen64plus-libretro-nx",
+    "best": "N64 core",
+    "url": "https://github.com/libretro/mupen64plus-libretro-nx",
+    "picked": false
+   },
+   {
+    "repo": "libretro/pcsx_rearmed",
+    "best": "fast PS1 on ARM",
+    "url": "https://github.com/libretro/pcsx_rearmed",
+    "picked": false
+   },
+   {
+    "repo": "libretro/snes9x",
+    "best": "SNES",
+    "url": "https://github.com/libretro/snes9x",
+    "picked": false
+   },
+   {
+    "repo": "Aloshi/EmulationStation",
+    "best": "game launcher UI",
+    "url": "https://github.com/Aloshi/EmulationStation",
+    "picked": false
+   },
+   {
+    "repo": "RetroPie/EmulationStation",
+    "best": "RetroPie launcher",
+    "url": "https://github.com/RetroPie/EmulationStation",
+    "picked": false
+   },
+   {
+    "repo": "batocera-linux/batocera-emulationstation",
+    "best": "Batocera launcher",
+    "url": "https://github.com/batocera-linux/batocera-emulationstation",
+    "picked": false
+   },
+   {
+    "repo": "BlitterStudio/amiberry",
+    "best": "Amiga",
+    "url": "https://github.com/BlitterStudio/amiberry",
+    "picked": false
+   },
+   {
+    "repo": "midwan/amiberry",
+    "best": "Amiberry (old home)",
+    "url": "https://github.com/midwan/amiberry",
+    "picked": false
+   },
+   {
+    "repo": "dolphin-emu/dolphin",
+    "best": "GameCube/Wii",
+    "url": "https://github.com/dolphin-emu/dolphin",
+    "picked": false
+   },
+   {
+    "repo": "PCSX2/pcsx2",
+    "best": "PS2",
+    "url": "https://github.com/PCSX2/pcsx2",
+    "picked": false
+   },
+   {
+    "repo": "hrydgard/ppsspp",
+    "best": "PSP",
+    "url": "https://github.com/hrydgard/ppsspp",
+    "picked": false
+   },
+   {
+    "repo": "flyinghead/flycast",
+    "best": "Dreamcast",
+    "url": "https://github.com/flyinghead/flycast",
+    "picked": false
+   },
+   {
+    "repo": "mupen64plus/mupen64plus-core",
+    "best": "N64",
+    "url": "https://github.com/mupen64plus/mupen64plus-core",
+    "picked": false
+   },
+   {
+    "repo": "DOSBox-Staging/dosbox-staging",
+    "best": "DOS",
+    "url": "https://github.com/DOSBox-Staging/dosbox-staging",
+    "picked": false
+   },
+   {
+    "repo": "scummvm/scummvm",
+    "best": "adventure games",
+    "url": "https://github.com/scummvm/scummvm",
+    "picked": false
+   },
+   {
+    "repo": "chocolate-doom/chocolate-doom",
+    "best": "faithful Doom",
+    "url": "https://github.com/chocolate-doom/chocolate-doom",
+    "picked": false
+   },
+   {
+    "repo": "fabiangreffrath/crispy-doom",
+    "best": "enhanced Doom",
+    "url": "https://github.com/fabiangreffrath/crispy-doom",
+    "picked": false
+   },
+   {
+    "repo": "ioquake/ioq3",
+    "best": "Quake III",
+    "url": "https://github.com/ioquake/ioq3",
+    "picked": false
+   },
+   {
+    "repo": "Novum/vkQuake",
+    "best": "Vulkan Quake",
+    "url": "https://github.com/Novum/vkQuake",
+    "picked": false
+   },
+   {
+    "repo": "yquake2/yquake2",
+    "best": "Quake II",
+    "url": "https://github.com/yquake2/yquake2",
+    "picked": false
+   },
+   {
+    "repo": "OpenRCT2/OpenRCT2",
+    "best": "RollerCoaster Tycoon 2 engine",
+    "url": "https://github.com/OpenRCT2/OpenRCT2",
+    "picked": false
+   },
+   {
+    "repo": "OpenTTD/OpenTTD",
+    "best": "transport sim",
+    "url": "https://github.com/OpenTTD/OpenTTD",
+    "picked": false
+   },
+   {
+    "repo": "luanti-org/luanti",
+    "best": "voxel engine",
+    "url": "https://github.com/luanti-org/luanti",
+    "picked": false
+   },
+   {
+    "repo": "minetest/minetest",
+    "best": "voxel engine (old name)",
+    "url": "https://github.com/minetest/minetest",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "make.fabrication",
+  "domain": "MAKE",
+  "name": "3D printing, CNC & laser",
+  "fused": "Run fabrication from the Node: Klipper speed + Moonraker API + Mainsail/Fluidd UI + AI failure detection.",
+  "realised": "catalog only",
+  "members": [
+   {
+    "repo": "prusa3d/PrusaSlicer",
+    "best": "slicer",
+    "url": "https://github.com/prusa3d/PrusaSlicer",
+    "picked": false
+   },
+   {
+    "repo": "Klipper3d/klipper",
+    "best": "high-speed printer firmware",
+    "url": "https://github.com/Klipper3d/klipper",
+    "picked": false
+   },
+   {
+    "repo": "DangerKlippers/danger-klipper",
+    "best": "Klipper fork",
+    "url": "https://github.com/DangerKlippers/danger-klipper",
+    "picked": false
+   },
+   {
+    "repo": "KalicoCrew/kalico",
+    "best": "Klipper fork (Kalico)",
+    "url": "https://github.com/KalicoCrew/kalico",
+    "picked": false
+   },
+   {
+    "repo": "Arksine/moonraker",
+    "best": "Klipper API",
+    "url": "https://github.com/Arksine/moonraker",
+    "picked": false
+   },
+   {
+    "repo": "mainsail-crew/mainsail",
+    "best": "Klipper web UI",
+    "url": "https://github.com/mainsail-crew/mainsail",
+    "picked": false
+   },
+   {
+    "repo": "fluidd-core/fluidd",
+    "best": "Klipper web UI",
+    "url": "https://github.com/fluidd-core/fluidd",
+    "picked": false
+   },
+   {
+    "repo": "mainsail-crew/crowsnest",
+    "best": "printer webcams",
+    "url": "https://github.com/mainsail-crew/crowsnest",
+    "picked": false
+   },
+   {
+    "repo": "mainsail-crew/sonar",
+    "best": "WiFi keepalive",
+    "url": "https://github.com/mainsail-crew/sonar",
+    "picked": false
+   },
+   {
+    "repo": "jordanruthe/KlipperScreen",
+    "best": "touchscreen UI",
+    "url": "https://github.com/jordanruthe/KlipperScreen",
+    "picked": false
+   },
+   {
+    "repo": "KlipperScreen/KlipperScreen",
+    "best": "KlipperScreen (current)",
+    "url": "https://github.com/KlipperScreen/KlipperScreen",
+    "picked": false
+   },
+   {
+    "repo": "dw-0/kiauh",
+    "best": "Klipper installer",
+    "url": "https://github.com/dw-0/kiauh",
+    "picked": false
+   },
+   {
+    "repo": "Frix-x/klippain-shaketune",
+    "best": "resonance tuning",
+    "url": "https://github.com/Frix-x/klippain-shaketune",
+    "picked": false
+   },
+   {
+    "repo": "kyleisah/Klipper-Adaptive-Meshing-Purging",
+    "best": "adaptive mesh",
+    "url": "https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging",
+    "picked": false
+   },
+   {
+    "repo": "Donkie/Spoolman",
+    "best": "filament inventory",
+    "url": "https://github.com/Donkie/Spoolman",
+    "picked": false
+   },
+   {
+    "repo": "OctoPrint/OctoPrint",
+    "best": "printer host",
+    "url": "https://github.com/OctoPrint/OctoPrint",
+    "picked": false
+   },
+   {
+    "repo": "OctoPrint/OctoPi-UpToDate",
+    "best": "current OctoPi builds",
+    "url": "https://github.com/OctoPrint/OctoPi-UpToDate",
+    "picked": false
+   },
+   {
+    "repo": "OctoPrint/octoprint-docker",
+    "best": "OctoPrint container",
+    "url": "https://github.com/OctoPrint/octoprint-docker",
+    "picked": false
+   },
+   {
+    "repo": "TheSpaghettiDetective/obico-server",
+    "best": "AI print-failure detection",
+    "url": "https://github.com/TheSpaghettiDetective/obico-server",
+    "picked": false
+   },
+   {
+    "repo": "MarlinFirmware/Marlin",
+    "best": "printer firmware",
+    "url": "https://github.com/MarlinFirmware/Marlin",
+    "picked": false
+   },
+   {
+    "repo": "SoftFever/OrcaSlicer",
+    "best": "slicer",
+    "url": "https://github.com/SoftFever/OrcaSlicer",
+    "picked": false
+   },
+   {
+    "repo": "Ultimaker/Cura",
+    "best": "slicer",
+    "url": "https://github.com/Ultimaker/Cura",
+    "picked": false
+   },
+   {
+    "repo": "gnea/grbl",
+    "best": "CNC firmware",
+    "url": "https://github.com/gnea/grbl",
+    "picked": false
+   },
+   {
+    "repo": "grblHAL/core",
+    "best": "modern CNC firmware",
+    "url": "https://github.com/grblHAL/core",
+    "picked": false
+   },
+   {
+    "repo": "LinuxCNC/linuxcnc",
+    "best": "real-time CNC control",
+    "url": "https://github.com/LinuxCNC/linuxcnc",
+    "picked": false
+   },
+   {
+    "repo": "cncjs/cncjs",
+    "best": "CNC web UI",
+    "url": "https://github.com/cncjs/cncjs",
+    "picked": false
+   },
+   {
+    "repo": "vlachoudis/bCNC",
+    "best": "CNC sender",
+    "url": "https://github.com/vlachoudis/bCNC",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "make.astro",
+  "domain": "MAKE",
+  "name": "Astronomy",
+  "fused": "Telescope control and astrophotography from the Node.",
+  "realised": "catalog only",
+  "members": [
+   {
+    "repo": "indilib/indi",
+    "best": "device control protocol",
+    "url": "https://github.com/indilib/indi",
+    "picked": false
+   },
+   {
+    "repo": "indilib/indi-3rdparty",
+    "best": "INDI drivers",
+    "url": "https://github.com/indilib/indi-3rdparty",
+    "picked": false
+   },
+   {
+    "repo": "aaronwmorris/indi-allsky",
+    "best": "all-sky camera via INDI",
+    "url": "https://github.com/aaronwmorris/indi-allsky",
+    "picked": false
+   },
+   {
+    "repo": "KDE/kstars",
+    "best": "planetarium + Ekos",
+    "url": "https://github.com/KDE/kstars",
+    "picked": false
+   },
+   {
+    "repo": "Stellarium/stellarium",
+    "best": "planetarium",
+    "url": "https://github.com/Stellarium/stellarium",
+    "picked": false
+   },
+   {
+    "repo": "OpenPHDGuiding/phd2",
+    "best": "autoguiding",
+    "url": "https://github.com/OpenPHDGuiding/phd2",
+    "picked": false
+   },
+   {
+    "repo": "pchev/ccdciel",
+    "best": "capture software",
+    "url": "https://github.com/pchev/ccdciel",
+    "picked": false
+   },
+   {
+    "repo": "dstndstn/astrometry.net",
+    "best": "plate solving",
+    "url": "https://github.com/dstndstn/astrometry.net",
+    "picked": false
+   },
+   {
+    "repo": "astropy/astropy",
+    "best": "astronomy Python",
+    "url": "https://github.com/astropy/astropy",
+    "picked": false
+   },
+   {
+    "repo": "OpenAstroTech/OpenAstroTracker-Firmware",
+    "best": "DIY tracker firmware",
+    "url": "https://github.com/OpenAstroTech/OpenAstroTracker-Firmware",
+    "picked": false
+   }
+  ]
+ },
+ {
+  "id": "learn.code",
+  "domain": "LEARN",
+  "name": "Learning & creating",
+  "fused": "Teach and build on the platform: block coding, beginner IDEs, offline school content, office suite.",
+  "realised": "catalog only (Kolibri pairs with offline Kiwix)",
+  "members": [
+   {
+    "repo": "arduino/arduino-cli",
+    "best": "Arduino builds from CLI",
+    "url": "https://github.com/arduino/arduino-cli",
+    "picked": false
+   },
+   {
+    "repo": "arduino/arduino-ide",
+    "best": "Arduino IDE",
+    "url": "https://github.com/arduino/arduino-ide",
+    "picked": false
+   },
+   {
+    "repo": "astro-pi/python-sense-emu",
+    "best": "Sense HAT emulator",
+    "url": "https://github.com/astro-pi/python-sense-emu",
+    "picked": false
+   },
+   {
+    "repo": "RPi-Distro/python-sense-emu",
+    "best": "packaged emulator",
+    "url": "https://github.com/RPi-Distro/python-sense-emu",
+    "picked": false
+   },
+   {
+    "repo": "fritzing/fritzing-app",
+    "best": "circuit design",
+    "url": "https://github.com/fritzing/fritzing-app",
+    "picked": false
+   },
+   {
+    "repo": "google/blockly",
+    "best": "block programming",
+    "url": "https://github.com/google/blockly",
+    "picked": false
+   },
+   {
+    "repo": "KDE/gcompris",
+    "best": "kids education suite",
+    "url": "https://github.com/KDE/gcompris",
+    "picked": false
+   },
+   {
+    "repo": "learningequality/kolibri",
+    "best": "offline learning platform",
+    "url": "https://github.com/learningequality/kolibri",
+    "picked": true
+   },
+   {
+    "repo": "kiwix/kiwix-tools",
+    "best": "offline Wikipedia server",
+    "url": "https://github.com/kiwix/kiwix-tools",
+    "picked": true
+   },
+   {
+    "repo": "kiwix/kiwix-hotspot",
+    "best": "offline content hotspot",
+    "url": "https://github.com/kiwix/kiwix-hotspot",
+    "picked": true
+   },
+   {
+    "repo": "iiab/iiab",
+    "best": "Internet-in-a-Box offline library",
+    "url": "https://github.com/iiab/iiab",
+    "picked": true
+   },
+   {
+    "repo": "LibreOffice/core",
+    "best": "office suite",
+    "url": "https://github.com/LibreOffice/core",
+    "picked": false
+   },
+   {
+    "repo": "lordmauve/pgzero",
+    "best": "zero-boilerplate games",
+    "url": "https://github.com/lordmauve/pgzero",
+    "picked": false
+   },
+   {
+    "repo": "martinohanlon/mcpi",
+    "best": "Minecraft Pi API",
+    "url": "https://github.com/martinohanlon/mcpi",
+    "picked": false
+   },
+   {
+    "repo": "martinohanlon/minecraft-stuff",
+    "best": "Minecraft helpers",
+    "url": "https://github.com/martinohanlon/minecraft-stuff",
+    "picked": false
+   },
+   {
+    "repo": "microsoft/pxt",
+    "best": "MakeCode",
+    "url": "https://github.com/microsoft/pxt",
+    "picked": false
+   },
+   {
+    "repo": "microsoft/pxt-microbit",
+    "best": "MakeCode micro:bit",
+    "url": "https://github.com/microsoft/pxt-microbit",
+    "picked": false
+   },
+   {
+    "repo": "mu-editor/mu",
+    "best": "beginner Python editor",
+    "url": "https://github.com/mu-editor/mu",
+    "picked": false
+   },
+   {
+    "repo": "processing/processing4",
+    "best": "creative coding",
+    "url": "https://github.com/processing/processing4",
+    "picked": false
+   },
+   {
+    "repo": "pygame-community/pygame-ce",
+    "best": "games in Python",
+    "url": "https://github.com/pygame-community/pygame-ce",
+    "picked": false
+   },
+   {
+    "repo": "pygame/pygame",
+    "best": "pygame",
+    "url": "https://github.com/pygame/pygame",
+    "picked": false
+   },
+   {
+    "repo": "RaspberryPiFoundation/editor-api",
+    "best": "code editor backend",
+    "url": "https://github.com/RaspberryPiFoundation/editor-api",
+    "picked": false
+   },
+   {
+    "repo": "RaspberryPiFoundation/editor-ui",
+    "best": "code editor UI",
+    "url": "https://github.com/RaspberryPiFoundation/editor-ui",
+    "picked": false
+   },
+   {
+    "repo": "scratchfoundation/scratch-desktop",
+    "best": "Scratch desktop",
+    "url": "https://github.com/scratchfoundation/scratch-desktop",
+    "picked": false
+   },
+   {
+    "repo": "scratchfoundation/scratch-gui",
+    "best": "Scratch UI",
+    "url": "https://github.com/scratchfoundation/scratch-gui",
+    "picked": false
+   },
+   {
+    "repo": "thonny/thonny",
+    "best": "beginner Python IDE",
+    "url": "https://github.com/thonny/thonny",
+    "picked": false
+   }
+  ]
+ }
+]

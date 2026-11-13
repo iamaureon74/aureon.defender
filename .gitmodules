@@ -822,3 +822,39 @@
 	path = upstream/ops/MichaIng__DietPi
 	url = https://github.com/MichaIng/DietPi.git
 	shallow = true
+[submodule "upstream/ops/Drewsif__PiShrink"]
+	path = upstream/ops/Drewsif__PiShrink
+	url = https://github.com/Drewsif/PiShrink.git
+	shallow = true
+[submodule "upstream/ops/PiSupply__PiJuice"]
+	path = upstream/ops/PiSupply__PiJuice
+	url = https://github.com/PiSupply/PiJuice.git
+	shallow = true
+[submodule "upstream/key/sekigon-gonnoc__Pico-PIO-USB"]
+	path = upstream/key/sekigon-gonnoc__Pico-PIO-USB
+	url = https://github.com/sekigon-gonnoc/Pico-PIO-USB.git
+	shallow = true
+[submodule "upstream/audit/peass-ng__PEASS-ng"]
+	path = upstream/audit/peass-ng__PEASS-ng
+	url = https://github.com/peass-ng/PEASS-ng.git
+	shallow = true
+[submodule "upstream/perf/pikvm__os"]
+	path = upstream/perf/pikvm__os
+	url = https://github.com/pikvm/os.git
+	shallow = true
+[submodule "upstream/rf/rtlsdrblog__rtl-sdr-blog"]
+	path = upstream/rf/rtlsdrblog__rtl-sdr-blog
+	url = https://github.com/rtlsdrblog/rtl-sdr-blog.git
+	shallow = true
+[submodule "upstream/cloud/kiwix__kiwix-hotspot"]
+	path = upstream/cloud/kiwix__kiwix-hotspot
+	url = https://github.com/kiwix/kiwix-hotspot.git
+	shallow = true
+[submodule "upstream/cloud/iiab__iiab"]
+	path = upstream/cloud/iiab__iiab
+	url = https://github.com/iiab/iiab.git
+	shallow = true
+[submodule "upstream/cloud/learningequality__kolibri"]
+	path = upstream/cloud/learningequality__kolibri
+	url = https://github.com/learningequality/kolibri.git
+	shallow = true
