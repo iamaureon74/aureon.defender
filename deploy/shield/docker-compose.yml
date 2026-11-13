@@ -1,0 +1,90 @@
+# Aureon Shield - the Node's gateway stack (Pi 5 4GB+ or any x86/ARM mini-PC).
+#   cp .env.example .env && edit && docker compose up -d
+#   optional: docker compose --profile canary --profile ids up -d
+# Image tags were current at time of writing; bump them deliberately, Watchtower is not enabled here.
+
+name: aureon-shield
+
+networks:
+  shield:
+    ipam:
+      config: [{ subnet: 172.30.0.0/24 }]
+
+services:
+  unbound:            # NLnetLabs/unbound - recursive, DNSSEC-validating, no upstream provider sees your queries
+    image: mvance/unbound:1.21.1
+    restart: unless-stopped
+    networks: { shield: { ipv4_address: 172.30.0.2 } }
+
+  adguard:            # AdguardTeam/AdGuardHome - filtering + DoH/DoT endpoint for phones
+    image: adguard/adguardhome:v0.107.55
+    restart: unless-stopped
+    depends_on: [unbound]
+    networks: { shield: { ipv4_address: 172.30.0.3 } }
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "853:853/tcp"     # DNS-over-TLS (Android Private DNS)
+      - "3000:3000/tcp"   # first-run setup UI; set upstream DNS to 172.30.0.2
+    volumes:
+      - ./data/adguard/work:/opt/adguardhome/work
+      - ./data/adguard/conf:/opt/adguardhome/conf
+
+  wg-easy:            # wg-easy/wg-easy - WireGuard with QR codes; clients use AdGuard for DNS
+    image: ghcr.io/wg-easy/wg-easy:14
+    restart: unless-stopped
+    networks: { shield: { ipv4_address: 172.30.0.4 } }
+    environment:
+      - WG_HOST=${WG_HOST}
+      - PASSWORD_HASH=${WG_PASSWORD_HASH}
+      - WG_DEFAULT_DNS=172.30.0.3
+      - WG_ALLOWED_IPS=0.0.0.0/0, ::/0
+    ports:
+      - "51820:51820/udp"
+      - "127.0.0.1:51821:51821/tcp"   # admin UI only on localhost; reach it over SSH/VPN
+    volumes: [ "./data/wireguard:/etc/wireguard" ]
+    cap_add: [NET_ADMIN, SYS_MODULE]
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+
+  crowdsec:           # crowdsecurity/crowdsec - reads host + container logs, shares/blocks attacker IPs
+    image: crowdsecurity/crowdsec:v1.6.4
+    restart: unless-stopped
+    networks: [shield]
+    environment:
+      - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd
+    volumes:
+      - /var/log:/var/log:ro
+      - ./data/crowdsec/db:/var/lib/crowdsec/data
+      - ./data/crowdsec/config:/etc/crowdsec
+    # install crowdsec-firewall-bouncer-nftables on the HOST to enforce decisions
+
+  netdata:            # netdata/netdata - per-second metrics + ML anomaly detection
+    image: netdata/netdata:stable
+    restart: unless-stopped
+    pid: host
+    network_mode: host
+    cap_add: [SYS_PTRACE]
+    security_opt: [apparmor:unconfined]
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+
+  suricata:           # OISF/suricata - IDS on the LAN interface (profile: ids, needs 4GB+)
+    profiles: [ids]
+    image: jasonish/suricata:7.0
+    restart: unless-stopped
+    network_mode: host
+    cap_add: [NET_ADMIN, NET_RAW, SYS_NICE]
+    command: -i ${LAN_IFACE:-eth0}
+    volumes: [ "./data/suricata/log:/var/log/suricata" ]
+
+  opencanary:         # thinkst/opencanary - fake services; any touch = alert (profile: canary)
+    profiles: [canary]
+    image: thinkst/opencanary:latest
+    restart: unless-stopped
+    networks: [shield]
+    ports: [ "2222:2222", "8081:80", "4450:445" ]
+    volumes: [ "./opencanary.conf:/root/.opencanary.conf:ro" ]

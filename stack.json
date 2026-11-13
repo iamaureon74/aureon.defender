@@ -1,0 +1,2731 @@
+[
+ {
+  "repo": "NixOS/nixos-hardware",
+  "url": "https://github.com/NixOS/nixos-hardware",
+  "layer": "base",
+  "platforms": [
+   "L"
+  ],
+  "role": "Per-laptop hardware profiles (ThinkPad, Framework, Dell, Surface...) for a reproducible, declarative OS",
+  "path": "upstream/base/NixOS__nixos-hardware",
+  "commit": "b6ca87f78ec5bafc4b2aef7b29803dcf419266af",
+  "source_category": "os"
+ },
+ {
+  "repo": "armbian/build",
+  "url": "https://github.com/armbian/build",
+  "layer": "base",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Builds Debian/Ubuntu images for ARM boards and ARM laptops",
+  "path": "upstream/base/armbian__build",
+  "commit": "99bc323758a9448dc1a5274d6aaaca32769fef76",
+  "source_category": "os"
+ },
+ {
+  "repo": "buildroot/buildroot",
+  "url": "https://github.com/buildroot/buildroot",
+  "layer": "base",
+  "platforms": [
+   "N"
+  ],
+  "role": "Minimal, read-only appliance OS for the Aureon Node",
+  "path": "upstream/base/buildroot__buildroot",
+  "commit": "e5812984efad3ff5e88fa553e413c21d09a640c2",
+  "source_category": "os"
+ },
+ {
+  "repo": "void-linux/void-mklive",
+  "url": "https://github.com/void-linux/void-mklive",
+  "layer": "base",
+  "platforms": [
+   "L"
+  ],
+  "role": "Lean, systemd-free live/installer images",
+  "path": "upstream/base/void-linux__void-mklive",
+  "commit": "92e580a90a5e806649f95b772650f03a598c9f35",
+  "source_category": "os"
+ },
+ {
+  "repo": "openwrt/openwrt",
+  "url": "https://github.com/openwrt/openwrt",
+  "layer": "base",
+  "platforms": [
+   "N"
+  ],
+  "role": "Router OS: turn the Node or a travel router into a hardened gateway",
+  "path": "upstream/base/openwrt__openwrt",
+  "commit": "06429657494cc196773ccfb6ac0ada4fd81adf2b",
+  "source_category": "os"
+ },
+ {
+  "repo": "FydeOS/chromium_os-raspberry_pi",
+  "url": "https://github.com/FydeOS/chromium_os-raspberry_pi",
+  "layer": "base",
+  "platforms": [
+   "L"
+  ],
+  "role": "Reference for building ChromiumOS-style verified-boot images",
+  "path": "upstream/base/FydeOS__chromium_os-raspberry_pi",
+  "commit": "efb99d07ded24464024df32e32d29b5bdadd32bd",
+  "source_category": "os"
+ },
+ {
+  "repo": "android-rpi/local_manifests",
+  "url": "https://github.com/android-rpi/local_manifests",
+  "layer": "base",
+  "platforms": [
+   "A"
+  ],
+  "role": "Reference AOSP manifest layout for building a custom Android",
+  "path": "upstream/base/android-rpi__local_manifests",
+  "commit": "f789f6a3a9109273930611268f24c616eb095fe2",
+  "source_category": "os"
+ },
+ {
+  "repo": "lineage-rpi/android_local_manifest",
+  "url": "https://github.com/lineage-rpi/android_local_manifest",
+  "layer": "base",
+  "platforms": [
+   "A"
+  ],
+  "role": "LineageOS manifest structure: path to a de-Googled phone build",
+  "path": "upstream/base/lineage-rpi__android_local_manifest",
+  "commit": "05f77f088bff5041256b752843d3421e0217c669",
+  "source_category": "os"
+ },
+ {
+  "repo": "raspberrypi/rpi-sb-provisioner",
+  "url": "https://github.com/raspberrypi/rpi-sb-provisioner",
+  "layer": "base",
+  "platforms": [
+   "N"
+  ],
+  "role": "Secure-boot key provisioning model reused for Node signing",
+  "path": "upstream/base/raspberrypi__rpi-sb-provisioner",
+  "commit": "085d116e477a8ee0cbb2161b9e5db80ab7870a7e",
+  "source_category": "official"
+ },
+ {
+  "repo": "raspberrypi/usbboot",
+  "url": "https://github.com/raspberrypi/usbboot",
+  "layer": "base",
+  "platforms": [
+   "N"
+  ],
+  "role": "USB recovery/provisioning boot path",
+  "path": "upstream/base/raspberrypi__usbboot",
+  "commit": "fdb604d018693465c9aa6ec69879df866d2820da",
+  "source_category": "official"
+ },
+ {
+  "repo": "worproject/rpi5-uefi",
+  "url": "https://github.com/worproject/rpi5-uefi",
+  "layer": "base",
+  "platforms": [
+   "N"
+  ],
+  "role": "UEFI firmware so the Node boots standard distros",
+  "path": "upstream/base/worproject__rpi5-uefi",
+  "commit": "a6135b06d661b5f11bbf4bd742b42a1919b264dc",
+  "source_category": "os"
+ },
+ {
+  "repo": "qemu/qemu",
+  "url": "https://github.com/qemu/qemu",
+  "layer": "base",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Run untrusted OSes/apps in full VMs",
+  "path": "upstream/base/qemu__qemu",
+  "commit": "9d7d057a558b9a1c232cea390b4481dd20d9c9ce",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "lxc/incus",
+  "url": "https://github.com/lxc/incus",
+  "layer": "base",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "System containers + VMs for compartmentalised work (Qubes-style)",
+  "path": "upstream/base/lxc__incus",
+  "commit": "9ceb48b949ded053a2cb6a8bde813e8b83338818",
+  "source_category": "containers"
+ },
+ {
+  "repo": "containers/podman",
+  "url": "https://github.com/containers/podman",
+  "layer": "base",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Rootless containers: sandbox every service",
+  "path": "upstream/base/containers__podman",
+  "commit": "c1d4564f032b26799b0050bee6578ffa93b6b801",
+  "source_category": "containers"
+ },
+ {
+  "repo": "flatpak/flatpak",
+  "url": "https://github.com/flatpak/flatpak",
+  "layer": "base",
+  "platforms": [
+   "L"
+  ],
+  "role": "Sandboxed desktop apps with permission control",
+  "path": "upstream/base/flatpak__flatpak",
+  "commit": "d034f8a352aa02eddd28072588960d7db757a22a",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "wine-mirror/wine",
+  "url": "https://github.com/wine-mirror/wine",
+  "layer": "base",
+  "platforms": [
+   "L"
+  ],
+  "role": "Run Windows apps on Linux laptops",
+  "path": "upstream/base/wine-mirror__wine",
+  "commit": "cc5d1d86ee7d60649e6f858106db046c77c8b12c",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "AndreRH/hangover",
+  "url": "https://github.com/AndreRH/hangover",
+  "layer": "base",
+  "platforms": [
+   "L"
+  ],
+  "role": "Run x86 Windows apps on ARM Linux laptops",
+  "path": "upstream/base/AndreRH__hangover",
+  "commit": "56e385b7ff490edd281b288f420677093563560b",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "evilsocket/opensnitch",
+  "url": "https://github.com/evilsocket/opensnitch",
+  "layer": "defend",
+  "platforms": [
+   "L"
+  ],
+  "role": "Per-app outbound firewall: see and block every connection",
+  "path": "upstream/defend/evilsocket__opensnitch",
+  "commit": "a1353848ba1b660320e90cefea782c3fba272c00",
+  "source_category": "security"
+ },
+ {
+  "repo": "crowdsecurity/crowdsec",
+  "url": "https://github.com/crowdsecurity/crowdsec",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "N"
+  ],
+  "role": "Collaborative IPS: shares and blocks attacker IPs",
+  "path": "upstream/defend/crowdsecurity__crowdsec",
+  "commit": "8e525b5918ca5e8966cebce2b357ff9656165d27",
+  "source_category": "security"
+ },
+ {
+  "repo": "fail2ban/fail2ban",
+  "url": "https://github.com/fail2ban/fail2ban",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Bans brute-force sources from logs",
+  "path": "upstream/defend/fail2ban__fail2ban",
+  "commit": "66de71930412d3c2780d8c7f1dead70824344784",
+  "source_category": "security"
+ },
+ {
+  "repo": "OISF/suricata",
+  "url": "https://github.com/OISF/suricata",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Network IDS/IPS on the Node gateway",
+  "path": "upstream/defend/OISF__suricata",
+  "commit": "c48ca372deb3befae42f3dbcaa75467e20dbae3b",
+  "source_category": "security"
+ },
+ {
+  "repo": "zeek/zeek",
+  "url": "https://github.com/zeek/zeek",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Network traffic logging/analysis for threat hunting",
+  "path": "upstream/defend/zeek__zeek",
+  "commit": "8bf5a2768041c587f76587e305c56ae285ae4334",
+  "source_category": "security"
+ },
+ {
+  "repo": "snort3/snort3",
+  "url": "https://github.com/snort3/snort3",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "Alternate IDS engine (rule ecosystem)",
+  "path": "upstream/defend/snort3__snort3",
+  "commit": "fe29cbe7403acc0dd428065a69d8f29cc311c18e",
+  "source_category": "security"
+ },
+ {
+  "repo": "wazuh/wazuh",
+  "url": "https://github.com/wazuh/wazuh",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "EDR/SIEM agent + manager: file integrity, rootkit, vuln detection",
+  "path": "upstream/defend/wazuh__wazuh",
+  "commit": "b7cbf73f60586a0206a487538c8ec07aa304561e",
+  "source_category": "security"
+ },
+ {
+  "repo": "ossec/ossec-hids",
+  "url": "https://github.com/ossec/ossec-hids",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Lightweight host IDS fallback",
+  "path": "upstream/defend/ossec__ossec-hids",
+  "commit": "7508eef5a8b9d6bc99061f8fe8ed8658341229fe",
+  "source_category": "security"
+ },
+ {
+  "repo": "Cisco-Talos/clamav",
+  "url": "https://github.com/Cisco-Talos/clamav",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Open-source antivirus engine",
+  "path": "upstream/defend/Cisco-Talos__clamav",
+  "commit": "14915a94cf00ca3a3b7d93b4da050b4dc7f7b76a",
+  "source_category": "security"
+ },
+ {
+  "repo": "VirusTotal/yara",
+  "url": "https://github.com/VirusTotal/yara",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Pattern rules for malware/spyware hunting",
+  "path": "upstream/defend/VirusTotal__yara",
+  "commit": "6d47342e825e59f5d8f20874d0778332bcec83a6",
+  "source_category": "security"
+ },
+ {
+  "repo": "CISOfy/lynis",
+  "url": "https://github.com/CISOfy/lynis",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Hardening audit with scored recommendations",
+  "path": "upstream/defend/CISOfy__lynis",
+  "commit": "9319416fa0726369ab0a48f686155a90363f3f9c",
+  "source_category": "security"
+ },
+ {
+  "repo": "thinkst/opencanary",
+  "url": "https://github.com/thinkst/opencanary",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "Canary tripwires: alert the moment someone probes the LAN",
+  "path": "upstream/defend/thinkst__opencanary",
+  "commit": "3ed3b60f90756ac8a2455a8f187cf8ef79d3d079",
+  "source_category": "security"
+ },
+ {
+  "repo": "cowrie/cowrie",
+  "url": "https://github.com/cowrie/cowrie",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "SSH/Telnet honeypot to catch and log attackers",
+  "path": "upstream/defend/cowrie__cowrie",
+  "commit": "a4237125e8a55493b342dea9e4ede052f9314193",
+  "source_category": "security"
+ },
+ {
+  "repo": "telekom-security/tpotce",
+  "url": "https://github.com/telekom-security/tpotce",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "Multi-honeypot platform (big Node only)",
+  "path": "upstream/defend/telekom-security__tpotce",
+  "commit": "67922363b8fde90a7b1315012cf1d05831ac8d0c",
+  "source_category": "security"
+ },
+ {
+  "repo": "DShield-ISC/dshield",
+  "url": "https://github.com/DShield-ISC/dshield",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "Feeds honeypot data to SANS ISC threat intel",
+  "path": "upstream/defend/DShield-ISC__dshield",
+  "commit": "90645938359f44df04d5ede066f44a4007a23f96",
+  "source_category": "security"
+ },
+ {
+  "repo": "mvt-project/mvt",
+  "url": "https://github.com/mvt-project/mvt",
+  "layer": "defend",
+  "platforms": [
+   "A",
+   "I"
+  ],
+  "role": "Mobile Verification Toolkit: detects Pegasus-class spyware on phones",
+  "path": "upstream/defend/mvt-project__mvt",
+  "commit": "c9190e05ef4c67df6407bc8b2adbd904954b9388",
+  "source_category": "security"
+ },
+ {
+  "repo": "PiRogueToolSuite/pirogue-cli",
+  "url": "https://github.com/PiRogueToolSuite/pirogue-cli",
+  "layer": "defend",
+  "platforms": [
+   "A",
+   "N"
+  ],
+  "role": "Phone traffic interception/analysis station",
+  "path": "upstream/defend/PiRogueToolSuite__pirogue-cli",
+  "commit": "e8ac1428d2875d2db96b9eefa1f97b9ecfbea076",
+  "source_category": "security"
+ },
+ {
+  "repo": "PiRogueToolSuite/pirogue-os",
+  "url": "https://github.com/PiRogueToolSuite/pirogue-os",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "Ready-made OS for the phone-forensics Node",
+  "path": "upstream/defend/PiRogueToolSuite__pirogue-os",
+  "commit": "eaad4ec56d5cbe1039ab39d6fe8a32cdb0dac77e",
+  "source_category": "os"
+ },
+ {
+  "repo": "volatilityfoundation/volatility3",
+  "url": "https://github.com/volatilityfoundation/volatility3",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Memory forensics for incident response",
+  "path": "upstream/defend/volatilityfoundation__volatility3",
+  "commit": "77ff0b1932d77527f850c8ced01d85805ea7bf97",
+  "source_category": "security"
+ },
+ {
+  "repo": "sleuthkit/sleuthkit",
+  "url": "https://github.com/sleuthkit/sleuthkit",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Disk forensics",
+  "path": "upstream/defend/sleuthkit__sleuthkit",
+  "commit": "08167c8d6d5fc1bd4ee6d822e2fe042cabcdee6d",
+  "source_category": "security"
+ },
+ {
+  "repo": "sleuthkit/autopsy",
+  "url": "https://github.com/sleuthkit/autopsy",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W"
+  ],
+  "role": "Forensics GUI",
+  "path": "upstream/defend/sleuthkit__autopsy",
+  "commit": "cb3dacdcad67abe7cf863c74f10dcdb8e25a5c21",
+  "source_category": "security"
+ },
+ {
+  "repo": "wireshark/wireshark",
+  "url": "https://github.com/wireshark/wireshark",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Packet analysis",
+  "path": "upstream/defend/wireshark__wireshark",
+  "commit": "6b5925f9aa382adae54f5d7c1832969c15669705",
+  "source_category": "security"
+ },
+ {
+  "repo": "kismetwireless/kismet",
+  "url": "https://github.com/kismetwireless/kismet",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Wireless IDS: rogue AP / deauth / tracker detection",
+  "path": "upstream/defend/kismetwireless__kismet",
+  "commit": "392a099c53c1fd7160846bb34ab7c27328379c4b",
+  "source_category": "security"
+ },
+ {
+  "repo": "gitleaks/gitleaks",
+  "url": "https://github.com/gitleaks/gitleaks",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Find secrets leaked in your repos",
+  "path": "upstream/defend/gitleaks__gitleaks",
+  "commit": "5f6ec56cfa6f8c67648d863582c7ae2f206d5c1c",
+  "source_category": "security"
+ },
+ {
+  "repo": "trufflesecurity/trufflehog",
+  "url": "https://github.com/trufflesecurity/trufflehog",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Verify leaked credentials across repos/drives",
+  "path": "upstream/defend/trufflesecurity__trufflehog",
+  "commit": "3bd2b5887eb0efb8fa18bfd1d296032924e4ffdc",
+  "source_category": "security"
+ },
+ {
+  "repo": "dani-garcia/vaultwarden",
+  "url": "https://github.com/dani-garcia/vaultwarden",
+  "layer": "defend",
+  "platforms": [
+   "N"
+  ],
+  "role": "Self-hosted Bitwarden-compatible password vault",
+  "path": "upstream/defend/dani-garcia__vaultwarden",
+  "commit": "7c82fbed0c13817f9eba9243bbd6509118dbfa9f",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "NationalSecurityAgency/ghidra",
+  "url": "https://github.com/NationalSecurityAgency/ghidra",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Reverse-engineer suspicious binaries/APKs",
+  "path": "upstream/defend/NationalSecurityAgency__ghidra",
+  "commit": "42db038f3c88c6bd7e9bedbb919138111f8b77fd",
+  "source_category": "security"
+ },
+ {
+  "repo": "radareorg/radare2",
+  "url": "https://github.com/radareorg/radare2",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Lightweight RE framework (runs in Termux)",
+  "path": "upstream/defend/radareorg__radare2",
+  "commit": "17467b7b9794ddc07fbab35cde2697cb7b515250",
+  "source_category": "security"
+ },
+ {
+  "repo": "rizinorg/cutter",
+  "url": "https://github.com/rizinorg/cutter",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "RE GUI",
+  "path": "upstream/defend/rizinorg__cutter",
+  "commit": "e1f94ecc55022fc3751df2f6f3413c02cc41824d",
+  "source_category": "security"
+ },
+ {
+  "repo": "mitmproxy/mitmproxy",
+  "url": "https://github.com/mitmproxy/mitmproxy",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Inspect what your own apps send (privacy audit)",
+  "path": "upstream/defend/mitmproxy__mitmproxy",
+  "commit": "af5d15709bd09d1eb80bf88064540787f6c3e27e",
+  "source_category": "security"
+ },
+ {
+  "repo": "onionshare/onionshare",
+  "url": "https://github.com/onionshare/onionshare",
+  "layer": "defend",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Share files anonymously over Tor",
+  "path": "upstream/defend/onionshare__onionshare",
+  "commit": "53d496b7fc129085b420e4f2eea96d7b75e408bb",
+  "source_category": "security"
+ },
+ {
+  "repo": "nmap/nmap",
+  "url": "https://github.com/nmap/nmap",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Scan your own hosts for exposed services",
+  "path": "upstream/audit/nmap__nmap",
+  "commit": "68739db8e4ec139c3865a33073c76c6fd13fb96c",
+  "source_category": "security"
+ },
+ {
+  "repo": "RustScan/RustScan",
+  "url": "https://github.com/RustScan/RustScan",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Fast port discovery",
+  "path": "upstream/audit/RustScan__RustScan",
+  "commit": "b46f982b9ba5cee8feb79cfca2208f1809f31fd8",
+  "source_category": "security"
+ },
+ {
+  "repo": "robertdavidgraham/masscan",
+  "url": "https://github.com/robertdavidgraham/masscan",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Internet-scale scanner (own ranges only)",
+  "path": "upstream/audit/robertdavidgraham__masscan",
+  "commit": "8e6b3b0c07a81e8ea61d557c06134a21a6881614",
+  "source_category": "security"
+ },
+ {
+  "repo": "zmap/zmap",
+  "url": "https://github.com/zmap/zmap",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Network survey scanner",
+  "path": "upstream/audit/zmap__zmap",
+  "commit": "d8fc99c9709962f8b016938a9e3fd0e5d67b55a1",
+  "source_category": "security"
+ },
+ {
+  "repo": "greenbone/openvas-scanner",
+  "url": "https://github.com/greenbone/openvas-scanner",
+  "layer": "audit",
+  "platforms": [
+   "N"
+  ],
+  "role": "Full vulnerability scanner for your LAN",
+  "path": "upstream/audit/greenbone__openvas-scanner",
+  "commit": "782595564fba1dee7e09ef4a4be089cbbb744f46",
+  "source_category": "security"
+ },
+ {
+  "repo": "projectdiscovery/nuclei",
+  "url": "https://github.com/projectdiscovery/nuclei",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Template-based vuln scanning of your services",
+  "path": "upstream/audit/projectdiscovery__nuclei",
+  "commit": "b2ea1489fd7decaa83e467febb1e20aa9de8b4d5",
+  "source_category": "security"
+ },
+ {
+  "repo": "projectdiscovery/httpx",
+  "url": "https://github.com/projectdiscovery/httpx",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "HTTP probing",
+  "path": "upstream/audit/projectdiscovery__httpx",
+  "commit": "9b6d8077ef7afa119dd6d28eeaf78a6556557acc",
+  "source_category": "security"
+ },
+ {
+  "repo": "projectdiscovery/subfinder",
+  "url": "https://github.com/projectdiscovery/subfinder",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Enumerate your own subdomains / attack surface",
+  "path": "upstream/audit/projectdiscovery__subfinder",
+  "commit": "e708670d4fae547b81471321678552da42fd4f92",
+  "source_category": "security"
+ },
+ {
+  "repo": "zaproxy/zaproxy",
+  "url": "https://github.com/zaproxy/zaproxy",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Web app security testing",
+  "path": "upstream/audit/zaproxy__zaproxy",
+  "commit": "7f738e46b3607d136d00b3a6ee47e5c8f7ab53f6",
+  "source_category": "security"
+ },
+ {
+  "repo": "sullo/nikto",
+  "url": "https://github.com/sullo/nikto",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Web server misconfig scanner",
+  "path": "upstream/audit/sullo__nikto",
+  "commit": "312645d873478a77986627ab1fc8cffe595e85d4",
+  "source_category": "security"
+ },
+ {
+  "repo": "sqlmapproject/sqlmap",
+  "url": "https://github.com/sqlmapproject/sqlmap",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "SQL injection testing of your apps",
+  "path": "upstream/audit/sqlmapproject__sqlmap",
+  "commit": "8b78b676c1376ae28feccd957b03bbecea05eff1",
+  "source_category": "security"
+ },
+ {
+  "repo": "ffuf/ffuf",
+  "url": "https://github.com/ffuf/ffuf",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Content discovery",
+  "path": "upstream/audit/ffuf__ffuf",
+  "commit": "8d65e0373e5f223530174e5694285af849770078",
+  "source_category": "security"
+ },
+ {
+  "repo": "OJ/gobuster",
+  "url": "https://github.com/OJ/gobuster",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Content/DNS discovery",
+  "path": "upstream/audit/OJ__gobuster",
+  "commit": "c77583fbb8824058d74d38240896eff610683c8e",
+  "source_category": "security"
+ },
+ {
+  "repo": "epi052/feroxbuster",
+  "url": "https://github.com/epi052/feroxbuster",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Recursive content discovery",
+  "path": "upstream/audit/epi052__feroxbuster",
+  "commit": "f89b6c6d305421d7b29e26997960317e64c64dae",
+  "source_category": "security"
+ },
+ {
+  "repo": "rapid7/metasploit-framework",
+  "url": "https://github.com/rapid7/metasploit-framework",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Exploit framework for authorized pentests",
+  "path": "upstream/audit/rapid7__metasploit-framework",
+  "commit": "6210572159c86f2f1c87370e72635b76951b955d",
+  "source_category": "security"
+ },
+ {
+  "repo": "fortra/impacket",
+  "url": "https://github.com/fortra/impacket",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Windows protocol testing",
+  "path": "upstream/audit/fortra__impacket",
+  "commit": "5648c3776b3ebbfc2d3aff645b6c572afa398597",
+  "source_category": "security"
+ },
+ {
+  "repo": "Pennyw0rth/NetExec",
+  "url": "https://github.com/Pennyw0rth/NetExec",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "AD/network credential auditing",
+  "path": "upstream/audit/Pennyw0rth__NetExec",
+  "commit": "98e2dc080c700180f44e336dcd77056b364e54ab",
+  "source_category": "security"
+ },
+ {
+  "repo": "SpecterOps/BloodHound",
+  "url": "https://github.com/SpecterOps/BloodHound",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "AD attack-path analysis",
+  "path": "upstream/audit/SpecterOps__BloodHound",
+  "commit": "b910e81f5077df79005b0b5f46237faf712c041a",
+  "source_category": "security"
+ },
+ {
+  "repo": "lgandx/Responder",
+  "url": "https://github.com/lgandx/Responder",
+  "layer": "audit",
+  "platforms": [
+   "L"
+  ],
+  "role": "LLMNR/NBNS poisoning test",
+  "path": "upstream/audit/lgandx__Responder",
+  "commit": "424fbe53d6a61824e3c7685fe5f69668721b821e",
+  "source_category": "security"
+ },
+ {
+  "repo": "hashcat/hashcat",
+  "url": "https://github.com/hashcat/hashcat",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W"
+  ],
+  "role": "Password strength auditing (GPU)",
+  "path": "upstream/audit/hashcat__hashcat",
+  "commit": "3b7dc822a20db5c27abd56b14931839f8661f951",
+  "source_category": "security"
+ },
+ {
+  "repo": "openwall/john",
+  "url": "https://github.com/openwall/john",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Password strength auditing (CPU)",
+  "path": "upstream/audit/openwall__john",
+  "commit": "37bebbe4b6442c8dd3888e5848ef062c0783e9f3",
+  "source_category": "security"
+ },
+ {
+  "repo": "vanhauser-thc/thc-hydra",
+  "url": "https://github.com/vanhauser-thc/thc-hydra",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "M"
+  ],
+  "role": "Online login brute-force testing",
+  "path": "upstream/audit/vanhauser-thc__thc-hydra",
+  "commit": "4c5bf65573778f80d024e850f0ae1d7922b73070",
+  "source_category": "security"
+ },
+ {
+  "repo": "bettercap/bettercap",
+  "url": "https://github.com/bettercap/bettercap",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Network/BLE/WiFi attack simulation",
+  "path": "upstream/audit/bettercap__bettercap",
+  "commit": "3a24dd3ea60691b1264357f0fc60aa92973ec00d",
+  "source_category": "security"
+ },
+ {
+  "repo": "aircrack-ng/aircrack-ng",
+  "url": "https://github.com/aircrack-ng/aircrack-ng",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "WiFi security auditing",
+  "path": "upstream/audit/aircrack-ng__aircrack-ng",
+  "commit": "7e2256f38f3590af4c19a6ae14ed79bab02242e6",
+  "source_category": "security"
+ },
+ {
+  "repo": "ZerBea/hcxdumptool",
+  "url": "https://github.com/ZerBea/hcxdumptool",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "WPA handshake/PMKID capture of your own AP",
+  "path": "upstream/audit/ZerBea__hcxdumptool",
+  "commit": "dc0620ba6d4f71e982dae4b53c4a170dd2ecd7ca",
+  "source_category": "security"
+ },
+ {
+  "repo": "ZerBea/hcxtools",
+  "url": "https://github.com/ZerBea/hcxtools",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Convert captures for hashcat",
+  "path": "upstream/audit/ZerBea__hcxtools",
+  "commit": "51e1ab7641e4ac879bd13cf2c4443bfd3bf949f4",
+  "source_category": "security"
+ },
+ {
+  "repo": "v1s1t0r1sh3r3/airgeddon",
+  "url": "https://github.com/v1s1t0r1sh3r3/airgeddon",
+  "layer": "audit",
+  "platforms": [
+   "L"
+  ],
+  "role": "WiFi audit suite",
+  "path": "upstream/audit/v1s1t0r1sh3r3__airgeddon",
+  "commit": "40c6beb3082aaf3144e14185b79f8e7e3ec00f78",
+  "source_category": "security"
+ },
+ {
+  "repo": "derv82/wifite2",
+  "url": "https://github.com/derv82/wifite2",
+  "layer": "audit",
+  "platforms": [
+   "L"
+  ],
+  "role": "Automated WiFi audit",
+  "path": "upstream/audit/derv82__wifite2",
+  "commit": "43c4d2c520e45cfb828a430741b915ca4f5d7128",
+  "source_category": "security"
+ },
+ {
+  "repo": "Proxmark/proxmark3",
+  "url": "https://github.com/Proxmark/proxmark3",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "RFID/NFC audit (check your own badges/cards)",
+  "path": "upstream/audit/Proxmark__proxmark3",
+  "commit": "118eca80df79f9bb6604f896faafeb2fd425893e",
+  "source_category": "security"
+ },
+ {
+  "repo": "nfc-tools/libnfc",
+  "url": "https://github.com/nfc-tools/libnfc",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "A"
+  ],
+  "role": "NFC library",
+  "path": "upstream/audit/nfc-tools__libnfc",
+  "commit": "3fa0751ad58fb0053d3de2e61bbbd4066259104c",
+  "source_category": "security"
+ },
+ {
+  "repo": "Gallopsled/pwntools",
+  "url": "https://github.com/Gallopsled/pwntools",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "M"
+  ],
+  "role": "Exploit dev / CTF",
+  "path": "upstream/audit/Gallopsled__pwntools",
+  "commit": "af4918c43fe1e605ea4caf98ff9ebb1e70b97bae",
+  "source_category": "security"
+ },
+ {
+  "repo": "pwndbg/pwndbg",
+  "url": "https://github.com/pwndbg/pwndbg",
+  "layer": "audit",
+  "platforms": [
+   "L"
+  ],
+  "role": "GDB for exploit dev",
+  "path": "upstream/audit/pwndbg__pwndbg",
+  "commit": "9760ac8f1346d142857cffc933995cd6fca34dff",
+  "source_category": "security"
+ },
+ {
+  "repo": "smicallef/spiderfoot",
+  "url": "https://github.com/smicallef/spiderfoot",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Map your own OSINT exposure",
+  "path": "upstream/audit/smicallef__spiderfoot",
+  "commit": "0f815a203afebf05c98b605dba5cf0475a0ee5fd",
+  "source_category": "security"
+ },
+ {
+  "repo": "megadose/holehe",
+  "url": "https://github.com/megadose/holehe",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Check which sites your email is registered on",
+  "path": "upstream/audit/megadose__holehe",
+  "commit": "14da70f588538936b20d238783c5e28a0772a2b3",
+  "source_category": "security"
+ },
+ {
+  "repo": "sherlock-project/sherlock",
+  "url": "https://github.com/sherlock-project/sherlock",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Find your usernames across sites",
+  "path": "upstream/audit/sherlock-project__sherlock",
+  "commit": "c588d7c8b476df9f9c84912a05d1430fb8cdcdae",
+  "source_category": "security"
+ },
+ {
+  "repo": "soxoj/maigret",
+  "url": "https://github.com/soxoj/maigret",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Username exposure dossier on yourself",
+  "path": "upstream/audit/soxoj__maigret",
+  "commit": "aeab19b45caab04a4cde96a47edbc6ea0ff6eaf8",
+  "source_category": "security"
+ },
+ {
+  "repo": "laramies/theHarvester",
+  "url": "https://github.com/laramies/theHarvester",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Email/host exposure of your domain",
+  "path": "upstream/audit/laramies__theHarvester",
+  "commit": "94e3eed71387067fdeb9dd6f4c023d11b4ae7c3b",
+  "source_category": "security"
+ },
+ {
+  "repo": "danielmiessler/SecLists",
+  "url": "https://github.com/danielmiessler/SecLists",
+  "layer": "audit",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Wordlists for all testing",
+  "path": "upstream/audit/danielmiessler__SecLists",
+  "commit": "dbfb830d95e4f3da4fb7d7d277ed597de0ed7a18",
+  "source_category": "security"
+ },
+ {
+  "repo": "NLnetLabs/unbound",
+  "url": "https://github.com/NLnetLabs/unbound",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Validating, recursive, private DNS resolver",
+  "path": "upstream/net/NLnetLabs__unbound",
+  "commit": "c03454da25d1d5ef049b8691f540d3116139c3d6",
+  "source_category": "network"
+ },
+ {
+  "repo": "AdguardTeam/AdGuardHome",
+  "url": "https://github.com/AdguardTeam/AdGuardHome",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Network-wide ad/tracker/malware DNS blocking (DoH/DoT for phones)",
+  "path": "upstream/net/AdguardTeam__AdGuardHome",
+  "commit": "3400b879aff505523950380054e27fecbbae36cb",
+  "source_category": "network"
+ },
+ {
+  "repo": "pi-hole/pi-hole",
+  "url": "https://github.com/pi-hole/pi-hole",
+  "layer": "net",
+  "platforms": [
+   "N"
+  ],
+  "role": "Alternate DNS sinkhole",
+  "path": "upstream/net/pi-hole__pi-hole",
+  "commit": "f7c0220e63e753c664a1ec08d42d6b647b86005d",
+  "source_category": "network"
+ },
+ {
+  "repo": "WireGuard/wireguard-tools",
+  "url": "https://github.com/WireGuard/wireguard-tools",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "I",
+   "N"
+  ],
+  "role": "Fast modern VPN: phone/laptop always tunnel home",
+  "path": "upstream/net/WireGuard__wireguard-tools",
+  "commit": "ba8556ce45c230906041a1a04450b7b638057917",
+  "source_category": "network"
+ },
+ {
+  "repo": "wg-easy/wg-easy",
+  "url": "https://github.com/wg-easy/wg-easy",
+  "layer": "net",
+  "platforms": [
+   "N"
+  ],
+  "role": "WireGuard server with QR codes for phones",
+  "path": "upstream/net/wg-easy__wg-easy",
+  "commit": "1cf6a8aa632371cac21f5c4f7d464588ee1322a4",
+  "source_category": "network"
+ },
+ {
+  "repo": "tailscale/tailscale",
+  "url": "https://github.com/tailscale/tailscale",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "I",
+   "N"
+  ],
+  "role": "Zero-config mesh VPN",
+  "path": "upstream/net/tailscale__tailscale",
+  "commit": "1d32249f40ce9940c8ab5be63840756bf2cb6f68",
+  "source_category": "network"
+ },
+ {
+  "repo": "juanfont/headscale",
+  "url": "https://github.com/juanfont/headscale",
+  "layer": "net",
+  "platforms": [
+   "N"
+  ],
+  "role": "Self-hosted Tailscale control server (no vendor)",
+  "path": "upstream/net/juanfont__headscale",
+  "commit": "520eb6f9c7f90bad7a5358ea818267edf4d0b4de",
+  "source_category": "network"
+ },
+ {
+  "repo": "yggdrasil-network/yggdrasil-go",
+  "url": "https://github.com/yggdrasil-network/yggdrasil-go",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Encrypted IPv6 mesh overlay",
+  "path": "upstream/net/yggdrasil-network__yggdrasil-go",
+  "commit": "2c7f050fc5398ecd8ac5f77e9bb5bd91aa2e9e35",
+  "source_category": "network"
+ },
+ {
+  "repo": "markqvist/Reticulum",
+  "url": "https://github.com/markqvist/Reticulum",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Encrypted networking over any medium incl. LoRa/packet radio",
+  "path": "upstream/net/markqvist__Reticulum",
+  "commit": "3c4b271f4133ed1f00eae04b1f3160365f4d02ec",
+  "source_category": "network"
+ },
+ {
+  "repo": "markqvist/NomadNet",
+  "url": "https://github.com/markqvist/NomadNet",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Off-grid encrypted messaging on Reticulum",
+  "path": "upstream/net/markqvist__NomadNet",
+  "commit": "9dd3d861ea243f593520bad412c9971fd675af18",
+  "source_category": "network"
+ },
+ {
+  "repo": "torproject/tor",
+  "url": "https://github.com/torproject/tor",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Anonymity network",
+  "path": "upstream/net/torproject__tor",
+  "commit": "27d4ba90f6dbf0c80d518a358b9600ae789509e4",
+  "source_category": "security"
+ },
+ {
+  "repo": "PurpleI2P/i2pd",
+  "url": "https://github.com/PurpleI2P/i2pd",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "I2P router (C++, light)",
+  "path": "upstream/net/PurpleI2P__i2pd",
+  "commit": "9a284ac7e5e91b8bc9f37f0d75ca9093b006cf3f",
+  "source_category": "security"
+ },
+ {
+  "repo": "brainfucksec/kalitorify",
+  "url": "https://github.com/brainfucksec/kalitorify",
+  "layer": "net",
+  "platforms": [
+   "L"
+  ],
+  "role": "Transparent system-wide Tor proxy",
+  "path": "upstream/net/brainfucksec__kalitorify",
+  "commit": "28742315816cc1c478e87f3d95def2feeb5cd5ba",
+  "source_category": "security"
+ },
+ {
+  "repo": "cloudflare/cloudflared",
+  "url": "https://github.com/cloudflare/cloudflared",
+  "layer": "net",
+  "platforms": [
+   "N"
+  ],
+  "role": "Expose Node services without opening ports",
+  "path": "upstream/net/cloudflare__cloudflared",
+  "commit": "b0297f0b24c60a4cef743b7b878e2da3798cb839",
+  "source_category": "network"
+ },
+ {
+  "repo": "lakinduakash/linux-wifi-hotspot",
+  "url": "https://github.com/lakinduakash/linux-wifi-hotspot",
+  "layer": "net",
+  "platforms": [
+   "L"
+  ],
+  "role": "Laptop becomes a filtered hotspot for the phone",
+  "path": "upstream/net/lakinduakash__linux-wifi-hotspot",
+  "commit": "0f1e85fabe97d1f9b50dd352fdb409dfa743b643",
+  "source_category": "network"
+ },
+ {
+  "repo": "RaspAP/raspap-webgui",
+  "url": "https://github.com/RaspAP/raspap-webgui",
+  "layer": "net",
+  "platforms": [
+   "N"
+  ],
+  "role": "Node as a secure travel router/AP",
+  "path": "upstream/net/RaspAP__raspap-webgui",
+  "commit": "f78e8d1aeba4bb5aba9872e24349590c98c9aa1a",
+  "source_category": "os"
+ },
+ {
+  "repo": "ntop/ntopng",
+  "url": "https://github.com/ntop/ntopng",
+  "layer": "net",
+  "platforms": [
+   "N"
+  ],
+  "role": "Traffic visibility per device",
+  "path": "upstream/net/ntop__ntopng",
+  "commit": "1fa4b206efb6146fb43fffe4be044085026cf5dc",
+  "source_category": "network"
+ },
+ {
+  "repo": "syncthing/syncthing",
+  "url": "https://github.com/syncthing/syncthing",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "P2P encrypted file sync laptop<->phone, no cloud",
+  "path": "upstream/net/syncthing__syncthing",
+  "commit": "ed2e0fd441cf4ed797f6dee6e3db4d1a6ddb82f5",
+  "source_category": "network"
+ },
+ {
+  "repo": "rclone/rclone",
+  "url": "https://github.com/rclone/rclone",
+  "layer": "net",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Encrypted backups to any storage",
+  "path": "upstream/net/rclone__rclone",
+  "commit": "b0ef5f6a6eca641a6bfb55bc05ef1595f4105d07",
+  "source_category": "network"
+ },
+ {
+  "repo": "aristocratos/btop",
+  "url": "https://github.com/aristocratos/btop",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Resource monitor",
+  "path": "upstream/perf/aristocratos__btop",
+  "commit": "5d03929a45e0720a4c8e2d189360ff1eb9ce1731",
+  "source_category": "iot"
+ },
+ {
+  "repo": "ClementTsang/bottom",
+  "url": "https://github.com/ClementTsang/bottom",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Cross-platform resource monitor",
+  "path": "upstream/perf/ClementTsang__bottom",
+  "commit": "b539dafd5925b9baf02dbd086d5a646b1c6ee2ea",
+  "source_category": "iot"
+ },
+ {
+  "repo": "nicolargo/glances",
+  "url": "https://github.com/nicolargo/glances",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Monitor with web/API mode",
+  "path": "upstream/perf/nicolargo__glances",
+  "commit": "3ab58a7be5b5f6f7297d4798898c6cd37787218b",
+  "source_category": "iot"
+ },
+ {
+  "repo": "netdata/netdata",
+  "url": "https://github.com/netdata/netdata",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Per-second metrics + anomaly detection",
+  "path": "upstream/perf/netdata__netdata",
+  "commit": "f328724cad2d1253088c7d888055240d83b4caf8",
+  "source_category": "iot"
+ },
+ {
+  "repo": "prometheus/prometheus",
+  "url": "https://github.com/prometheus/prometheus",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "Metrics database",
+  "path": "upstream/perf/prometheus__prometheus",
+  "commit": "49c815a0ea46c7a6a6b723e4b634c4bf36f7022c",
+  "source_category": "iot"
+ },
+ {
+  "repo": "prometheus/node_exporter",
+  "url": "https://github.com/prometheus/node_exporter",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Host metrics exporter",
+  "path": "upstream/perf/prometheus__node_exporter",
+  "commit": "8b576ba992d5ccfe0012f889138b9c8a594f91a7",
+  "source_category": "iot"
+ },
+ {
+  "repo": "grafana/grafana",
+  "url": "https://github.com/grafana/grafana",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "Dashboards for every device",
+  "path": "upstream/perf/grafana__grafana",
+  "commit": "7708ab6497fddb353cf79c0d74f191e603092e7c",
+  "source_category": "iot"
+ },
+ {
+  "repo": "louislam/uptime-kuma",
+  "url": "https://github.com/louislam/uptime-kuma",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "Uptime/health alerts for your devices and services",
+  "path": "upstream/perf/louislam__uptime-kuma",
+  "commit": "7f4e873c899b4759dd45981c63594b8cfc64c802",
+  "source_category": "iot"
+ },
+ {
+  "repo": "FEX-Emu/FEX",
+  "url": "https://github.com/FEX-Emu/FEX",
+  "layer": "perf",
+  "platforms": [
+   "L"
+  ],
+  "role": "Fast x86/x64 emulation on ARM64 laptops (Snapdragon, Apple-silicon Linux)",
+  "path": "upstream/perf/FEX-Emu__FEX",
+  "commit": "ab135df091d005cc98dfddc56c3dc9c9e4bd501d",
+  "source_category": "gaming"
+ },
+ {
+  "repo": "ptitSeb/box64",
+  "url": "https://github.com/ptitSeb/box64",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "A"
+  ],
+  "role": "x86_64 Linux binaries on ARM64 (also inside Termux)",
+  "path": "upstream/perf/ptitSeb__box64",
+  "commit": "52db1d07ac8f198fd0bbef7e28f677116a688f3f",
+  "source_category": "gaming"
+ },
+ {
+  "repo": "ptitSeb/box86",
+  "url": "https://github.com/ptitSeb/box86",
+  "layer": "perf",
+  "platforms": [
+   "L"
+  ],
+  "role": "x86 binaries on ARM",
+  "path": "upstream/perf/ptitSeb__box86",
+  "commit": "bb716a2a6576cc06da811bf55e31e2f6f03b7596",
+  "source_category": "gaming"
+ },
+ {
+  "repo": "ptitSeb/gl4es",
+  "url": "https://github.com/ptitSeb/gl4es",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "A"
+  ],
+  "role": "OpenGL on GLES GPUs (phones/ARM laptops)",
+  "path": "upstream/perf/ptitSeb__gl4es",
+  "commit": "8b1a3da5d2331d0f88b70be25963182d46eed857",
+  "source_category": "gaming"
+ },
+ {
+  "repo": "LizardByte/Sunshine",
+  "url": "https://github.com/LizardByte/Sunshine",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Stream laptop desktop/games to phone at low latency",
+  "path": "upstream/perf/LizardByte__Sunshine",
+  "commit": "f1868133b2308a1486624fc9d561b9e58cdf8cb4",
+  "source_category": "gaming"
+ },
+ {
+  "repo": "moonlight-stream/moonlight-qt",
+  "url": "https://github.com/moonlight-stream/moonlight-qt",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "I"
+  ],
+  "role": "Client for Sunshine",
+  "path": "upstream/perf/moonlight-stream__moonlight-qt",
+  "commit": "67dbfddb20d447891977d22c0354f3641e130b0a",
+  "source_category": "gaming"
+ },
+ {
+  "repo": "rustdesk/rustdesk",
+  "url": "https://github.com/rustdesk/rustdesk",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "I"
+  ],
+  "role": "Self-hosted remote desktop (phone controls laptop)",
+  "path": "upstream/perf/rustdesk__rustdesk",
+  "commit": "3ccb4c4b5b5a8422276dd5f6f211b42e05ec9534",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "pikvm/kvmd",
+  "url": "https://github.com/pikvm/kvmd",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "Out-of-band KVM: rescue a dead laptop over the network",
+  "path": "upstream/perf/pikvm__kvmd",
+  "commit": "fcb903eb3be70d8eee4aee99e5fcc1c743e3ccef",
+  "source_category": "media"
+ },
+ {
+  "repo": "pikvm/ustreamer",
+  "url": "https://github.com/pikvm/ustreamer",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "Ultra-low-latency video streamer",
+  "path": "upstream/perf/pikvm__ustreamer",
+  "commit": "11fd828ab00c01a39bd0843ef442ef0b6d3cac41",
+  "source_category": "media"
+ },
+ {
+  "repo": "tiny-pilot/tinypilot",
+  "url": "https://github.com/tiny-pilot/tinypilot",
+  "layer": "perf",
+  "platforms": [
+   "N"
+  ],
+  "role": "Simpler KVM-over-IP",
+  "path": "upstream/perf/tiny-pilot__tinypilot",
+  "commit": "5f34d8a66d05fb8ca3625e7458915e55cfb7fac7",
+  "source_category": "media"
+ },
+ {
+  "repo": "swaywm/sway",
+  "url": "https://github.com/swaywm/sway",
+  "layer": "perf",
+  "platforms": [
+   "L"
+  ],
+  "role": "Tiling Wayland compositor: fast, low RAM",
+  "path": "upstream/perf/swaywm__sway",
+  "commit": "1652c54b73f67df17b7b4ab0b0f7048204aa8104",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "labwc/labwc",
+  "url": "https://github.com/labwc/labwc",
+  "layer": "perf",
+  "platforms": [
+   "L"
+  ],
+  "role": "Light stacking Wayland compositor",
+  "path": "upstream/perf/labwc__labwc",
+  "commit": "8517392472d2e804d979aae73db4256ea2c8f439",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "WayfireWM/wayfire",
+  "url": "https://github.com/WayfireWM/wayfire",
+  "layer": "perf",
+  "platforms": [
+   "L"
+  ],
+  "role": "3D Wayland compositor that stays light",
+  "path": "upstream/perf/WayfireWM__wayfire",
+  "commit": "e268d4e5ecf62bc0667caf23ff631c2806bdf63e",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "cage-kiosk/cage",
+  "url": "https://github.com/cage-kiosk/cage",
+  "layer": "perf",
+  "platforms": [
+   "L"
+  ],
+  "role": "Single-app kiosk session (locked-down mode)",
+  "path": "upstream/perf/cage-kiosk__cage",
+  "commit": "f551ca26385de6da7413bce94ad95b7509c02546",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "neovim/neovim",
+  "url": "https://github.com/neovim/neovim",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Fast editor",
+  "path": "upstream/perf/neovim__neovim",
+  "commit": "41a5c0916e8f69048780dceb97bd19f6a854a019",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "tmux/tmux",
+  "url": "https://github.com/tmux/tmux",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "M",
+   "A"
+  ],
+  "role": "Terminal multiplexer",
+  "path": "upstream/perf/tmux__tmux",
+  "commit": "05109d9794b8dc56455d859c24f4946b97426079",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "jesseduffield/lazygit",
+  "url": "https://github.com/jesseduffield/lazygit",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Git TUI",
+  "path": "upstream/perf/jesseduffield__lazygit",
+  "commit": "f794d3460d6809654f174a2f48f05185b2c63c9e",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "ranger/ranger",
+  "url": "https://github.com/ranger/ranger",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "M",
+   "A"
+  ],
+  "role": "TUI file manager",
+  "path": "upstream/perf/ranger__ranger",
+  "commit": "46e957af9762dd2fcaabfbef4d3c45c16edd1184",
+  "source_category": "desktop"
+ },
+ {
+  "repo": "mpv-player/mpv",
+  "url": "https://github.com/mpv-player/mpv",
+  "layer": "perf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Hardware-accelerated media player",
+  "path": "upstream/perf/mpv-player__mpv",
+  "commit": "fe753a78246151a2489b472dabcb04f2edd61d50",
+  "source_category": "media"
+ },
+ {
+  "repo": "ggml-org/llama.cpp",
+  "url": "https://github.com/ggml-org/llama.cpp",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Local LLM inference on CPU/GPU/phone - no cloud",
+  "path": "upstream/ai/ggml-org__llama.cpp",
+  "commit": "5676dfbe01e7ebe0387913680eee0ed39bf4a363",
+  "source_category": "ai"
+ },
+ {
+  "repo": "ollama/ollama",
+  "url": "https://github.com/ollama/ollama",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Local LLM runner with API",
+  "path": "upstream/ai/ollama__ollama",
+  "commit": "5632619189ab493c70bd3f9435214b8788cc1c80",
+  "source_category": "ai"
+ },
+ {
+  "repo": "open-webui/open-webui",
+  "url": "https://github.com/open-webui/open-webui",
+  "layer": "ai",
+  "platforms": [
+   "N"
+  ],
+  "role": "Private ChatGPT-style UI for local models",
+  "path": "upstream/ai/open-webui__open-webui",
+  "commit": "b0e6098e940942281d9c83f3529ea117287a3a22",
+  "source_category": "ai"
+ },
+ {
+  "repo": "mudler/LocalAI",
+  "url": "https://github.com/mudler/LocalAI",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "OpenAI-compatible local API (text, image, audio)",
+  "path": "upstream/ai/mudler__LocalAI",
+  "commit": "b108a4d95deb4fdf426cacb3ab2dc7a6d13b201a",
+  "source_category": "ai"
+ },
+ {
+  "repo": "Mozilla-Ocho/llamafile",
+  "url": "https://github.com/Mozilla-Ocho/llamafile",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Single-file portable LLM",
+  "path": "upstream/ai/Mozilla-Ocho__llamafile",
+  "commit": "334e66444a96d5429fd2d667301bd067029b1eb5",
+  "source_category": "ai"
+ },
+ {
+  "repo": "ggml-org/whisper.cpp",
+  "url": "https://github.com/ggml-org/whisper.cpp",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Offline speech-to-text",
+  "path": "upstream/ai/ggml-org__whisper.cpp",
+  "commit": "d2c6f05a46dacf663e357bcf0ed40f542a72825d",
+  "source_category": "ai"
+ },
+ {
+  "repo": "SYSTRAN/faster-whisper",
+  "url": "https://github.com/SYSTRAN/faster-whisper",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Fast STT (CTranslate2)",
+  "path": "upstream/ai/SYSTRAN__faster-whisper",
+  "commit": "6cb639e70786aea42b9233006ae60eaf07190bdb",
+  "source_category": "ai"
+ },
+ {
+  "repo": "rhasspy/piper",
+  "url": "https://github.com/rhasspy/piper",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Offline neural text-to-speech",
+  "path": "upstream/ai/rhasspy__piper",
+  "commit": "73c04d81d5590ecc46e522de3601ce7fb29fc2be",
+  "source_category": "iot"
+ },
+ {
+  "repo": "dscripka/openWakeWord",
+  "url": "https://github.com/dscripka/openWakeWord",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Offline wake word",
+  "path": "upstream/ai/dscripka__openWakeWord",
+  "commit": "368c03716d1e92591906a84949bc477f3a834455",
+  "source_category": "iot"
+ },
+ {
+  "repo": "rhasspy/wyoming",
+  "url": "https://github.com/rhasspy/wyoming",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Protocol tying STT/TTS/wake into an assistant",
+  "path": "upstream/ai/rhasspy__wyoming",
+  "commit": "5b2a39d85d073b2bea6669ade6e8791bb836275d",
+  "source_category": "iot"
+ },
+ {
+  "repo": "OpenVoiceOS/ovos-core",
+  "url": "https://github.com/OpenVoiceOS/ovos-core",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Open voice assistant core",
+  "path": "upstream/ai/OpenVoiceOS__ovos-core",
+  "commit": "ff2012175ba5be072daa4eb9acaf38b4f7ecbd03",
+  "source_category": "iot"
+ },
+ {
+  "repo": "alphacep/vosk-api",
+  "url": "https://github.com/alphacep/vosk-api",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Tiny offline STT for phones",
+  "path": "upstream/ai/alphacep__vosk-api",
+  "commit": "4ab9821510b488efb7740094714a130bd3545e90",
+  "source_category": "ai"
+ },
+ {
+  "repo": "microsoft/onnxruntime",
+  "url": "https://github.com/microsoft/onnxruntime",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Cross-hardware inference (CPU/GPU/NPU)",
+  "path": "upstream/ai/microsoft__onnxruntime",
+  "commit": "7cca0e5fa5a781c46e84ec2108b522527b9f325e",
+  "source_category": "ai"
+ },
+ {
+  "repo": "openvinotoolkit/openvino",
+  "url": "https://github.com/openvinotoolkit/openvino",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W"
+  ],
+  "role": "Intel CPU/iGPU/NPU acceleration on laptops",
+  "path": "upstream/ai/openvinotoolkit__openvino",
+  "commit": "234694455688f658354d83b02294962d2f6ce524",
+  "source_category": "ai"
+ },
+ {
+  "repo": "google-ai-edge/LiteRT",
+  "url": "https://github.com/google-ai-edge/LiteRT",
+  "layer": "ai",
+  "platforms": [
+   "A",
+   "L"
+  ],
+  "role": "On-device ML for phones",
+  "path": "upstream/ai/google-ai-edge__LiteRT",
+  "commit": "e3f1e7df49dfa0189d03e9175a6ddbd90a3bd113",
+  "source_category": "ai"
+ },
+ {
+  "repo": "google-ai-edge/mediapipe",
+  "url": "https://github.com/google-ai-edge/mediapipe",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "On-device vision pipelines (face/hand/pose)",
+  "path": "upstream/ai/google-ai-edge__mediapipe",
+  "commit": "eb58dea48db39bd41314e4df36fd93138ebeae84",
+  "source_category": "ai"
+ },
+ {
+  "repo": "Tencent/ncnn",
+  "url": "https://github.com/Tencent/ncnn",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A"
+  ],
+  "role": "Mobile-optimised NN inference (Vulkan)",
+  "path": "upstream/ai/Tencent__ncnn",
+  "commit": "24ea07e87f544a3fbc59980b57885a92c75f2d24",
+  "source_category": "ai"
+ },
+ {
+  "repo": "google-coral/pycoral",
+  "url": "https://github.com/google-coral/pycoral",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "N"
+  ],
+  "role": "USB Edge-TPU accelerator for any laptop",
+  "path": "upstream/ai/google-coral__pycoral",
+  "commit": "46f06c8dd9c5231e5cb27910d4e1fcbdcf1be8f0",
+  "source_category": "ai"
+ },
+ {
+  "repo": "hailo-ai/hailort",
+  "url": "https://github.com/hailo-ai/hailort",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Hailo NPU runtime (M.2 accelerator)",
+  "path": "upstream/ai/hailo-ai__hailort",
+  "commit": "e7727f7482477e448f4c93b33dc62f9e5a30c3e7",
+  "source_category": "ai"
+ },
+ {
+  "repo": "opencv/opencv",
+  "url": "https://github.com/opencv/opencv",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Computer vision",
+  "path": "upstream/ai/opencv__opencv",
+  "commit": "d45a6e48e2de78ee3c1bd5e4ef7e25c4d27bbf50",
+  "source_category": "ai"
+ },
+ {
+  "repo": "ultralytics/ultralytics",
+  "url": "https://github.com/ultralytics/ultralytics",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "YOLO detection: camera intrusion alerts",
+  "path": "upstream/ai/ultralytics__ultralytics",
+  "commit": "1f252b394f547733293415a6fb1980ea7ffce375",
+  "source_category": "ai"
+ },
+ {
+  "repo": "blakeblackshear/frigate",
+  "url": "https://github.com/blakeblackshear/frigate",
+  "layer": "ai",
+  "platforms": [
+   "N"
+  ],
+  "role": "AI NVR: local object detection on cameras",
+  "path": "upstream/ai/blakeblackshear__frigate",
+  "commit": "b2f5315e09032b67cabd05ecfeeb39ee10f3bec3",
+  "source_category": "media"
+ },
+ {
+  "repo": "ageitgey/face_recognition",
+  "url": "https://github.com/ageitgey/face_recognition",
+  "layer": "ai",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Face auth / presence detection",
+  "path": "upstream/ai/ageitgey__face_recognition",
+  "commit": "9f3061aaeed9a8756d2c970f5dfe066617a8281d",
+  "source_category": "ai"
+ },
+ {
+  "repo": "nextcloud/server",
+  "url": "https://github.com/nextcloud/server",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Files/calendar/contacts - replaces Google Drive/iCloud",
+  "path": "upstream/cloud/nextcloud__server",
+  "commit": "d04a299b92c744b6a22255f01032fa755208bef0",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "immich-app/immich",
+  "url": "https://github.com/immich-app/immich",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Phone photo backup - replaces Google/Apple Photos",
+  "path": "upstream/cloud/immich-app__immich",
+  "commit": "e5d6eb7be67834f59d90e4b7a86f5dec7ac9af86",
+  "source_category": "media"
+ },
+ {
+  "repo": "jellyfin/jellyfin",
+  "url": "https://github.com/jellyfin/jellyfin",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Media server",
+  "path": "upstream/cloud/jellyfin__jellyfin",
+  "commit": "218514ab6babda115017838fcc4588be8c1602c0",
+  "source_category": "media"
+ },
+ {
+  "repo": "navidrome/navidrome",
+  "url": "https://github.com/navidrome/navidrome",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Music streaming",
+  "path": "upstream/cloud/navidrome__navidrome",
+  "commit": "94a6e59feee40c993c491ad19b61ed9c3fbc558e",
+  "source_category": "media"
+ },
+ {
+  "repo": "paperless-ngx/paperless-ngx",
+  "url": "https://github.com/paperless-ngx/paperless-ngx",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "OCR'd document archive",
+  "path": "upstream/cloud/paperless-ngx__paperless-ngx",
+  "commit": "bfd5628dcced06c2dd44441f8718ce369c7b6d9f",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "element-hq/synapse",
+  "url": "https://github.com/element-hq/synapse",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Matrix server: encrypted chat you own",
+  "path": "upstream/cloud/element-hq__synapse",
+  "commit": "7f832ceeedc921a6f2727e1b039acc00f97398b7",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "jitsi/jitsi-meet",
+  "url": "https://github.com/jitsi/jitsi-meet",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Video calls you own",
+  "path": "upstream/cloud/jitsi__jitsi-meet",
+  "commit": "c5bf9948a5dab6f63d86508bfb93c1c4653060f2",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "go-gitea/gitea",
+  "url": "https://github.com/go-gitea/gitea",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Private git",
+  "path": "upstream/cloud/go-gitea__gitea",
+  "commit": "82debf700818bf36dbb9c972cf233005707ef7e3",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "n8n-io/n8n",
+  "url": "https://github.com/n8n-io/n8n",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Automation workflows",
+  "path": "upstream/cloud/n8n-io__n8n",
+  "commit": "2b1d836bace92dc009da8204d01e2939d3ba4a18",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "home-assistant/core",
+  "url": "https://github.com/home-assistant/core",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Device automation, presence, alerts",
+  "path": "upstream/cloud/home-assistant__core",
+  "commit": "1ba1f6eb4c30c30e883a97ceba662603afd9eec1",
+  "source_category": "iot"
+ },
+ {
+  "repo": "gethomepage/homepage",
+  "url": "https://github.com/gethomepage/homepage",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Dashboard for all Aureon services",
+  "path": "upstream/cloud/gethomepage__homepage",
+  "commit": "e6b2fe77c2ed4898dcdd0bf03a7e5a69f74421ba",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "kiwix/kiwix-tools",
+  "url": "https://github.com/kiwix/kiwix-tools",
+  "layer": "cloud",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "A",
+   "N"
+  ],
+  "role": "Offline Wikipedia/manuals - works with no internet",
+  "path": "upstream/cloud/kiwix__kiwix-tools",
+  "commit": "00a9200cea6e870ef32441b5166112428a4654f9",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "caddyserver/caddy",
+  "url": "https://github.com/caddyserver/caddy",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Auto-HTTPS reverse proxy",
+  "path": "upstream/cloud/caddyserver__caddy",
+  "commit": "7591cff1fb03202ce022982af020197f3f387220",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "cockpit-project/cockpit",
+  "url": "https://github.com/cockpit-project/cockpit",
+  "layer": "cloud",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Web admin for Linux hosts",
+  "path": "upstream/cloud/cockpit-project__cockpit",
+  "commit": "b12c02c4e54d28934129ab54ed687fafa232ac33",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "apache/guacamole-server",
+  "url": "https://github.com/apache/guacamole-server",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "Clientless remote desktop from any browser",
+  "path": "upstream/cloud/apache__guacamole-server",
+  "commit": "bb1ba8ed1414ec6a239cea265d4e9c7e23b9c6a3",
+  "source_category": "selfhost"
+ },
+ {
+  "repo": "coder/code-server",
+  "url": "https://github.com/coder/code-server",
+  "layer": "cloud",
+  "platforms": [
+   "N"
+  ],
+  "role": "VS Code in the browser - code from your phone",
+  "path": "upstream/cloud/coder__code-server",
+  "commit": "568a58f9a0d082fbec94d9c3e08087f6f465188f",
+  "source_category": "education"
+ },
+ {
+  "repo": "VSCodium/vscodium",
+  "url": "https://github.com/VSCodium/vscodium",
+  "layer": "cloud",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Telemetry-free VS Code",
+  "path": "upstream/cloud/VSCodium__vscodium",
+  "commit": "ca7f7b44b5e5c3faa663f6cdc043998f71936653",
+  "source_category": "education"
+ },
+ {
+  "repo": "raspberrypi/pico-sdk",
+  "url": "https://github.com/raspberrypi/pico-sdk",
+  "layer": "key",
+  "platforms": [],
+  "role": "C SDK for the Aureon Key (RP2040/RP2350)",
+  "path": "upstream/key/raspberrypi__pico-sdk",
+  "commit": "079c6f39023649b154152db30f1d781e884879bc",
+  "source_category": "pico"
+ },
+ {
+  "repo": "raspberrypi/pico-examples",
+  "url": "https://github.com/raspberrypi/pico-examples",
+  "layer": "key",
+  "platforms": [],
+  "role": "Reference code",
+  "path": "upstream/key/raspberrypi__pico-examples",
+  "commit": "0d62f75bafc2c8120d3276c3343d1a9195e909e9",
+  "source_category": "pico"
+ },
+ {
+  "repo": "raspberrypi/picotool",
+  "url": "https://github.com/raspberrypi/picotool",
+  "layer": "key",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Flash/inspect Pico",
+  "path": "upstream/key/raspberrypi__picotool",
+  "commit": "2041936441b48a3cc53ae3da9e805229fe8f4e18",
+  "source_category": "pico"
+ },
+ {
+  "repo": "raspberrypi/debugprobe",
+  "url": "https://github.com/raspberrypi/debugprobe",
+  "layer": "key",
+  "platforms": [],
+  "role": "SWD debug probe firmware",
+  "path": "upstream/key/raspberrypi__debugprobe",
+  "commit": "262f9625d75a2bad8d76cc228ee5e21ca3a64d3a",
+  "source_category": "pico"
+ },
+ {
+  "repo": "raspberrypi/openocd",
+  "url": "https://github.com/raspberrypi/openocd",
+  "layer": "key",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "On-chip debugging",
+  "path": "upstream/key/raspberrypi__openocd",
+  "commit": "acff23ffd100479d6481a1155123774b79a990b9",
+  "source_category": "pico"
+ },
+ {
+  "repo": "hathach/tinyusb",
+  "url": "https://github.com/hathach/tinyusb",
+  "layer": "key",
+  "platforms": [],
+  "role": "USB HID/CDC/MSC stack: key presents as security token",
+  "path": "upstream/key/hathach__tinyusb",
+  "commit": "6e09dc93a5b54a11cda90f7285862074df353dbe",
+  "source_category": "pico"
+ },
+ {
+  "repo": "embassy-rs/embassy",
+  "url": "https://github.com/embassy-rs/embassy",
+  "layer": "key",
+  "platforms": [],
+  "role": "Async Rust firmware (memory-safe Key firmware)",
+  "path": "upstream/key/embassy-rs__embassy",
+  "commit": "7419ec0700f23058e90285a56c62ecd2c0a39b87",
+  "source_category": "pico"
+ },
+ {
+  "repo": "rp-rs/rp-hal",
+  "url": "https://github.com/rp-rs/rp-hal",
+  "layer": "key",
+  "platforms": [],
+  "role": "Rust HAL for RP2040",
+  "path": "upstream/key/rp-rs__rp-hal",
+  "commit": "5458b7e2a98ff5e0cfbb3430d05e138abab3c4be",
+  "source_category": "pico"
+ },
+ {
+  "repo": "zephyrproject-rtos/zephyr",
+  "url": "https://github.com/zephyrproject-rtos/zephyr",
+  "layer": "key",
+  "platforms": [],
+  "role": "RTOS with crypto/secure-boot subsystems",
+  "path": "upstream/key/zephyrproject-rtos__zephyr",
+  "commit": "f8da8ea370508f274685a25ff19dbe5a9ff54790",
+  "source_category": "pico"
+ },
+ {
+  "repo": "micropython/micropython",
+  "url": "https://github.com/micropython/micropython",
+  "layer": "key",
+  "platforms": [],
+  "role": "Rapid prototyping firmware",
+  "path": "upstream/key/micropython__micropython",
+  "commit": "d2d095d0fe6e83c53fd0ef90643f7d2b8b1c1645",
+  "source_category": "pico"
+ },
+ {
+  "repo": "adafruit/circuitpython",
+  "url": "https://github.com/adafruit/circuitpython",
+  "layer": "key",
+  "platforms": [],
+  "role": "Prototyping firmware with USB drive editing",
+  "path": "upstream/key/adafruit__circuitpython",
+  "commit": "c5fa8113afd3dfc7369b32b1425abe8fd9dc422d",
+  "source_category": "pico"
+ },
+ {
+  "repo": "dbisu/pico-ducky",
+  "url": "https://github.com/dbisu/pico-ducky",
+  "layer": "key",
+  "platforms": [],
+  "role": "Studied to build a USB-HID-injection DETECTOR, not used offensively",
+  "path": "upstream/key/dbisu__pico-ducky",
+  "commit": "e087a69da9d9c474a18a35ad26ba790cd71a11ab",
+  "source_category": "security"
+ },
+ {
+  "repo": "wokwi/rp2040js",
+  "url": "https://github.com/wokwi/rp2040js",
+  "layer": "key",
+  "platforms": [],
+  "role": "Simulate Key firmware in CI",
+  "path": "upstream/key/wokwi__rp2040js",
+  "commit": "5fbd20508a58b9859758c5cd70b207ba1e0b0150",
+  "source_category": "pico"
+ },
+ {
+  "repo": "osmocom/rtl-sdr",
+  "url": "https://github.com/osmocom/rtl-sdr",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "RTL-SDR driver",
+  "path": "upstream/rf/osmocom__rtl-sdr",
+  "commit": "797f8143266d983c56d8f35d2d442527529dd8a5",
+  "source_category": "radio"
+ },
+ {
+  "repo": "pothosware/SoapySDR",
+  "url": "https://github.com/pothosware/SoapySDR",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "SDR hardware abstraction",
+  "path": "upstream/rf/pothosware__SoapySDR",
+  "commit": "cf0c0eb5279aa202d5b3a48aee423294b10244eb",
+  "source_category": "radio"
+ },
+ {
+  "repo": "AlexandreRouma/SDRPlusPlus",
+  "url": "https://github.com/AlexandreRouma/SDRPlusPlus",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "SDR receiver GUI",
+  "path": "upstream/rf/AlexandreRouma__SDRPlusPlus",
+  "commit": "ea6f755ac9f746cb05e34238ec5d69e5c5d17da8",
+  "source_category": "radio"
+ },
+ {
+  "repo": "ptrkrysik/gr-gsm",
+  "url": "https://github.com/ptrkrysik/gr-gsm",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "GSM analysis: spot fake base stations (IMSI catchers)",
+  "path": "upstream/rf/ptrkrysik__gr-gsm",
+  "commit": "2ebf07d9285d36b00596806705ec993f3033da8f",
+  "source_category": "radio"
+ },
+ {
+  "repo": "steve-m/kalibrate-rtl",
+  "url": "https://github.com/steve-m/kalibrate-rtl",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Scan/inventory cell towers for anomalies",
+  "path": "upstream/rf/steve-m__kalibrate-rtl",
+  "commit": "340003eb0846b069c3edef19ed3363b8ac7b5215",
+  "source_category": "radio"
+ },
+ {
+  "repo": "merbanan/rtl_433",
+  "url": "https://github.com/merbanan/rtl_433",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Decode 433/868 MHz devices: find hidden trackers/sensors",
+  "path": "upstream/rf/merbanan__rtl_433",
+  "commit": "0c85f7ad3566ff6aefd8aedad569d05023c0c70c",
+  "source_category": "iot"
+ },
+ {
+  "repo": "gnuradio/gnuradio",
+  "url": "https://github.com/gnuradio/gnuradio",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Signal-processing framework",
+  "path": "upstream/rf/gnuradio__gnuradio",
+  "commit": "3d33e04a249b31ef32106d275b927a7c4cf86425",
+  "source_category": "radio"
+ },
+ {
+  "repo": "jopohl/urh",
+  "url": "https://github.com/jopohl/urh",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Reverse-engineer wireless protocols",
+  "path": "upstream/rf/jopohl__urh",
+  "commit": "1403d92987cc3d01d41aff64250955ce455dabd2",
+  "source_category": "radio"
+ },
+ {
+  "repo": "meshtastic/firmware",
+  "url": "https://github.com/meshtastic/firmware",
+  "layer": "rf",
+  "platforms": [],
+  "role": "LoRa mesh text messaging without cell network",
+  "path": "upstream/rf/meshtastic__firmware",
+  "commit": "b013fab239e2ebfb80e0e611825c3bcba5663ba5",
+  "source_category": "network"
+ },
+ {
+  "repo": "meshtastic/python",
+  "url": "https://github.com/meshtastic/python",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Meshtastic CLI/API bridge",
+  "path": "upstream/rf/meshtastic__python",
+  "commit": "0a1835760c2437314a2d3544bbdd8b6fead559bc",
+  "source_category": "network"
+ },
+ {
+  "repo": "wb2osz/direwolf",
+  "url": "https://github.com/wb2osz/direwolf",
+  "layer": "rf",
+  "platforms": [
+   "L",
+   "N"
+  ],
+  "role": "Packet radio modem (Reticulum transport)",
+  "path": "upstream/rf/wb2osz__direwolf",
+  "commit": "eda1383f5fa9d8ba3cb27f99db1d2c79494404c9",
+  "source_category": "radio"
+ },
+ {
+  "repo": "ansible/ansible",
+  "url": "https://github.com/ansible/ansible",
+  "layer": "ops",
+  "platforms": [
+   "L",
+   "M",
+   "N"
+  ],
+  "role": "Declarative provisioning of every device",
+  "path": "upstream/ops/ansible__ansible",
+  "commit": "b4b2b1e82a535d27f902a71fc8396c3af138fca2",
+  "source_category": "containers"
+ },
+ {
+  "repo": "docker/compose",
+  "url": "https://github.com/docker/compose",
+  "layer": "ops",
+  "platforms": [
+   "L",
+   "W",
+   "M",
+   "N"
+  ],
+  "role": "Multi-service stacks on the Node",
+  "path": "upstream/ops/docker__compose",
+  "commit": "5c666993e1b0ba1951013f9a24bc16cf340ce7fb",
+  "source_category": "containers"
+ },
+ {
+  "repo": "k3s-io/k3s",
+  "url": "https://github.com/k3s-io/k3s",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Lightweight Kubernetes for multi-Node clusters",
+  "path": "upstream/ops/k3s-io__k3s",
+  "commit": "51d3b7043183cbd61381773e6345082bd4cf2280",
+  "source_category": "containers"
+ },
+ {
+  "repo": "portainer/portainer",
+  "url": "https://github.com/portainer/portainer",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Container web UI",
+  "path": "upstream/ops/portainer__portainer",
+  "commit": "66c22cf97b3afb4a3968753f7a70ac1924ec4ef0",
+  "source_category": "containers"
+ },
+ {
+  "repo": "containrrr/watchtower",
+  "url": "https://github.com/containrrr/watchtower",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Auto-update containers",
+  "path": "upstream/ops/containrrr__watchtower",
+  "commit": "ca0e86e824ec05389ab972ea97d04d4bf0476e90",
+  "source_category": "containers"
+ },
+ {
+  "repo": "framps/raspiBackup",
+  "url": "https://github.com/framps/raspiBackup",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Full Node image backups",
+  "path": "upstream/ops/framps__raspiBackup",
+  "commit": "9df42785172cfd6c1b498082440e0e221f8e6e94",
+  "source_category": "os"
+ },
+ {
+  "repo": "billw2/rpi-clone",
+  "url": "https://github.com/billw2/rpi-clone",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Live-clone Node to new disk",
+  "path": "upstream/ops/billw2__rpi-clone",
+  "commit": "07f536e9d93cb5b50635415ee0fa46f498614ee4",
+  "source_category": "os"
+ },
+ {
+  "repo": "balena-io/etcher",
+  "url": "https://github.com/balena-io/etcher",
+  "layer": "ops",
+  "platforms": [
+   "L",
+   "W",
+   "M"
+  ],
+  "role": "Safe image flashing",
+  "path": "upstream/ops/balena-io__etcher",
+  "commit": "dbd6aaed37c4e844f7aed978db01d9f38680eff8",
+  "source_category": "os"
+ },
+ {
+  "repo": "Botspot/pi-apps",
+  "url": "https://github.com/Botspot/pi-apps",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "App store for ARM Linux",
+  "path": "upstream/ops/Botspot__pi-apps",
+  "commit": "cfac9ab9f3a4095db670f7ebb5c870c89a425b39",
+  "source_category": "os"
+ },
+ {
+  "repo": "MichaIng/DietPi",
+  "url": "https://github.com/MichaIng/DietPi",
+  "layer": "ops",
+  "platforms": [
+   "N"
+  ],
+  "role": "Minimal optimised Debian for the Node",
+  "path": "upstream/ops/MichaIng__DietPi",
+  "commit": "8151dc4649538725c00554ad14aea81d375ec5ea",
+  "source_category": "os"
+ }
+]

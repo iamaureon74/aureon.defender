@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+deploy/shield/.env
+deploy/shield/data/

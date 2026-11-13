@@ -1,0 +1,824 @@
+[submodule "upstream/base/NixOS__nixos-hardware"]
+	path = upstream/base/NixOS__nixos-hardware
+	url = https://github.com/NixOS/nixos-hardware.git
+	shallow = true
+[submodule "upstream/base/armbian__build"]
+	path = upstream/base/armbian__build
+	url = https://github.com/armbian/build.git
+	shallow = true
+[submodule "upstream/base/buildroot__buildroot"]
+	path = upstream/base/buildroot__buildroot
+	url = https://github.com/buildroot/buildroot.git
+	shallow = true
+[submodule "upstream/base/void-linux__void-mklive"]
+	path = upstream/base/void-linux__void-mklive
+	url = https://github.com/void-linux/void-mklive.git
+	shallow = true
+[submodule "upstream/base/openwrt__openwrt"]
+	path = upstream/base/openwrt__openwrt
+	url = https://github.com/openwrt/openwrt.git
+	shallow = true
+[submodule "upstream/base/FydeOS__chromium_os-raspberry_pi"]
+	path = upstream/base/FydeOS__chromium_os-raspberry_pi
+	url = https://github.com/FydeOS/chromium_os-raspberry_pi.git
+	shallow = true
+[submodule "upstream/base/android-rpi__local_manifests"]
+	path = upstream/base/android-rpi__local_manifests
+	url = https://github.com/android-rpi/local_manifests.git
+	shallow = true
+[submodule "upstream/base/lineage-rpi__android_local_manifest"]
+	path = upstream/base/lineage-rpi__android_local_manifest
+	url = https://github.com/lineage-rpi/android_local_manifest.git
+	shallow = true
+[submodule "upstream/base/raspberrypi__rpi-sb-provisioner"]
+	path = upstream/base/raspberrypi__rpi-sb-provisioner
+	url = https://github.com/raspberrypi/rpi-sb-provisioner.git
+	shallow = true
+[submodule "upstream/base/raspberrypi__usbboot"]
+	path = upstream/base/raspberrypi__usbboot
+	url = https://github.com/raspberrypi/usbboot.git
+	shallow = true
+[submodule "upstream/base/worproject__rpi5-uefi"]
+	path = upstream/base/worproject__rpi5-uefi
+	url = https://github.com/worproject/rpi5-uefi.git
+	shallow = true
+[submodule "upstream/base/qemu__qemu"]
+	path = upstream/base/qemu__qemu
+	url = https://github.com/qemu/qemu.git
+	shallow = true
+[submodule "upstream/base/lxc__incus"]
+	path = upstream/base/lxc__incus
+	url = https://github.com/lxc/incus.git
+	shallow = true
+[submodule "upstream/base/containers__podman"]
+	path = upstream/base/containers__podman
+	url = https://github.com/containers/podman.git
+	shallow = true
+[submodule "upstream/base/flatpak__flatpak"]
+	path = upstream/base/flatpak__flatpak
+	url = https://github.com/flatpak/flatpak.git
+	shallow = true
+[submodule "upstream/base/wine-mirror__wine"]
+	path = upstream/base/wine-mirror__wine
+	url = https://github.com/wine-mirror/wine.git
+	shallow = true
+[submodule "upstream/base/AndreRH__hangover"]
+	path = upstream/base/AndreRH__hangover
+	url = https://github.com/AndreRH/hangover.git
+	shallow = true
+[submodule "upstream/defend/evilsocket__opensnitch"]
+	path = upstream/defend/evilsocket__opensnitch
+	url = https://github.com/evilsocket/opensnitch.git
+	shallow = true
+[submodule "upstream/defend/crowdsecurity__crowdsec"]
+	path = upstream/defend/crowdsecurity__crowdsec
+	url = https://github.com/crowdsecurity/crowdsec.git
+	shallow = true
+[submodule "upstream/defend/fail2ban__fail2ban"]
+	path = upstream/defend/fail2ban__fail2ban
+	url = https://github.com/fail2ban/fail2ban.git
+	shallow = true
+[submodule "upstream/defend/OISF__suricata"]
+	path = upstream/defend/OISF__suricata
+	url = https://github.com/OISF/suricata.git
+	shallow = true
+[submodule "upstream/defend/zeek__zeek"]
+	path = upstream/defend/zeek__zeek
+	url = https://github.com/zeek/zeek.git
+	shallow = true
+[submodule "upstream/defend/snort3__snort3"]
+	path = upstream/defend/snort3__snort3
+	url = https://github.com/snort3/snort3.git
+	shallow = true
+[submodule "upstream/defend/wazuh__wazuh"]
+	path = upstream/defend/wazuh__wazuh
+	url = https://github.com/wazuh/wazuh.git
+	shallow = true
+[submodule "upstream/defend/ossec__ossec-hids"]
+	path = upstream/defend/ossec__ossec-hids
+	url = https://github.com/ossec/ossec-hids.git
+	shallow = true
+[submodule "upstream/defend/Cisco-Talos__clamav"]
+	path = upstream/defend/Cisco-Talos__clamav
+	url = https://github.com/Cisco-Talos/clamav.git
+	shallow = true
+[submodule "upstream/defend/VirusTotal__yara"]
+	path = upstream/defend/VirusTotal__yara
+	url = https://github.com/VirusTotal/yara.git
+	shallow = true
+[submodule "upstream/defend/CISOfy__lynis"]
+	path = upstream/defend/CISOfy__lynis
+	url = https://github.com/CISOfy/lynis.git
+	shallow = true
+[submodule "upstream/defend/thinkst__opencanary"]
+	path = upstream/defend/thinkst__opencanary
+	url = https://github.com/thinkst/opencanary.git
+	shallow = true
+[submodule "upstream/defend/cowrie__cowrie"]
+	path = upstream/defend/cowrie__cowrie
+	url = https://github.com/cowrie/cowrie.git
+	shallow = true
+[submodule "upstream/defend/telekom-security__tpotce"]
+	path = upstream/defend/telekom-security__tpotce
+	url = https://github.com/telekom-security/tpotce.git
+	shallow = true
+[submodule "upstream/defend/DShield-ISC__dshield"]
+	path = upstream/defend/DShield-ISC__dshield
+	url = https://github.com/DShield-ISC/dshield.git
+	shallow = true
+[submodule "upstream/defend/mvt-project__mvt"]
+	path = upstream/defend/mvt-project__mvt
+	url = https://github.com/mvt-project/mvt.git
+	shallow = true
+[submodule "upstream/defend/PiRogueToolSuite__pirogue-cli"]
+	path = upstream/defend/PiRogueToolSuite__pirogue-cli
+	url = https://github.com/PiRogueToolSuite/pirogue-cli.git
+	shallow = true
+[submodule "upstream/defend/PiRogueToolSuite__pirogue-os"]
+	path = upstream/defend/PiRogueToolSuite__pirogue-os
+	url = https://github.com/PiRogueToolSuite/pirogue-os.git
+	shallow = true
+[submodule "upstream/defend/volatilityfoundation__volatility3"]
+	path = upstream/defend/volatilityfoundation__volatility3
+	url = https://github.com/volatilityfoundation/volatility3.git
+	shallow = true
+[submodule "upstream/defend/sleuthkit__sleuthkit"]
+	path = upstream/defend/sleuthkit__sleuthkit
+	url = https://github.com/sleuthkit/sleuthkit.git
+	shallow = true
+[submodule "upstream/defend/sleuthkit__autopsy"]
+	path = upstream/defend/sleuthkit__autopsy
+	url = https://github.com/sleuthkit/autopsy.git
+	shallow = true
+[submodule "upstream/defend/wireshark__wireshark"]
+	path = upstream/defend/wireshark__wireshark
+	url = https://github.com/wireshark/wireshark.git
+	shallow = true
+[submodule "upstream/defend/kismetwireless__kismet"]
+	path = upstream/defend/kismetwireless__kismet
+	url = https://github.com/kismetwireless/kismet.git
+	shallow = true
+[submodule "upstream/defend/gitleaks__gitleaks"]
+	path = upstream/defend/gitleaks__gitleaks
+	url = https://github.com/gitleaks/gitleaks.git
+	shallow = true
+[submodule "upstream/defend/trufflesecurity__trufflehog"]
+	path = upstream/defend/trufflesecurity__trufflehog
+	url = https://github.com/trufflesecurity/trufflehog.git
+	shallow = true
+[submodule "upstream/defend/dani-garcia__vaultwarden"]
+	path = upstream/defend/dani-garcia__vaultwarden
+	url = https://github.com/dani-garcia/vaultwarden.git
+	shallow = true
+[submodule "upstream/defend/NationalSecurityAgency__ghidra"]
+	path = upstream/defend/NationalSecurityAgency__ghidra
+	url = https://github.com/NationalSecurityAgency/ghidra.git
+	shallow = true
+[submodule "upstream/defend/radareorg__radare2"]
+	path = upstream/defend/radareorg__radare2
+	url = https://github.com/radareorg/radare2.git
+	shallow = true
+[submodule "upstream/defend/rizinorg__cutter"]
+	path = upstream/defend/rizinorg__cutter
+	url = https://github.com/rizinorg/cutter.git
+	shallow = true
+[submodule "upstream/defend/mitmproxy__mitmproxy"]
+	path = upstream/defend/mitmproxy__mitmproxy
+	url = https://github.com/mitmproxy/mitmproxy.git
+	shallow = true
+[submodule "upstream/defend/onionshare__onionshare"]
+	path = upstream/defend/onionshare__onionshare
+	url = https://github.com/onionshare/onionshare.git
+	shallow = true
+[submodule "upstream/audit/nmap__nmap"]
+	path = upstream/audit/nmap__nmap
+	url = https://github.com/nmap/nmap.git
+	shallow = true
+[submodule "upstream/audit/RustScan__RustScan"]
+	path = upstream/audit/RustScan__RustScan
+	url = https://github.com/RustScan/RustScan.git
+	shallow = true
+[submodule "upstream/audit/robertdavidgraham__masscan"]
+	path = upstream/audit/robertdavidgraham__masscan
+	url = https://github.com/robertdavidgraham/masscan.git
+	shallow = true
+[submodule "upstream/audit/zmap__zmap"]
+	path = upstream/audit/zmap__zmap
+	url = https://github.com/zmap/zmap.git
+	shallow = true
+[submodule "upstream/audit/greenbone__openvas-scanner"]
+	path = upstream/audit/greenbone__openvas-scanner
+	url = https://github.com/greenbone/openvas-scanner.git
+	shallow = true
+[submodule "upstream/audit/projectdiscovery__nuclei"]
+	path = upstream/audit/projectdiscovery__nuclei
+	url = https://github.com/projectdiscovery/nuclei.git
+	shallow = true
+[submodule "upstream/audit/projectdiscovery__httpx"]
+	path = upstream/audit/projectdiscovery__httpx
+	url = https://github.com/projectdiscovery/httpx.git
+	shallow = true
+[submodule "upstream/audit/projectdiscovery__subfinder"]
+	path = upstream/audit/projectdiscovery__subfinder
+	url = https://github.com/projectdiscovery/subfinder.git
+	shallow = true
+[submodule "upstream/audit/zaproxy__zaproxy"]
+	path = upstream/audit/zaproxy__zaproxy
+	url = https://github.com/zaproxy/zaproxy.git
+	shallow = true
+[submodule "upstream/audit/sullo__nikto"]
+	path = upstream/audit/sullo__nikto
+	url = https://github.com/sullo/nikto.git
+	shallow = true
+[submodule "upstream/audit/sqlmapproject__sqlmap"]
+	path = upstream/audit/sqlmapproject__sqlmap
+	url = https://github.com/sqlmapproject/sqlmap.git
+	shallow = true
+[submodule "upstream/audit/ffuf__ffuf"]
+	path = upstream/audit/ffuf__ffuf
+	url = https://github.com/ffuf/ffuf.git
+	shallow = true
+[submodule "upstream/audit/OJ__gobuster"]
+	path = upstream/audit/OJ__gobuster
+	url = https://github.com/OJ/gobuster.git
+	shallow = true
+[submodule "upstream/audit/epi052__feroxbuster"]
+	path = upstream/audit/epi052__feroxbuster
+	url = https://github.com/epi052/feroxbuster.git
+	shallow = true
+[submodule "upstream/audit/rapid7__metasploit-framework"]
+	path = upstream/audit/rapid7__metasploit-framework
+	url = https://github.com/rapid7/metasploit-framework.git
+	shallow = true
+[submodule "upstream/audit/fortra__impacket"]
+	path = upstream/audit/fortra__impacket
+	url = https://github.com/fortra/impacket.git
+	shallow = true
+[submodule "upstream/audit/Pennyw0rth__NetExec"]
+	path = upstream/audit/Pennyw0rth__NetExec
+	url = https://github.com/Pennyw0rth/NetExec.git
+	shallow = true
+[submodule "upstream/audit/SpecterOps__BloodHound"]
+	path = upstream/audit/SpecterOps__BloodHound
+	url = https://github.com/SpecterOps/BloodHound.git
+	shallow = true
+[submodule "upstream/audit/lgandx__Responder"]
+	path = upstream/audit/lgandx__Responder
+	url = https://github.com/lgandx/Responder.git
+	shallow = true
+[submodule "upstream/audit/hashcat__hashcat"]
+	path = upstream/audit/hashcat__hashcat
+	url = https://github.com/hashcat/hashcat.git
+	shallow = true
+[submodule "upstream/audit/openwall__john"]
+	path = upstream/audit/openwall__john
+	url = https://github.com/openwall/john.git
+	shallow = true
+[submodule "upstream/audit/vanhauser-thc__thc-hydra"]
+	path = upstream/audit/vanhauser-thc__thc-hydra
+	url = https://github.com/vanhauser-thc/thc-hydra.git
+	shallow = true
+[submodule "upstream/audit/bettercap__bettercap"]
+	path = upstream/audit/bettercap__bettercap
+	url = https://github.com/bettercap/bettercap.git
+	shallow = true
+[submodule "upstream/audit/aircrack-ng__aircrack-ng"]
+	path = upstream/audit/aircrack-ng__aircrack-ng
+	url = https://github.com/aircrack-ng/aircrack-ng.git
+	shallow = true
+[submodule "upstream/audit/ZerBea__hcxdumptool"]
+	path = upstream/audit/ZerBea__hcxdumptool
+	url = https://github.com/ZerBea/hcxdumptool.git
+	shallow = true
+[submodule "upstream/audit/ZerBea__hcxtools"]
+	path = upstream/audit/ZerBea__hcxtools
+	url = https://github.com/ZerBea/hcxtools.git
+	shallow = true
+[submodule "upstream/audit/v1s1t0r1sh3r3__airgeddon"]
+	path = upstream/audit/v1s1t0r1sh3r3__airgeddon
+	url = https://github.com/v1s1t0r1sh3r3/airgeddon.git
+	shallow = true
+[submodule "upstream/audit/derv82__wifite2"]
+	path = upstream/audit/derv82__wifite2
+	url = https://github.com/derv82/wifite2.git
+	shallow = true
+[submodule "upstream/audit/Proxmark__proxmark3"]
+	path = upstream/audit/Proxmark__proxmark3
+	url = https://github.com/Proxmark/proxmark3.git
+	shallow = true
+[submodule "upstream/audit/nfc-tools__libnfc"]
+	path = upstream/audit/nfc-tools__libnfc
+	url = https://github.com/nfc-tools/libnfc.git
+	shallow = true
+[submodule "upstream/audit/Gallopsled__pwntools"]
+	path = upstream/audit/Gallopsled__pwntools
+	url = https://github.com/Gallopsled/pwntools.git
+	shallow = true
+[submodule "upstream/audit/pwndbg__pwndbg"]
+	path = upstream/audit/pwndbg__pwndbg
+	url = https://github.com/pwndbg/pwndbg.git
+	shallow = true
+[submodule "upstream/audit/smicallef__spiderfoot"]
+	path = upstream/audit/smicallef__spiderfoot
+	url = https://github.com/smicallef/spiderfoot.git
+	shallow = true
+[submodule "upstream/audit/megadose__holehe"]
+	path = upstream/audit/megadose__holehe
+	url = https://github.com/megadose/holehe.git
+	shallow = true
+[submodule "upstream/audit/sherlock-project__sherlock"]
+	path = upstream/audit/sherlock-project__sherlock
+	url = https://github.com/sherlock-project/sherlock.git
+	shallow = true
+[submodule "upstream/audit/soxoj__maigret"]
+	path = upstream/audit/soxoj__maigret
+	url = https://github.com/soxoj/maigret.git
+	shallow = true
+[submodule "upstream/audit/laramies__theHarvester"]
+	path = upstream/audit/laramies__theHarvester
+	url = https://github.com/laramies/theHarvester.git
+	shallow = true
+[submodule "upstream/audit/danielmiessler__SecLists"]
+	path = upstream/audit/danielmiessler__SecLists
+	url = https://github.com/danielmiessler/SecLists.git
+	shallow = true
+[submodule "upstream/net/NLnetLabs__unbound"]
+	path = upstream/net/NLnetLabs__unbound
+	url = https://github.com/NLnetLabs/unbound.git
+	shallow = true
+[submodule "upstream/net/AdguardTeam__AdGuardHome"]
+	path = upstream/net/AdguardTeam__AdGuardHome
+	url = https://github.com/AdguardTeam/AdGuardHome.git
+	shallow = true
+[submodule "upstream/net/pi-hole__pi-hole"]
+	path = upstream/net/pi-hole__pi-hole
+	url = https://github.com/pi-hole/pi-hole.git
+	shallow = true
+[submodule "upstream/net/WireGuard__wireguard-tools"]
+	path = upstream/net/WireGuard__wireguard-tools
+	url = https://github.com/WireGuard/wireguard-tools.git
+	shallow = true
+[submodule "upstream/net/wg-easy__wg-easy"]
+	path = upstream/net/wg-easy__wg-easy
+	url = https://github.com/wg-easy/wg-easy.git
+	shallow = true
+[submodule "upstream/net/tailscale__tailscale"]
+	path = upstream/net/tailscale__tailscale
+	url = https://github.com/tailscale/tailscale.git
+	shallow = true
+[submodule "upstream/net/juanfont__headscale"]
+	path = upstream/net/juanfont__headscale
+	url = https://github.com/juanfont/headscale.git
+	shallow = true
+[submodule "upstream/net/yggdrasil-network__yggdrasil-go"]
+	path = upstream/net/yggdrasil-network__yggdrasil-go
+	url = https://github.com/yggdrasil-network/yggdrasil-go.git
+	shallow = true
+[submodule "upstream/net/markqvist__Reticulum"]
+	path = upstream/net/markqvist__Reticulum
+	url = https://github.com/markqvist/Reticulum.git
+	shallow = true
+[submodule "upstream/net/markqvist__NomadNet"]
+	path = upstream/net/markqvist__NomadNet
+	url = https://github.com/markqvist/NomadNet.git
+	shallow = true
+[submodule "upstream/net/torproject__tor"]
+	path = upstream/net/torproject__tor
+	url = https://github.com/torproject/tor.git
+	shallow = true
+[submodule "upstream/net/PurpleI2P__i2pd"]
+	path = upstream/net/PurpleI2P__i2pd
+	url = https://github.com/PurpleI2P/i2pd.git
+	shallow = true
+[submodule "upstream/net/brainfucksec__kalitorify"]
+	path = upstream/net/brainfucksec__kalitorify
+	url = https://github.com/brainfucksec/kalitorify.git
+	shallow = true
+[submodule "upstream/net/cloudflare__cloudflared"]
+	path = upstream/net/cloudflare__cloudflared
+	url = https://github.com/cloudflare/cloudflared.git
+	shallow = true
+[submodule "upstream/net/lakinduakash__linux-wifi-hotspot"]
+	path = upstream/net/lakinduakash__linux-wifi-hotspot
+	url = https://github.com/lakinduakash/linux-wifi-hotspot.git
+	shallow = true
+[submodule "upstream/net/RaspAP__raspap-webgui"]
+	path = upstream/net/RaspAP__raspap-webgui
+	url = https://github.com/RaspAP/raspap-webgui.git
+	shallow = true
+[submodule "upstream/net/ntop__ntopng"]
+	path = upstream/net/ntop__ntopng
+	url = https://github.com/ntop/ntopng.git
+	shallow = true
+[submodule "upstream/net/syncthing__syncthing"]
+	path = upstream/net/syncthing__syncthing
+	url = https://github.com/syncthing/syncthing.git
+	shallow = true
+[submodule "upstream/net/rclone__rclone"]
+	path = upstream/net/rclone__rclone
+	url = https://github.com/rclone/rclone.git
+	shallow = true
+[submodule "upstream/perf/aristocratos__btop"]
+	path = upstream/perf/aristocratos__btop
+	url = https://github.com/aristocratos/btop.git
+	shallow = true
+[submodule "upstream/perf/ClementTsang__bottom"]
+	path = upstream/perf/ClementTsang__bottom
+	url = https://github.com/ClementTsang/bottom.git
+	shallow = true
+[submodule "upstream/perf/nicolargo__glances"]
+	path = upstream/perf/nicolargo__glances
+	url = https://github.com/nicolargo/glances.git
+	shallow = true
+[submodule "upstream/perf/netdata__netdata"]
+	path = upstream/perf/netdata__netdata
+	url = https://github.com/netdata/netdata.git
+	shallow = true
+[submodule "upstream/perf/prometheus__prometheus"]
+	path = upstream/perf/prometheus__prometheus
+	url = https://github.com/prometheus/prometheus.git
+	shallow = true
+[submodule "upstream/perf/prometheus__node_exporter"]
+	path = upstream/perf/prometheus__node_exporter
+	url = https://github.com/prometheus/node_exporter.git
+	shallow = true
+[submodule "upstream/perf/grafana__grafana"]
+	path = upstream/perf/grafana__grafana
+	url = https://github.com/grafana/grafana.git
+	shallow = true
+[submodule "upstream/perf/louislam__uptime-kuma"]
+	path = upstream/perf/louislam__uptime-kuma
+	url = https://github.com/louislam/uptime-kuma.git
+	shallow = true
+[submodule "upstream/perf/FEX-Emu__FEX"]
+	path = upstream/perf/FEX-Emu__FEX
+	url = https://github.com/FEX-Emu/FEX.git
+	shallow = true
+[submodule "upstream/perf/ptitSeb__box64"]
+	path = upstream/perf/ptitSeb__box64
+	url = https://github.com/ptitSeb/box64.git
+	shallow = true
+[submodule "upstream/perf/ptitSeb__box86"]
+	path = upstream/perf/ptitSeb__box86
+	url = https://github.com/ptitSeb/box86.git
+	shallow = true
+[submodule "upstream/perf/ptitSeb__gl4es"]
+	path = upstream/perf/ptitSeb__gl4es
+	url = https://github.com/ptitSeb/gl4es.git
+	shallow = true
+[submodule "upstream/perf/LizardByte__Sunshine"]
+	path = upstream/perf/LizardByte__Sunshine
+	url = https://github.com/LizardByte/Sunshine.git
+	shallow = true
+[submodule "upstream/perf/moonlight-stream__moonlight-qt"]
+	path = upstream/perf/moonlight-stream__moonlight-qt
+	url = https://github.com/moonlight-stream/moonlight-qt.git
+	shallow = true
+[submodule "upstream/perf/rustdesk__rustdesk"]
+	path = upstream/perf/rustdesk__rustdesk
+	url = https://github.com/rustdesk/rustdesk.git
+	shallow = true
+[submodule "upstream/perf/pikvm__kvmd"]
+	path = upstream/perf/pikvm__kvmd
+	url = https://github.com/pikvm/kvmd.git
+	shallow = true
+[submodule "upstream/perf/pikvm__ustreamer"]
+	path = upstream/perf/pikvm__ustreamer
+	url = https://github.com/pikvm/ustreamer.git
+	shallow = true
+[submodule "upstream/perf/tiny-pilot__tinypilot"]
+	path = upstream/perf/tiny-pilot__tinypilot
+	url = https://github.com/tiny-pilot/tinypilot.git
+	shallow = true
+[submodule "upstream/perf/swaywm__sway"]
+	path = upstream/perf/swaywm__sway
+	url = https://github.com/swaywm/sway.git
+	shallow = true
+[submodule "upstream/perf/labwc__labwc"]
+	path = upstream/perf/labwc__labwc
+	url = https://github.com/labwc/labwc.git
+	shallow = true
+[submodule "upstream/perf/WayfireWM__wayfire"]
+	path = upstream/perf/WayfireWM__wayfire
+	url = https://github.com/WayfireWM/wayfire.git
+	shallow = true
+[submodule "upstream/perf/cage-kiosk__cage"]
+	path = upstream/perf/cage-kiosk__cage
+	url = https://github.com/cage-kiosk/cage.git
+	shallow = true
+[submodule "upstream/perf/neovim__neovim"]
+	path = upstream/perf/neovim__neovim
+	url = https://github.com/neovim/neovim.git
+	shallow = true
+[submodule "upstream/perf/tmux__tmux"]
+	path = upstream/perf/tmux__tmux
+	url = https://github.com/tmux/tmux.git
+	shallow = true
+[submodule "upstream/perf/jesseduffield__lazygit"]
+	path = upstream/perf/jesseduffield__lazygit
+	url = https://github.com/jesseduffield/lazygit.git
+	shallow = true
+[submodule "upstream/perf/ranger__ranger"]
+	path = upstream/perf/ranger__ranger
+	url = https://github.com/ranger/ranger.git
+	shallow = true
+[submodule "upstream/perf/mpv-player__mpv"]
+	path = upstream/perf/mpv-player__mpv
+	url = https://github.com/mpv-player/mpv.git
+	shallow = true
+[submodule "upstream/ai/ggml-org__llama.cpp"]
+	path = upstream/ai/ggml-org__llama.cpp
+	url = https://github.com/ggml-org/llama.cpp.git
+	shallow = true
+[submodule "upstream/ai/ollama__ollama"]
+	path = upstream/ai/ollama__ollama
+	url = https://github.com/ollama/ollama.git
+	shallow = true
+[submodule "upstream/ai/open-webui__open-webui"]
+	path = upstream/ai/open-webui__open-webui
+	url = https://github.com/open-webui/open-webui.git
+	shallow = true
+[submodule "upstream/ai/mudler__LocalAI"]
+	path = upstream/ai/mudler__LocalAI
+	url = https://github.com/mudler/LocalAI.git
+	shallow = true
+[submodule "upstream/ai/Mozilla-Ocho__llamafile"]
+	path = upstream/ai/Mozilla-Ocho__llamafile
+	url = https://github.com/Mozilla-Ocho/llamafile.git
+	shallow = true
+[submodule "upstream/ai/ggml-org__whisper.cpp"]
+	path = upstream/ai/ggml-org__whisper.cpp
+	url = https://github.com/ggml-org/whisper.cpp.git
+	shallow = true
+[submodule "upstream/ai/SYSTRAN__faster-whisper"]
+	path = upstream/ai/SYSTRAN__faster-whisper
+	url = https://github.com/SYSTRAN/faster-whisper.git
+	shallow = true
+[submodule "upstream/ai/rhasspy__piper"]
+	path = upstream/ai/rhasspy__piper
+	url = https://github.com/rhasspy/piper.git
+	shallow = true
+[submodule "upstream/ai/dscripka__openWakeWord"]
+	path = upstream/ai/dscripka__openWakeWord
+	url = https://github.com/dscripka/openWakeWord.git
+	shallow = true
+[submodule "upstream/ai/rhasspy__wyoming"]
+	path = upstream/ai/rhasspy__wyoming
+	url = https://github.com/rhasspy/wyoming.git
+	shallow = true
+[submodule "upstream/ai/OpenVoiceOS__ovos-core"]
+	path = upstream/ai/OpenVoiceOS__ovos-core
+	url = https://github.com/OpenVoiceOS/ovos-core.git
+	shallow = true
+[submodule "upstream/ai/alphacep__vosk-api"]
+	path = upstream/ai/alphacep__vosk-api
+	url = https://github.com/alphacep/vosk-api.git
+	shallow = true
+[submodule "upstream/ai/microsoft__onnxruntime"]
+	path = upstream/ai/microsoft__onnxruntime
+	url = https://github.com/microsoft/onnxruntime.git
+	shallow = true
+[submodule "upstream/ai/openvinotoolkit__openvino"]
+	path = upstream/ai/openvinotoolkit__openvino
+	url = https://github.com/openvinotoolkit/openvino.git
+	shallow = true
+[submodule "upstream/ai/google-ai-edge__LiteRT"]
+	path = upstream/ai/google-ai-edge__LiteRT
+	url = https://github.com/google-ai-edge/LiteRT.git
+	shallow = true
+[submodule "upstream/ai/google-ai-edge__mediapipe"]
+	path = upstream/ai/google-ai-edge__mediapipe
+	url = https://github.com/google-ai-edge/mediapipe.git
+	shallow = true
+[submodule "upstream/ai/Tencent__ncnn"]
+	path = upstream/ai/Tencent__ncnn
+	url = https://github.com/Tencent/ncnn.git
+	shallow = true
+[submodule "upstream/ai/google-coral__pycoral"]
+	path = upstream/ai/google-coral__pycoral
+	url = https://github.com/google-coral/pycoral.git
+	shallow = true
+[submodule "upstream/ai/hailo-ai__hailort"]
+	path = upstream/ai/hailo-ai__hailort
+	url = https://github.com/hailo-ai/hailort.git
+	shallow = true
+[submodule "upstream/ai/opencv__opencv"]
+	path = upstream/ai/opencv__opencv
+	url = https://github.com/opencv/opencv.git
+	shallow = true
+[submodule "upstream/ai/ultralytics__ultralytics"]
+	path = upstream/ai/ultralytics__ultralytics
+	url = https://github.com/ultralytics/ultralytics.git
+	shallow = true
+[submodule "upstream/ai/blakeblackshear__frigate"]
+	path = upstream/ai/blakeblackshear__frigate
+	url = https://github.com/blakeblackshear/frigate.git
+	shallow = true
+[submodule "upstream/ai/ageitgey__face_recognition"]
+	path = upstream/ai/ageitgey__face_recognition
+	url = https://github.com/ageitgey/face_recognition.git
+	shallow = true
+[submodule "upstream/cloud/nextcloud__server"]
+	path = upstream/cloud/nextcloud__server
+	url = https://github.com/nextcloud/server.git
+	shallow = true
+[submodule "upstream/cloud/immich-app__immich"]
+	path = upstream/cloud/immich-app__immich
+	url = https://github.com/immich-app/immich.git
+	shallow = true
+[submodule "upstream/cloud/jellyfin__jellyfin"]
+	path = upstream/cloud/jellyfin__jellyfin
+	url = https://github.com/jellyfin/jellyfin.git
+	shallow = true
+[submodule "upstream/cloud/navidrome__navidrome"]
+	path = upstream/cloud/navidrome__navidrome
+	url = https://github.com/navidrome/navidrome.git
+	shallow = true
+[submodule "upstream/cloud/paperless-ngx__paperless-ngx"]
+	path = upstream/cloud/paperless-ngx__paperless-ngx
+	url = https://github.com/paperless-ngx/paperless-ngx.git
+	shallow = true
+[submodule "upstream/cloud/element-hq__synapse"]
+	path = upstream/cloud/element-hq__synapse
+	url = https://github.com/element-hq/synapse.git
+	shallow = true
+[submodule "upstream/cloud/jitsi__jitsi-meet"]
+	path = upstream/cloud/jitsi__jitsi-meet
+	url = https://github.com/jitsi/jitsi-meet.git
+	shallow = true
+[submodule "upstream/cloud/go-gitea__gitea"]
+	path = upstream/cloud/go-gitea__gitea
+	url = https://github.com/go-gitea/gitea.git
+	shallow = true
+[submodule "upstream/cloud/n8n-io__n8n"]
+	path = upstream/cloud/n8n-io__n8n
+	url = https://github.com/n8n-io/n8n.git
+	shallow = true
+[submodule "upstream/cloud/home-assistant__core"]
+	path = upstream/cloud/home-assistant__core
+	url = https://github.com/home-assistant/core.git
+	shallow = true
+[submodule "upstream/cloud/gethomepage__homepage"]
+	path = upstream/cloud/gethomepage__homepage
+	url = https://github.com/gethomepage/homepage.git
+	shallow = true
+[submodule "upstream/cloud/kiwix__kiwix-tools"]
+	path = upstream/cloud/kiwix__kiwix-tools
+	url = https://github.com/kiwix/kiwix-tools.git
+	shallow = true
+[submodule "upstream/cloud/caddyserver__caddy"]
+	path = upstream/cloud/caddyserver__caddy
+	url = https://github.com/caddyserver/caddy.git
+	shallow = true
+[submodule "upstream/cloud/cockpit-project__cockpit"]
+	path = upstream/cloud/cockpit-project__cockpit
+	url = https://github.com/cockpit-project/cockpit.git
+	shallow = true
+[submodule "upstream/cloud/apache__guacamole-server"]
+	path = upstream/cloud/apache__guacamole-server
+	url = https://github.com/apache/guacamole-server.git
+	shallow = true
+[submodule "upstream/cloud/coder__code-server"]
+	path = upstream/cloud/coder__code-server
+	url = https://github.com/coder/code-server.git
+	shallow = true
+[submodule "upstream/cloud/VSCodium__vscodium"]
+	path = upstream/cloud/VSCodium__vscodium
+	url = https://github.com/VSCodium/vscodium.git
+	shallow = true
+[submodule "upstream/key/raspberrypi__pico-sdk"]
+	path = upstream/key/raspberrypi__pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git
+	shallow = true
+[submodule "upstream/key/raspberrypi__pico-examples"]
+	path = upstream/key/raspberrypi__pico-examples
+	url = https://github.com/raspberrypi/pico-examples.git
+	shallow = true
+[submodule "upstream/key/raspberrypi__picotool"]
+	path = upstream/key/raspberrypi__picotool
+	url = https://github.com/raspberrypi/picotool.git
+	shallow = true
+[submodule "upstream/key/raspberrypi__debugprobe"]
+	path = upstream/key/raspberrypi__debugprobe
+	url = https://github.com/raspberrypi/debugprobe.git
+	shallow = true
+[submodule "upstream/key/raspberrypi__openocd"]
+	path = upstream/key/raspberrypi__openocd
+	url = https://github.com/raspberrypi/openocd.git
+	shallow = true
+[submodule "upstream/key/hathach__tinyusb"]
+	path = upstream/key/hathach__tinyusb
+	url = https://github.com/hathach/tinyusb.git
+	shallow = true
+[submodule "upstream/key/embassy-rs__embassy"]
+	path = upstream/key/embassy-rs__embassy
+	url = https://github.com/embassy-rs/embassy.git
+	shallow = true
+[submodule "upstream/key/rp-rs__rp-hal"]
+	path = upstream/key/rp-rs__rp-hal
+	url = https://github.com/rp-rs/rp-hal.git
+	shallow = true
+[submodule "upstream/key/zephyrproject-rtos__zephyr"]
+	path = upstream/key/zephyrproject-rtos__zephyr
+	url = https://github.com/zephyrproject-rtos/zephyr.git
+	shallow = true
+[submodule "upstream/key/micropython__micropython"]
+	path = upstream/key/micropython__micropython
+	url = https://github.com/micropython/micropython.git
+	shallow = true
+[submodule "upstream/key/adafruit__circuitpython"]
+	path = upstream/key/adafruit__circuitpython
+	url = https://github.com/adafruit/circuitpython.git
+	shallow = true
+[submodule "upstream/key/dbisu__pico-ducky"]
+	path = upstream/key/dbisu__pico-ducky
+	url = https://github.com/dbisu/pico-ducky.git
+	shallow = true
+[submodule "upstream/key/wokwi__rp2040js"]
+	path = upstream/key/wokwi__rp2040js
+	url = https://github.com/wokwi/rp2040js.git
+	shallow = true
+[submodule "upstream/rf/osmocom__rtl-sdr"]
+	path = upstream/rf/osmocom__rtl-sdr
+	url = https://github.com/osmocom/rtl-sdr.git
+	shallow = true
+[submodule "upstream/rf/pothosware__SoapySDR"]
+	path = upstream/rf/pothosware__SoapySDR
+	url = https://github.com/pothosware/SoapySDR.git
+	shallow = true
+[submodule "upstream/rf/AlexandreRouma__SDRPlusPlus"]
+	path = upstream/rf/AlexandreRouma__SDRPlusPlus
+	url = https://github.com/AlexandreRouma/SDRPlusPlus.git
+	shallow = true
+[submodule "upstream/rf/ptrkrysik__gr-gsm"]
+	path = upstream/rf/ptrkrysik__gr-gsm
+	url = https://github.com/ptrkrysik/gr-gsm.git
+	shallow = true
+[submodule "upstream/rf/steve-m__kalibrate-rtl"]
+	path = upstream/rf/steve-m__kalibrate-rtl
+	url = https://github.com/steve-m/kalibrate-rtl.git
+	shallow = true
+[submodule "upstream/rf/merbanan__rtl_433"]
+	path = upstream/rf/merbanan__rtl_433
+	url = https://github.com/merbanan/rtl_433.git
+	shallow = true
+[submodule "upstream/rf/gnuradio__gnuradio"]
+	path = upstream/rf/gnuradio__gnuradio
+	url = https://github.com/gnuradio/gnuradio.git
+	shallow = true
+[submodule "upstream/rf/jopohl__urh"]
+	path = upstream/rf/jopohl__urh
+	url = https://github.com/jopohl/urh.git
+	shallow = true
+[submodule "upstream/rf/meshtastic__firmware"]
+	path = upstream/rf/meshtastic__firmware
+	url = https://github.com/meshtastic/firmware.git
+	shallow = true
+[submodule "upstream/rf/meshtastic__python"]
+	path = upstream/rf/meshtastic__python
+	url = https://github.com/meshtastic/python.git
+	shallow = true
+[submodule "upstream/rf/wb2osz__direwolf"]
+	path = upstream/rf/wb2osz__direwolf
+	url = https://github.com/wb2osz/direwolf.git
+	shallow = true
+[submodule "upstream/ops/ansible__ansible"]
+	path = upstream/ops/ansible__ansible
+	url = https://github.com/ansible/ansible.git
+	shallow = true
+[submodule "upstream/ops/docker__compose"]
+	path = upstream/ops/docker__compose
+	url = https://github.com/docker/compose.git
+	shallow = true
+[submodule "upstream/ops/k3s-io__k3s"]
+	path = upstream/ops/k3s-io__k3s
+	url = https://github.com/k3s-io/k3s.git
+	shallow = true
+[submodule "upstream/ops/portainer__portainer"]
+	path = upstream/ops/portainer__portainer
+	url = https://github.com/portainer/portainer.git
+	shallow = true
+[submodule "upstream/ops/containrrr__watchtower"]
+	path = upstream/ops/containrrr__watchtower
+	url = https://github.com/containrrr/watchtower.git
+	shallow = true
+[submodule "upstream/ops/framps__raspiBackup"]
+	path = upstream/ops/framps__raspiBackup
+	url = https://github.com/framps/raspiBackup.git
+	shallow = true
+[submodule "upstream/ops/billw2__rpi-clone"]
+	path = upstream/ops/billw2__rpi-clone
+	url = https://github.com/billw2/rpi-clone.git
+	shallow = true
+[submodule "upstream/ops/balena-io__etcher"]
+	path = upstream/ops/balena-io__etcher
+	url = https://github.com/balena-io/etcher.git
+	shallow = true
+[submodule "upstream/ops/Botspot__pi-apps"]
+	path = upstream/ops/Botspot__pi-apps
+	url = https://github.com/Botspot/pi-apps.git
+	shallow = true
+[submodule "upstream/ops/MichaIng__DietPi"]
+	path = upstream/ops/MichaIng__DietPi
+	url = https://github.com/MichaIng/DietPi.git
+	shallow = true
