@@ -8,7 +8,7 @@ Signal interface, local security observations and direct downloads. **No app sto
 |---|---|---|
 | Windows 10/11 x64 | [Windows ZIP · 0.4.0](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-windows-x64-0.4.0.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
 | Android 12+ | [Android APK · 0.4.1](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-android-0.4.1.apk) | Native local monitor; floating navigation; Android limits apply |
-| iPhone / iPad | [Installable web edition](https://aureon-defender-houseofasher.vercel.app/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
+| iPhone / iPad | [Installable web edition](https://aureon-defender.vercel.app/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
 | macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-portable-source-0.4.1-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
 | Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-portable-source-0.4.1-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
 | Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.1.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
@@ -44,7 +44,7 @@ Close the process when finished. A Mac `.app` preview is not Apple Developer ID 
 
 ## iPhone / iPad web edition
 
-Open the [web edition](https://aureon-defender-houseofasher.vercel.app/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
+Open the [web edition](https://aureon-defender.vercel.app/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
 
 ## Verification
 
