@@ -21,6 +21,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .core import VERSION, Journal, Settings, atomic_write, data_dir, user_dir
+from .integrations import availability
 from .quarantine import Vault
 from .studio import PRESET_GROUPS, PRESETS, Studio, WIDGET_DEFAULT
 from .winmap import WINMAP
@@ -211,7 +212,7 @@ class Api:
         for cid, (status, how, src) in WINMAP.items():
             caps.setdefault(status, []).append({"id": cid, "how": how, "from": src})
         events = sorted(self.j.recent(80) + self.uj.recent(40), key=lambda e: e["t"], reverse=True)[:100]
-        return {"version": VERSION, "engine": {"alive": alive, **st}, "events": events,
+        return {"version": VERSION, "scan_job": self.scan_jobs().snapshot(), "integrations": availability(), "telemetry": self.telemetry_state(), "engine": {"alive": alive, **st}, "events": events,
                 "radar": load_json(data_dir() / "radar.json"), "phones": load_json(user_dir() / "phones.json"),
                 "devices": load_json(data_dir() / "devices.json") or load_json(user_dir() / "devices.json"),
                 "leaks": self.leaks_state(), "browsers": self.browsers_state(), "theme": self.theme(),
@@ -224,6 +225,22 @@ class Api:
                 "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"], "palette": v["palette"], "font": v["widget"]["font"],
                 "group": next((g for g, names in PRESET_GROUPS.items() if k in names), "")} for k, v in PRESETS.items()},
                 "widget": self.widget_cfg(), "settings": self.settings.load(), "winmap": caps}
+
+    _scan_jobs = None
+
+    @classmethod
+    def scan_jobs(cls):
+        from .scan_jobs import ScanJobs
+        if cls._scan_jobs is None:
+            cls._scan_jobs = ScanJobs()
+        return cls._scan_jobs
+
+    def telemetry_state(self):
+        try:
+            from .telemetry import collect
+            return collect()
+        except Exception as ex:
+            return {"error":str(ex)}
 
     _netpower_cache = (0, None)
     _assets_cache = (0, None)
@@ -435,13 +452,11 @@ class Api:
         if self.readonly and path not in LAN_ALLOWED:
             return 403, {"error": "The phone link is view-only. Change this on the laptop."}
         if path == "/api/interface":
-            if not isinstance(body, dict) or set(body) != {"palette", "reduced"} \
-                    or body.get("palette") not in ("signal", "frost", "studio") \
-                    or type(body.get("reduced")) is not bool:
-                return 400, {"error": "Choose a supported palette and a boolean motion preference."}
-            value = {"palette": body["palette"], "reduced": body["reduced"]}
-            atomic_write(user_dir() / "interface.json", json.dumps(value))
-            return 200, {"ui_appearance": value, "message": "Aureon appearance saved"}
+            if not isinstance(body,dict) or not {"palette","reduced"}.issubset(body) or not set(body).issubset({"palette","reduced","dock","cursor"}) or body.get("palette") not in ("signal","frost","studio") or type(body.get("reduced")) is not bool or body.get("dock","left") not in ("left","right","bottom") or body.get("cursor","system") not in ("system","lime","precision"):
+                return 400, {"error":"Choose supported app appearance options."}
+            value={"palette":body["palette"],"reduced":body["reduced"],**{k:body[k] for k in ("dock","cursor") if k in body}}
+            atomic_write(user_dir() / "interface.json",json.dumps(value))
+            return 200, {"ui_appearance":value,"message":"Aureon appearance saved"}
         if path == "/api/devices/sweep":
             alive, _ = engine_alive()
             if alive:
@@ -456,6 +471,33 @@ class Api:
         if path == "/api/devices/clear":
             ok = self.elevate(["devices", "clear"])
             return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to clear Aureon's device log."}
+        if path == "/api/scan/all":
+            from .scanner import Scanner
+            jobs = self.scan_jobs()
+            try:
+                state = jobs.start(Scanner(self.settings.load()), exclusions=[data_dir(), user_dir()])
+            except ValueError as ex:
+                return 409, {"error":str(ex)}
+            return 200, {"ok":True,"message":"Read-only scan started. Locked, inaccessible and linked files are excluded; findings require review.","scan":state}
+        if path == "/api/scan/cancel":
+            return 200, {"ok":True,"scan":self.scan_jobs().stop(),"message":"Cancellation requested; the current engine call may take up to two minutes."}
+        if path == "/api/scan/quarantine":
+            if body.get("confirm") is not True:
+                return 400, {"error":"Review findings and confirm quarantine first"}
+            results=self.scan_jobs().quarantine(body.get("ids"),self.vault)
+            return 200, {"ok":True,"results":results,"message":f"Quarantined {sum('quarantine_id' in r for r in results)} files. Review Quarantine to restore or permanently delete."}
+        if path == "/api/leaks/fix-all":
+            from .leaks import audit, USER_FIXABLE, fix
+            checks=audit();eligible=[c for c in checks if not c["ok"] and c["id"] in USER_FIXABLE]
+            unresolved=[c for c in checks if not c["ok"] and c["id"] not in USER_FIXABLE]
+            if body.get("confirm") is not True:
+                return 200, {"preview":True,"eligible":eligible,"unresolved":unresolved,"message":"These supported per-user fixes are reversible. Machine/admin and manual checks remain separate."}
+            results=[]
+            for c in eligible:
+                try:
+                    fix(c["id"]);results.append({"id":c["id"],"ok":True})
+                except OSError as ex:results.append({"id":c["id"],"ok":False,"error":str(ex)})
+            return 200, {"ok":True,"results":results,"remaining":audit(),"message":f"Applied {sum(r['ok'] for r in results)} per-user fixes. {len(unresolved)} settings need separate admin/manual review. Undo is available."}
         if path == "/api/leaks/fix":
             from .leaks import MACHINE_SAFE, USER_FIXABLE, fix
             cid = body.get("id", "")
@@ -513,18 +555,9 @@ class Api:
         if path == "/api/pick":
             return 200, {"paths": pick(body.get("kind", "files"), body.get("filter", ""))}
         if path == "/api/clean":
-            from .clean import clean_any
-            originals = user_dir() / "originals"
-            originals.mkdir(exist_ok=True)
-            results = []
-            for p in body.get("paths", []):
-                src = Path(p)
-                if src.is_file():
-                    shutil.copy2(src, originals / f"{int(time.time())}-{src.name}")      # undo copy
-                results += clean_any(src, in_place=True)
-            gone = sorted({r for x in results for r in x["removed"]})
-            msg = f"Cleaned {len(results)} file{'s' if len(results) != 1 else ''}" + (f": removed {', '.join(gone)}" if gone else "; nothing hidden was found")
-            return 200, {"ok": True, "message": msg, "results": results}
+            from .clean import clean_batch
+            result=clean_batch(body.get("paths", []))
+            return 200, {"ok":True,**result,"message":f"Created {len(result['results'])} clean copies; originals retained. {len(result['errors'])} errors, {result['skipped']} unsupported/skipped files. Metadata cleanup does not remove all fingerprints."}
         if path == "/api/secrets/scan":
             from .clean import next_steps
             from .noah import scan_secrets

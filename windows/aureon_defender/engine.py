@@ -96,9 +96,9 @@ class Engine:
     def on_file(self, path):
         if self.s.get("auto_clean_downloads") and path.parent.name.lower() == "downloads":
             from .clean import SUPPORTED, clean_file
-            if path.suffix.lower() in SUPPORTED:
+            if path.suffix.lower() in SUPPORTED and ".clean" not in path.stem:
                 try:
-                    res = clean_file(path, in_place=True)
+                    res = clean_file(path, in_place=False)
                     if res["removed"]:
                         self.j.add("info", "clean", f"Cleaned {path.name}", "Removed: " + ", ".join(res["removed"]))
                 except Exception:

@@ -20,7 +20,7 @@ public class DeviceTests extends Instrumentation {
  }
  public void onStart(){
   Bundle result=new Bundle();SharedPreferences p=getTargetContext().getSharedPreferences("guard",0);
-  boolean hadHashes=p.contains("hashes");Set<String> oldHashes=new HashSet<>(p.getStringSet("hashes",Collections.emptySet()));String oldResult=p.getString("file_result",null);
+  String oldDock=p.getString("nav_position",null);boolean hadHashes=p.contains("hashes");Set<String> oldHashes=new HashSet<>(p.getStringSet("hashes",Collections.emptySet()));String oldResult=p.getString("file_result",null);
   try{
    JSONObject r=Audit.run(getTargetContext());check(r.getInt("visible_package_count")>0,"No package visibility");
    check(r.getString("device").equals(android.os.Build.MODEL),"Device mismatch");
@@ -57,8 +57,13 @@ public class DeviceTests extends Instrumentation {
    java.io.ByteArrayOutputStream exported=new java.io.ByteArrayOutputStream();
    try(java.io.InputStream in=getTargetContext().getContentResolver().openInputStream(Uri.parse("content://org.aureon.defender.tests.fixtures/export"))){byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1)exported.write(b,0,n);}
    check(new JSONObject(exported.toString("UTF-8")).getInt("visible_package_count")>0,"Exported report invalid");
+   for(String pos:new String[]{"left","right","bottom","auto"}){p.edit().putString("nav_position",pos).commit();runOnMainSync(()->{try{java.lang.reflect.Method render=MainActivity.class.getDeclaredMethod("render");render.setAccessible(true);render.invoke(activity);}catch(Exception e){throw new RuntimeException(e);}});waitForIdleSync();runOnMainSync(()->{android.widget.LinearLayout dock=activity.getWindow().getDecorView().findViewWithTag("aureon-floating-nav");check(dock.getChildCount()==5,"Dock lost tabs: "+pos);check(dock.getWidth()>0&&dock.getHeight()>0,"Dock collapsed: "+pos);
+     android.view.View root=activity.getWindow().getDecorView();android.graphics.Bitmap image=android.graphics.Bitmap.createBitmap(root.getWidth(),root.getHeight(),android.graphics.Bitmap.Config.ARGB_8888);root.draw(new android.graphics.Canvas(image));try(java.io.FileOutputStream out=new java.io.FileOutputStream(new java.io.File(getTargetContext().getExternalFilesDir(null),"qa-dock-"+pos+".png"))){image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out);}catch(Exception ex){throw new RuntimeException(ex);}finally{image.recycle();}});}
+   String cleaned=LocalTools.cleanImage(getTargetContext(),Uri.parse("content://org.aureon.defender.tests.fixtures/photo"),Uri.parse("content://org.aureon.defender.tests.fixtures/export"));check(cleaned.contains("Original retained"),"Image cleanup did not report preservation");
+   try(java.io.InputStream in=getTargetContext().getContentResolver().openInputStream(Uri.parse("content://org.aureon.defender.tests.fixtures/export"))){android.graphics.Bitmap image=android.graphics.BitmapFactory.decodeStream(in);check(image!=null&&image.getWidth()==3&&image.getHeight()==4,"Clean image orientation/content dimensions wrong");image.recycle();}
+   try(java.io.InputStream in=getTargetContext().getContentResolver().openInputStream(Uri.parse("content://org.aureon.defender.tests.fixtures/export"))){java.io.ByteArrayOutputStream data=new java.io.ByteArrayOutputStream();byte[] chunk=new byte[4096];int n;while((n=in.read(chunk))!=-1)data.write(chunk,0,n);check(!data.toString("ISO-8859-1").contains("AUREON-PRIVATE-FIXTURE"),"Original image metadata copied");}
    result.putString("summary",passed+" on-device assertions passed");finish(Activity.RESULT_OK,result);
   }catch(Throwable e){result.putString("failure",e.toString());result.putInt("passed",passed);finish(Activity.RESULT_CANCELED,result);}
-  finally{SharedPreferences.Editor edit=p.edit();if(hadHashes)edit.putStringSet("hashes",oldHashes);else edit.remove("hashes");if(oldResult==null)edit.remove("file_result");else edit.putString("file_result",oldResult);edit.commit();}
+  finally{SharedPreferences.Editor edit=p.edit();if(oldDock==null)edit.remove("nav_position");else edit.putString("nav_position",oldDock);if(hadHashes)edit.putStringSet("hashes",oldHashes);else edit.remove("hashes");if(oldResult==null)edit.remove("file_result");else edit.putString("file_result",oldResult);edit.commit();}
  }
 }

@@ -6,16 +6,28 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 | Device | Direct distribution | Scope |
 |---|---|---|
-| Windows 10/11 x64 | [Windows ZIP · 0.4.0](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-windows-x64-0.4.0.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
-| Android 12+ | [Android APK · 0.4.1](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-android-0.4.1.apk) | Native local monitor; floating navigation; Android limits apply |
+| Windows 10/11 x64 | [Windows ZIP · 0.4.2](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-windows-x64-0.4.2.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
+| Android 12+ | [Android APK · 0.4.2](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-android-0.4.2.apk) | Native local monitor; floating navigation; Android limits apply |
 | iPhone / iPad | [Installable web edition](https://aureon-defender.vercel.app/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
-| macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-portable-source-0.4.1-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
-| Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-portable-source-0.4.1-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
-| Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.1.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
+| macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-portable-source-0.4.2-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
+| Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-portable-source-0.4.2-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
+| Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.2.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
 
-[Release notes and all downloads](https://github.com/shep95/aureon.defender/releases/tag/v0.4.1) · [SHA-256 checksums](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/SHA256SUMS.txt)
+[Release notes and all downloads](https://github.com/shep95/aureon.defender/releases/tag/v0.4.2) · [SHA-256 checksums](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/SHA256SUMS.txt)
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
+
+## What is new in 0.4.2
+
+- Device-aware landing page, three visual directions, live GitHub release notes and offline fallback.
+- Windows read-only full scan, cancellation/findings, reviewed quarantine and a previewed Fix all for reversible per-user settings.
+- Metadata cleanup creates separate copies and reports unsupported/error cases; does not promise all fingerprints removed.
+- Android granted-folder hash checks and JPEG/PNG clean-copy export, preserving orientation and originals.
+- Battery precision/source definitions and observed upload/download Mbps; external speed test is explicit and transfers data.
+- Full-artwork adaptive Android and multi-size Windows/web icons; dock placements, app pointer styles and appearance choices.
+- Optional separately installed ClamAV adapter (disabled by default) and expanded Pi tool discovery. Other researched tools are not silently installed.
+
+[Research, algorithms, creative options and exact platform matrix](docs/DEFENSIVE-INTEGRATIONS-AND-CUSTOMIZATION.md).
 
 ## Windows
 
@@ -44,12 +56,12 @@ Close the process when finished. A Mac `.app` preview is not Apple Developer ID 
 
 ## iPhone / iPad web edition
 
-Open the [web edition](https://aureon-defender.vercel.app/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
+Open the [web edition](https://aureon-defender.vercel.app/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Use Web tools; the landing page recommends downloads and checks public GitHub release notes while open. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
 
 ## Verification
 
-- Windows: 101 tests ran successfully before packaging; one phone-connected test was skipped while disconnected. All 15 installed tabs were checked with live local state and no JavaScript errors. Isolated responsive checks covered 45 tab/width combinations.
-- Android: 10 rule/file-check assertions and 19 Pixel 9 instrumentation assertions passed, including all five navigation tabs, header safe-area clearance, dock placement and local file/report flows.
+- Windows: 108 tests passed on the expanded release, plus the final eight focused workflow tests (including one added after the full run). A packaged inert-file scan returned the expected review exit code 3. All 15 installed tabs were checked with live local state and no JavaScript errors. Isolated responsive checks covered 45 tab/width combinations.
+- Android: 10 rule/file-check assertions and 30 Pixel 9 instrumentation assertions passed, including navigation, safe insets, dock choices, file/report flows and oriented metadata-clean image output.
 - Portable preview: two local tests passed. Native CI and packaged-executable checks have not run because GitHub blocked hosted jobs before execution. No native Mac/Linux binary is claimed as tested or released.
 - Web edition: local hash, import validation, report rendering and offline-cache tests are recorded in CI/local release checks.
 

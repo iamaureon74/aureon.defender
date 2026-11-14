@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.4.0"
+VERSION = "0.4.2"
 APP = "aureon.defender"
 
 
@@ -48,6 +48,7 @@ DEFAULTS = {
     "auto_quarantine": True,            # malicious verdicts only; suspicious = alert
     "use_defender_engine": True,
     "use_yara": True,
+    "use_clamav": False,
     "canary": True,
     "canary_suspend_writer": False,     # opt-in: suspend the top unsigned writer on canary hit
     "network_monitor": True,

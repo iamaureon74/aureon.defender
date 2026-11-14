@@ -1,4 +1,4 @@
-"""Metadata cleaner for every common file type. Lossless where the format allows; the original is kept unless told otherwise.
+"""Best-effort removal of selected metadata fields. Not universal fingerprint removal.
 
 Layers removed:
   photos      JPEG (EXIF incl. GPS / camera serial, XMP, IPTC, comments, maker notes), PNG (text, EXIF, time),
@@ -98,6 +98,8 @@ def _resave(path):
     """TIFF/HEIC: re-encode without metadata (lossy for HEIC only)."""
     from PIL import Image
     with Image.open(path) as im:
+        if getattr(im, "n_frames", 1) > 1:
+            raise ValueError("Multi-page images require a format-aware tool; original retained")
         buf = io.BytesIO()
         fmt = "TIFF" if Path(path).suffix.lower() in (".tif", ".tiff") else "JPEG"
         im.convert("RGB" if fmt == "JPEG" else im.mode).save(buf, fmt, quality=95)
@@ -169,7 +171,10 @@ def _ooxml(path):
     removed = set()
     buf = io.BytesIO()
     with zipfile.ZipFile(path) as zin, zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zout:
-        for item in zin.infolist():
+        items=zin.infolist()
+        if len(items)>10000 or sum(i.file_size for i in items)>128*1024*1024:
+            raise ValueError("Expanded document exceeds cleanup limits")
+        for item in items:
             data = zin.read(item.filename)
             name = item.filename.lower()
             if name == "docprops/core.xml":
@@ -239,6 +244,7 @@ def _mp4(data):
                 return
             if typ in (b"udta", b"meta") and depth >= 1:
                 data[i + 4:i + 8] = b"free"
+                data[i + hdr:i + size] = b"\0" * (size - hdr)
                 removed.append({b"udta": "device and location data", b"meta": "metadata box"}[typ])
             elif typ in (b"moov", b"trak", b"mdia"):
                 walk(i + hdr, i + size, depth + 1)
@@ -254,10 +260,14 @@ HANDLERS = {".jpg": _jpeg, ".jpeg": _jpeg, ".png": _png, ".webp": _webp, ".gif":
 def clean_file(path, in_place=False, out=None):
     """Returns {file, written, removed: [...], saved_bytes}. Raises ValueError for unsupported files."""
     p = Path(path)
+    if p.is_symlink() or not p.is_file():
+        raise ValueError("Choose a regular file, not a link")
     ext = p.suffix.lower()
     if ext not in SUPPORTED:
         raise ValueError(f"{ext or 'this file'} isn't a supported type")
     before = p.stat().st_size
+    if before > 128 * 1024 * 1024:
+        raise ValueError("File exceeds the 128 MiB cleanup limit; original retained")
     if ext in (".docx", ".xlsx", ".pptx", ".docm", ".xlsm", ".pptm", ".odt", ".ods", ".odp"):
         new, removed = _ooxml(p)
     elif ext in (".tif", ".tiff", ".heic"):
@@ -271,8 +281,46 @@ def clean_file(path, in_place=False, out=None):
         shutil.copystat(p, tmp)
         os.replace(tmp, p)
     else:
-        dst.write_bytes(new)
-    return {"file": str(p), "written": str(dst), "removed": removed, "saved_bytes": before - len(new)}
+        # Never overwrite an existing clean copy or an explicitly supplied original path.
+        if dst.resolve() == p.resolve():
+            raise ValueError("Output must differ from the original")
+        if dst.exists():
+            import uuid
+            dst = dst.with_name(dst.stem + '-' + uuid.uuid4().hex[:8] + dst.suffix)
+        with dst.open('xb') as f:
+            f.write(new)
+    return {"file": str(p), "written": str(dst), "removed": removed, "saved_bytes": before - len(new),
+            "scope": "Selected known metadata fields only; embedded content, watermarks, filesystem records and all fingerprints are not removed.",
+            "limitations": "PDF compressed/object-stream metadata and embedded attachments may remain. Video track identifiers/timestamps may remain. Review documents for visible names, comments and embedded content."}
+
+
+def clean_batch(paths, limit=2000):
+    """Create separate copies, enumerate failures, bound traversal, and preserve originals."""
+    if not isinstance(paths,list) or not paths or len(paths)>100:
+        raise ValueError("Choose 1 to 100 files or folders")
+    results,errors,skipped=[],[],0
+    count=0
+    def files(t):
+        if t.is_file():
+            yield t
+        elif t.is_dir() and not t.is_symlink():
+            for folder,dirs,names in os.walk(t,followlinks=False):
+                dirs[:]=[d for d in dirs if not (Path(folder)/d).is_symlink() and not (hasattr(Path(folder)/d,'is_junction') and (Path(folder)/d).is_junction())]
+                for n in names:yield Path(folder)/n
+        else:raise ValueError("File or folder unavailable")
+    for target in paths:
+        try:
+            for f in files(Path(target).expanduser()):
+                if count>=limit:break
+                count+=1
+                if f.suffix.lower() not in SUPPORTED or '.clean' in f.stem or f.suffix.lower()=='.heic':
+                    skipped+=1;continue
+                try:results.append(clean_file(f,in_place=False))
+                except (ValueError,OSError,zipfile.BadZipFile,struct.error,IndexError,RuntimeError) as ex:
+                    errors.append({"file":str(f),"error":str(ex)})
+        except (ValueError,OSError) as ex:errors.append({"file":str(target),"error":str(ex)})
+        if count>=limit:break
+    return {"results":results,"errors":errors,"skipped":skipped,"limit":limit,"limit_reached":count>=limit,"originals_retained":True}
 
 
 def clean_any(target, in_place=False, limit=2000):

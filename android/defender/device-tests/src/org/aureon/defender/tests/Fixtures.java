@@ -14,6 +14,7 @@ public class Fixtures extends ContentProvider {
  public ParcelFileDescriptor openFile(Uri u,String mode) throws FileNotFoundException {
   String name=u.getLastPathSegment();String content;
   if("export".equals(name))return ParcelFileDescriptor.open(new File(getContext().getCacheDir(),"export"),mode.contains("w")?ParcelFileDescriptor.MODE_CREATE|ParcelFileDescriptor.MODE_TRUNCATE|ParcelFileDescriptor.MODE_READ_WRITE:ParcelFileDescriptor.MODE_READ_ONLY);
+  if("photo".equals(name)){File f=new File(getContext().getCacheDir(),"photo.jpg");android.graphics.Bitmap b=android.graphics.Bitmap.createBitmap(4,3,android.graphics.Bitmap.Config.ARGB_8888);b.eraseColor(android.graphics.Color.RED);try{try(FileOutputStream out=new FileOutputStream(f)){b.compress(android.graphics.Bitmap.CompressFormat.JPEG,95,out);}android.media.ExifInterface exif=new android.media.ExifInterface(f.getAbsolutePath());exif.setAttribute(android.media.ExifInterface.TAG_ARTIST,"AUREON-PRIVATE-FIXTURE");exif.setAttribute(android.media.ExifInterface.TAG_ORIENTATION,"6");exif.saveAttributes();return ParcelFileDescriptor.open(f,ParcelFileDescriptor.MODE_READ_ONLY);}catch(IOException e){throw new FileNotFoundException(e.toString());}finally{b.recycle();}}
   if("abc".equals(name))content="abc";
   else if("hashes".equals(name))content="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n";
   else if("invalid".equals(name))content="not-a-hash";

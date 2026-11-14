@@ -33,7 +33,7 @@ def draw(size, detail=True):
     S = size * 4
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    pad = S * 0.04
+    pad = 0
     d.rounded_rectangle((pad, pad, S - pad, S - pad), radius=S * 0.22, fill=VOID + (255,), outline=RIM + (255,), width=max(2, S // 96))
     # warm horizon glow behind the mark
     glow = Image.new("RGBA", (S, S), (0, 0, 0, 0))
@@ -69,7 +69,9 @@ def main():
     draw(256).save(ui / "icon.png")
     for n in (180, 192, 512):
         draw(n).save(ui / f"icon-{n}.png")
-    draw(512).save(ui / "icon-maskable-512.png")
+    opaque = Image.new("RGBA", (512, 512), VOID + (255,))
+    opaque.alpha_composite(draw(512))
+    opaque.convert("RGB").save(ui / "icon-maskable-512.png")
     preview = Image.new("RGBA", (sum(sizes) + 12 * len(sizes), 270), (30, 28, 30, 255))
     x = 8
     for s, f in zip(sizes, frames):

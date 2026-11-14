@@ -12,8 +12,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-SERVICES = ("usbguard", "crowdsec", "suricata", "auditd")
-TOOLS = ("usbguard", "aide", "lynis", "cscli", "suricata", "zeek")
+SERVICES = ("usbguard", "crowdsec", "suricata", "auditd", "clamav-daemon", "pihole-FTL")
+TOOLS = ("usbguard", "aide", "lynis", "cscli", "suricata", "zeek", "clamscan", "osqueryi", "exiftool", "pihole")
 
 
 def load_report(path):

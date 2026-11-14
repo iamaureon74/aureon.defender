@@ -307,6 +307,14 @@ class Scanner:
                 res["score"] = 100
                 res["reasons"].append(f"Microsoft Defender engine: {detail}")
         score = min(100, sum(s for s, _ in hits))
+        if self.settings.get("use_clamav", False):
+            from .integrations import clamav_scan
+            state, detail = clamav_scan(path)
+            res["engines"]["clamav"] = state
+            if state == "threat":
+                res["verdict"] = "malicious"
+                res["score"] = 100
+                res["reasons"].append("ClamAV: " + detail)
         res["score"] = max(res["score"], score)
         res["reasons"] += [r for _, r in hits]
         if res["verdict"] != "malicious":

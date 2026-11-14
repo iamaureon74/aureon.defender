@@ -61,7 +61,7 @@ public final class Audit {
         if(um!=null)for(UsbDevice d:um.getDeviceList().values())usb.put(new JSONObject().put("vendor",d.getVendorId()).put("product",d.getProductId()).put("device_class",d.getDeviceClass()));
         BatteryManager bm=(BatteryManager)c.getSystemService(Context.BATTERY_SERVICE);
         int battery=bm==null?-1:bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        report.put("version",1).put("app_version","0.4.1").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
+        report.put("version",1).put("app_version","0.4.2").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
           .put("device",Build.MODEL).put("android_api",Build.VERSION.SDK_INT).put("secure_lock",secure)
           .put("validated_network",internet).put("visible_package_count",current.size()).put("permission_reviews",apps)
           .put("added_packages",added).put("removed_packages",removed).put("baseline_initialized",previous!=null)
