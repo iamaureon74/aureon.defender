@@ -1,5 +1,31 @@
 [
   {
+    "tag_name": "v0.4.2",
+    "name": "Signal 0.4.2 \u2014 clearer downloads, scan review and your interface",
+    "body": "Aureon Signal 0.4.2 \u2014 direct downloads, no app stores.\n\nLanding page and installable web tools: https://aureon-defender.vercel.app/\n\nWindows: read-only full accessible fixed-drive scan, progress/cancel, reviewed findings and quarantine; previewed Fix all for supported reversible per-user privacy settings; original-preserving metadata copies and visible failures; battery precision/source and observed upload/download traffic; dock placement and app cursor styles; optional separately installed ClamAV scanner (disabled by default).\n\nAndroid 12+: granted-folder SHA-256 checks against an imported list, JPEG/PNG metadata-clean PNG copies with orientation preserved, defined battery and observed traffic readings, bottom/left/right/automatic tablet docks, app-scoped external-mouse pointer styles, larger dock labels and Signal/Frost/Copper appearance. New adaptive icon has a full dark artwork background.\n\nPlatforms do not have identical OS privileges. Android folder checking is not Windows Defender or a full-system antivirus; the web edition provides selected-file hashes and report reading only. Metadata removal does not remove all fingerprints, visible content, steganography, watermarks or previously shared copies. Originals are kept by the new cleanup workflows. Bulk privacy fixes leave admin/manual items visible. No automatic permanent deletion is introduced.\n\nMac/Linux native builds remain unavailable because GitHub's account billing lock blocked hosted jobs before execution. A limited Python source preview is attached. Pi discovery is not proof of enforcement. Research and capability matrix: https://github.com/shep95/aureon.defender/blob/main/docs/DEFENSIVE-INTEGRATIONS-AND-CUSTOMIZATION.md\n\nVerification: expanded Windows suite 108 passed plus 8 final focused workflow tests (including one additional test); packaged inert-file scan returned expected review exit code 3; UI integrity matched. Dashboard: 45 tab/width checks plus 60 dock/width/tab checks. Android: 10 rule/file assertions and 30 Pixel assertions including dock choices and oriented metadata-clean output. Landing: 17 viewports, enlarged text, OS recommendations, release update notice, untrusted notes rendering, API failure fallback and offline reload. These are not every-device or multi-day endurance guarantees. Safari/iPhone rendering was not tested.\n\nUnsigned Windows publisher. Verify SHA256SUMS.txt and review OS prompts. No signing keys, credentials or personal runtime data are included. No App Store, Google Play or Microsoft Store is required. Updates are manually installed; the landing page shows public release changes.\n",
+    "html_url": "https://github.com/shep95/aureon.defender/releases/tag/untagged-d25c0d7f34d069ae8581",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2026-11-14T23:39:08.965343+00:00",
+    "assets": [
+      {
+        "name": "aureon-defender-android-0.4.2.apk",
+        "size": 94917,
+        "browser_download_url": "https://github.com/shep95/aureon.defender/releases/download/untagged-d25c0d7f34d069ae8581/aureon-defender-android-0.4.2.apk"
+      },
+      {
+        "name": "aureon-defender-portable-source-0.4.2-preview.zip",
+        "size": 13691,
+        "browser_download_url": "https://github.com/shep95/aureon.defender/releases/download/untagged-d25c0d7f34d069ae8581/aureon-defender-portable-source-0.4.2-preview.zip"
+      },
+      {
+        "name": "aureon-defender-windows-x64-0.4.2.zip",
+        "size": 27089221,
+        "browser_download_url": "https://github.com/shep95/aureon.defender/releases/download/untagged-d25c0d7f34d069ae8581/aureon-defender-windows-x64-0.4.2.zip"
+      }
+    ]
+  },
+  {
     "url": "https://api.github.com/repos/shep95/aureon.defender/releases/445645804",
     "assets_url": "https://api.github.com/repos/shep95/aureon.defender/releases/445645804/assets",
     "upload_url": "https://uploads.github.com/repos/shep95/aureon.defender/releases/445645804/assets{?name,label}",
