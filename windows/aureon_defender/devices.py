@@ -67,6 +67,15 @@ def _reg(path, value, root=None):
         return None
 
 
+BUILTIN_CONTAINER = "{00000000-0000-0000-ffff-ffffffffffff}"
+
+
+def is_builtin(dev_id):
+    """Parts inside the laptop share Windows' 'this computer' container id; external devices get their own."""
+    c = _reg(ENUM + "\\" + dev_id, "ContainerID")
+    return isinstance(c, str) and c.lower() == BUILTIN_CONTAINER
+
+
 def describe(dev_id):
     base = ENUM + "\\" + dev_id
     name = _reg(base, "FriendlyName") or _reg(base, "DeviceDesc") or dev_id
@@ -132,7 +141,9 @@ def live_log(path=None, days=None):
 
 def prune(path=None, days=365):
     p = Path(path or (data_dir() / "devices.jsonl"))
-    keep = live_log(p, days)
+    if days < 0:
+        raise ValueError("retention days must be nonnegative")
+    keep = [] if days == 0 else live_log(p, days)
     atomic_write(p, "".join(json.dumps(e) + "\n" for e in keep))
     return len(keep)
 

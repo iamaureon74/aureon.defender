@@ -7,9 +7,9 @@ no account.
 
 ## Install
 
-1. Download [`release/aureon.defender-0.2.0-win64.zip`](release/) and check it against the `.sha256` file next to it.
+1. Download [`release/aureon-defender-windows-x64-0.4.0.zip`](https://github.com/shep95/aureon.defender/releases/tag/v0.4.1) and check it against the `.sha256` file next to it.
 2. Unzip it anywhere, open the `aureon.defender` folder and run `aureon.defender.exe install`, then approve the
-   administrator prompt. SmartScreen will warn because the app isn't code-signed yet: *More info → Run anyway*.
+   administrator prompt. The publisher is not code-signed; Windows may warn. Verify the source and release hash before deciding whether to install.
 3. The dashboard opens. The engine now starts with Windows as SYSTEM and restarts itself if anything stops it.
 
 To update, run `install` from a newer zip: it replaces the installed copy and waits for the new engine to report.

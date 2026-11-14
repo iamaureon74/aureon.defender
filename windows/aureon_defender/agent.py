@@ -8,8 +8,10 @@ Host header pinned (stops DNS-rebinding), JSON-only POSTs (stops cross-site form
 """
 import ctypes
 import json
+import re
 import os
 import secrets
+import shutil
 import subprocess
 import sys
 import threading
@@ -25,6 +27,51 @@ from .winmap import WINMAP
 
 HERE = Path(__file__).resolve().parent
 NOWIN = 0x08000000
+
+
+def readable(pal):
+    """Wallpaper colours made usable for UI: deep background, lifted surface, clear accent, light text."""
+    def rgb(h):
+        return [int(h[i:i + 2], 16) for i in (1, 3, 5)]
+
+    def hx(c):
+        return "#%02x%02x%02x" % tuple(max(0, min(255, int(v))) for v in c)
+
+    def lum(c):
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    bg, sf, ac, tx = (rgb(h) for h in pal)
+    k = 22 / max(lum(bg), 1) if lum(bg) > 22 else 1           # keep the background dark
+    bg = [v * k for v in bg]
+    sf = [b + (s - b) * 0.5 + 10 for b, s in zip(bg, sf)]
+    if lum(ac) < 125:                                         # accent must stand out on dark
+        m = 150 / max(lum(ac), 1)
+        ac = [min(255, v * m) for v in ac]
+    if lum(tx) < 200:
+        tx = [t + (255 - t) * 0.75 for t in tx]
+    return [hx(bg), hx(sf), hx(ac), hx(tx)]
+
+
+PICK_PS = r"""
+Add-Type -AssemblyName System.Windows.Forms
+$owner = New-Object System.Windows.Forms.Form -Property @{TopMost=$true; ShowInTaskbar=$false; WindowState='Minimized'}
+if ($env:AUR_KIND -eq 'folder') {
+  $d = New-Object System.Windows.Forms.FolderBrowserDialog -Property @{Description='Choose a folder for aureon.defender'; UseDescriptionForTitle=$true}
+  if ($d.ShowDialog($owner) -eq 'OK') { $d.SelectedPath }
+} else {
+  $d = New-Object System.Windows.Forms.OpenFileDialog -Property @{Multiselect=$true; Title='Choose files for aureon.defender'}
+  if ($env:AUR_FILTER) { $d.Filter = $env:AUR_FILTER }
+  if ($d.ShowDialog($owner) -eq 'OK') { $d.FileNames }
+}
+"""
+
+
+def pick(kind="files", flt=""):
+    """The normal Windows file/folder picker, so nobody has to type a path."""
+    import subprocess as sp
+    env = dict(os.environ, AUR_KIND=kind, AUR_FILTER=flt)
+    out = sp.run(["powershell", "-NoProfile", "-STA", "-Command", PICK_PS], capture_output=True, text=True, env=env,
+                 timeout=600, creationflags=NOWIN).stdout
+    return [l.strip() for l in out.splitlines() if l.strip()]
 
 
 # ---------------- notifications ----------------
@@ -137,7 +184,7 @@ def phone_events(old, new):
 
 
 # ---------------- HTTP API ----------------
-LAN_ALLOWED = {"/api/scan", "/api/phones/scan", "/api/radar", "/api/devices/sweep"}
+LAN_ALLOWED = {"/api/scan", "/api/phones/scan", "/api/radar", "/api/devices/sweep", "/api/assets/scan"}
 
 
 def load_json(p, default=None):
@@ -168,10 +215,61 @@ class Api:
                 "radar": load_json(data_dir() / "radar.json"), "phones": load_json(user_dir() / "phones.json"),
                 "devices": load_json(data_dir() / "devices.json") or load_json(user_dir() / "devices.json"),
                 "leaks": self.leaks_state(), "browsers": self.browsers_state(), "theme": self.theme(),
+                "hardware": load_json(user_dir() / "hardware.json"), "harden": self.harden_state(),
+                "controls": self.controls_state(), "live": self.live_state(), "vault": {"exists": self.pwvault().exists(), "unlocked": self.vault_pin is not None},
+                "catalog": self.catalog_state(),
+                "sentry": self.sentry_state(), "netpower": self.netpower_state(), "assets": self.assets_state(),
                 "phone_link": self.lan_info(), "readonly": self.readonly,
+                "ui_appearance": load_json(user_dir() / "interface.json"),
                 "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"], "palette": v["palette"], "font": v["widget"]["font"],
                 "group": next((g for g, names in PRESET_GROUPS.items() if k in names), "")} for k, v in PRESETS.items()},
                 "widget": self.widget_cfg(), "settings": self.settings.load(), "winmap": caps}
+
+    _netpower_cache = (0, None)
+    _assets_cache = (0, None)
+
+    def sentry_state(self):
+        from . import sentry
+        try:
+            return sentry.collect()
+        except Exception as ex:
+            return {"error": str(ex)}
+
+    def netpower_state(self):
+        t, val = Api._netpower_cache
+        if time.time() - t > 60 or val is None:
+            from . import powerline, wifi_shield
+            try:
+                val = {"wifi": wifi_shield.status(), "powerline": powerline.audit()}
+                from aureon.security_node import load_report as load_node_report
+                node_report = core.data_dir() / "security-node.json"
+                if node_report.exists():
+                    try:
+                        val["security_node"] = load_node_report(node_report)
+                    except (ValueError, OSError, KeyError, TypeError) as ex:
+                        val["security_node"] = {"error": str(ex)}
+                from aureon.infrastructure import load_report
+                inventory = core.data_dir() / "infrastructure.json"
+                if inventory.exists():
+                    try:
+                        val["infrastructure"] = load_report(inventory, inventory.with_name("infrastructure-telemetry.jsonl"))
+                    except (ValueError, OSError, TypeError) as ex:
+                        val["infrastructure"] = {"error": str(ex)}
+            except Exception as ex:
+                val = {"error": str(ex)}
+            Api._netpower_cache = (time.time(), val)
+        return val
+
+    def assets_state(self):
+        t, val = Api._assets_cache
+        if time.time() - t > 30 or val is None:
+            from . import assets
+            try:
+                val = {"devices": assets.registry()}
+            except Exception as ex:
+                val = {"error": str(ex)}
+            Api._assets_cache = (time.time(), val)
+        return val
 
     def leaks_state(self):
         from .leaks import audit
@@ -192,10 +290,126 @@ class Api:
             Api._browsers_cache = (time.time(), val)
         return val
 
+    _wall_cache = (None, None)
+
     def theme(self):
-        name = (load_json(user_dir() / "agent_prefs.json", {}) or {}).get("theme", "Ember")
+        """The app's colours: a chosen look, or (default) sampled from the actual desktop wallpaper's pixels."""
+        name = (load_json(user_dir() / "agent_prefs.json", {}) or {}).get("theme", "Wallpaper")
+        if name == "Wallpaper":
+            from .studio import current_wallpaper
+            wp = current_wallpaper()
+            try:
+                sig = (wp, os.path.getmtime(wp)) if wp else None
+            except OSError:
+                sig = None
+            if sig and Api._wall_cache[0] == sig:
+                return Api._wall_cache[1]
+            if sig:
+                try:
+                    from .noah import palette_from_image
+                    pal = readable(palette_from_image(wp))
+                    t = {"name": "Wallpaper", "palette": pal, "accent": pal[2], "mode": "dark", "source": wp}
+                    Api._wall_cache = (sig, t)
+                    return t
+                except Exception:
+                    pass
+            name = "Ember"
         p = PRESETS.get(name) or PRESETS["Ember"]
         return {"name": name, "palette": p["palette"], "accent": p["accent"], "mode": p["mode"]}
+
+    vault_pin = None
+    vault_until = 0
+    _controls_cache = (0, None)
+    _catalog_cache = (0, None)
+    _live_cache = (0, None)
+
+    def pwvault(self):
+        from .vault import Vault
+        return Vault()
+
+    def _pin(self):
+        if self.vault_pin and time.time() < Api.vault_until:
+            Api.vault_until = time.time() + 300              # stays open 5 minutes after last use
+            return self.vault_pin
+        Api.vault_pin = None
+        raise PermissionError("the vault is locked")
+
+    def controls_state(self):
+        t, val = Api._controls_cache
+        if time.time() - t > 30 or val is None:
+            from . import controls as c
+            try:
+                val = {"telemetry": c.telemetry_state(), "usb_blocked": c.usb_storage_blocked(), "wifi_allowlist": c.wifi_filters()["denyall"],
+                       "saved_networks": len(c.saved_networks()), "plugged": c.plugged_devices(), "bt_kinds": c.BT_KINDS}
+            except Exception as ex:
+                val = {"error": str(ex)}
+            Api._controls_cache = (time.time(), val)
+        return val
+
+    def catalog_state(self):
+        t, val = Api._catalog_cache
+        if time.time() - t > 300 or val is None:
+            from .browsers import catalog, installed_ids
+            from .noah import browsers as present
+            try:
+                inst = installed_ids()
+                names = {b["name"].lower() for b in present()}
+                rows = catalog(inst)
+                for r in rows:
+                    r["installed"] = r["installed"] or r["name"].lower() in names
+                val = rows
+            except Exception:
+                val = []
+            Api._catalog_cache = (time.time(), val)
+        return val
+
+    def live_state(self):
+        """WiFi, Bluetooth and plugged-in devices for the overview (cheap; cached 8 s)."""
+        t, val = Api._live_cache
+        if time.time() - t < 8 and val is not None:
+            return val
+        import subprocess as sp
+        wifi = {}
+        try:
+            out = sp.run(["netsh", "wlan", "show", "interfaces"], capture_output=True, text=True, timeout=10, creationflags=NOWIN).stdout
+            g = lambda k: (re.search(rf"^\s*{k}\s*:\s*(.+)$", out, re.M) or [None, None])[1]
+            wifi = {"ssid": g("SSID"), "signal": g("Signal"), "state": g("State"), "auth": g("Authentication"), "band": g("Band")}
+        except Exception:
+            pass
+        from .devices import describe, present_ids, tracked
+        bt, other = [], []
+        for i in present_ids():
+            if not tracked(i):
+                continue
+            from .devices import is_builtin
+            if is_builtin(i) and not i.upper().startswith(("BTHENUM", "BTHLE")):
+                continue
+            info = describe(i)
+            from .devices import useful
+            if not useful(info["name"], info["category"]):
+                continue
+            if i.upper().startswith(("BTHENUM\\", "BTHLE\\DEV_")):
+                if info["name"] not in bt:
+                    bt.append(info["name"])
+            elif info["category"] in ("Storage", "Phone / media device", "Camera", "Audio", "Display", "Keyboard", "Mouse") and info["name"] not in [o["name"] for o in other]:
+                other.append({"name": info["name"], "category": info["category"]})
+        val = {"wifi": wifi, "bluetooth": bt, "devices": other[:12]}
+        Api._live_cache = (time.time(), val)
+        return val
+
+    _harden_cache = (0, None)
+
+    def harden_state(self):
+        t, val = Api._harden_cache
+        if time.time() - t > 120 or val is None:
+            try:
+                from .harden import plan, score
+                items = plan(settings=self.settings.load())
+                val = {"score": score(items), "items": items}
+            except Exception as ex:
+                val = {"score": None, "items": [], "error": str(ex)}
+            Api._harden_cache = (time.time(), val)
+        return val
 
     def lan_info(self):
         prefs = load_json(user_dir() / "agent_prefs.json", {}) or {}
@@ -220,6 +434,14 @@ class Api:
         s = self.studio
         if self.readonly and path not in LAN_ALLOWED:
             return 403, {"error": "The phone link is view-only. Change this on the laptop."}
+        if path == "/api/interface":
+            if not isinstance(body, dict) or set(body) != {"palette", "reduced"} \
+                    or body.get("palette") not in ("signal", "frost", "studio") \
+                    or type(body.get("reduced")) is not bool:
+                return 400, {"error": "Choose a supported palette and a boolean motion preference."}
+            value = {"palette": body["palette"], "reduced": body["reduced"]}
+            atomic_write(user_dir() / "interface.json", json.dumps(value))
+            return 200, {"ui_appearance": value, "message": "Aureon appearance saved"}
         if path == "/api/devices/sweep":
             alive, _ = engine_alive()
             if alive:
@@ -288,8 +510,174 @@ class Api:
             from .noah import brightness_set
             ok = brightness_set(body.get("level", 50))
             return (200 if ok else 400), {"ok": ok}
+        if path == "/api/pick":
+            return 200, {"paths": pick(body.get("kind", "files"), body.get("filter", ""))}
+        if path == "/api/clean":
+            from .clean import clean_any
+            originals = user_dir() / "originals"
+            originals.mkdir(exist_ok=True)
+            results = []
+            for p in body.get("paths", []):
+                src = Path(p)
+                if src.is_file():
+                    shutil.copy2(src, originals / f"{int(time.time())}-{src.name}")      # undo copy
+                results += clean_any(src, in_place=True)
+            gone = sorted({r for x in results for r in x["removed"]})
+            msg = f"Cleaned {len(results)} file{'s' if len(results) != 1 else ''}" + (f": removed {', '.join(gone)}" if gone else "; nothing hidden was found")
+            return 200, {"ok": True, "message": msg, "results": results}
+        if path == "/api/secrets/scan":
+            from .clean import next_steps
+            from .noah import scan_secrets
+            hits = []
+            for p in body.get("paths", []):
+                hits += scan_secrets(p)
+            for h in hits:
+                h["next"] = next_steps(h["rule"])
+            return 200, {"hits": hits[:200], "message": f"{len(hits)} possible secret(s) found" if hits else "No leaked keys found."}
+        if path == "/api/secrets/redact":
+            from .clean import redact_secret
+            n = redact_secret(body.get("path", ""), body.get("rule", ""))
+            return 200, {"ok": bool(n), "message": f"Blanked {n} occurrence(s). A .bak copy was kept." if n else "Nothing to blank."}
+        if path.startswith("/api/vault/"):
+            v = self.pwvault()
+            act = path.rsplit("/", 1)[1]
+            try:
+                if act == "create":
+                    v.create(body.get("pin", ""))
+                    Api.vault_pin, Api.vault_until = body["pin"], time.time() + 300
+                    return 200, {"ok": True, "message": "Vault created and unlocked", "entries": []}
+                if act == "unlock":
+                    entries = v.list(body.get("pin", ""))
+                    Api.vault_pin, Api.vault_until = body["pin"], time.time() + 300
+                    return 200, {"ok": True, "entries": entries}
+                if act == "lock":
+                    Api.vault_pin = None
+                    return 200, {"ok": True, "message": "Vault locked"}
+                if act == "list":
+                    return 200, {"entries": v.list(self._pin())}
+                if act == "add":
+                    from .vault import generate
+                    pw = body.get("password") or generate()
+                    v.add(self._pin(), body.get("site", ""), body.get("username", ""), pw)
+                    return 200, {"ok": True, "message": "Saved to the vault", "entries": v.list(self._pin())}
+                if act == "reveal":
+                    return 200, {"password": v.reveal(self._pin(), body.get("id", ""))}
+                if act == "delete":
+                    v.delete(self._pin(), body.get("id", ""))
+                    return 200, {"ok": True, "entries": v.list(self._pin())}
+                if act == "import":
+                    n = 0
+                    for p in body.get("paths", []):
+                        n += v.import_csv(self._pin(), Path(p).read_text(encoding="utf-8-sig", errors="ignore"))
+                    return 200, {"ok": True, "message": f"Imported {n} passwords. Delete the exported file now: it isn't encrypted.", "entries": v.list(self._pin())}
+                if act == "generate":
+                    from .vault import generate
+                    return 200, {"password": generate(int(body.get("length", 20)))}
+            except PermissionError as ex:
+                return 403, {"error": str(ex)}
+            except ValueError as ex:
+                return 400, {"error": str(ex)}
+            return 404, {"error": "unknown vault action"}
+        if path == "/api/controls":
+            act = body.get("action", "")
+            if act in ("telemetry-close", "telemetry-open", "usb-block", "usb-allow", "wifi-on", "wifi-off"):
+                Api._controls_cache = (0, None)
+                ok = self.elevate(["controls", act])
+                return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to apply this." if ok else "The administrator prompt was declined."}
+            if act == "bt":
+                try:
+                    self.settings.save({"bt_limit": int(body.get("limit", 4)), "bt_allowed": list(body.get("allowed", []))})
+                    inbox({"type": "reload"})
+                    return 200, {"ok": True, "message": "Bluetooth limits saved"}
+                except PermissionError:
+                    tmp = user_dir() / "pending_settings.json"
+                    tmp.write_text(json.dumps({"bt_limit": int(body.get("limit", 4)), "bt_allowed": list(body.get("allowed", []))}), encoding="utf-8")
+                    ok = self.elevate(["settings", "--apply", str(tmp)])
+                    return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to save."}
+            return 400, {"error": "unknown control"}
+        if path == "/api/logo":
+            from . import icon as iconmod
+            src = body.get("path", "")
+            if not src:
+                return 400, {"error": "choose a picture first"}
+            try:
+                if body.get("reset"):
+                    iconmod.reset(); return 200, {"ok": True, "message": "Icon reset to the default."}
+                iconmod.set_custom(src)
+                return 200, {"ok": True, "message": "That picture is now the app icon — window, taskbar and notifications. Reopen the app to see the title-bar icon update."}
+            except Exception as ex:
+                return 400, {"error": str(ex)}
+        if path == "/api/sentry/protect":
+            from . import sentry
+            on = bool(body.get("on", True))
+            ok = sentry.protect_app_window(on)
+            self.settings.save({"hide_from_capture": on})
+            return 200, {"ok": ok, "message": ("The window is now hidden from screen recording." if on else "The window can be captured again.") if ok else "Open the app window first, then try again."}
+        if path == "/api/wifi/favor":
+            from . import wifi_shield
+            Api._netpower_cache = (0, None)
+            try:
+                return 200, wifi_shield.favor_my_network()
+            except Exception as ex:
+                return 400, {"error": str(ex)}
+        if path == "/api/assets/scan":
+            from . import assets
+            r = assets.scan(); Api._assets_cache = (0, None)
+            return 200, {"ok": True, "message": f"{r['present']} devices here now, {r['total']} known.", **r, "new": len(r["new"])}
+        if path == "/api/assets/label":
+            from . import assets
+            assets.label(body.get("id", ""), name=body.get("label"), trusted=body.get("trusted"))
+            Api._assets_cache = (0, None)
+            return 200, {"ok": True, "devices": assets.registry()}
+        if path == "/api/assets/forget":
+            from . import assets
+            assets.forget(body.get("id", "")); Api._assets_cache = (0, None)
+            return 200, {"ok": True, "devices": assets.registry()}
+        if path == "/api/browsers/install":
+            from .browsers import install
+            install(body.get("id", ""))
+            Api._catalog_cache = (0, None)
+            return 200, {"ok": True, "message": "Installing in the background. It appears in your Start menu when done."}
+        if path == "/api/harden/apply":
+            from .harden import apply_user
+            fixed = apply_user()
+            ok = self.elevate(["harden", "--apply"])
+            return (200 if ok else 403), {"ok": ok, "user_fixed": fixed, "message": "Approve the administrator prompt to apply the machine-wide protections." if ok else "The administrator prompt was declined; per-user privacy fixes were applied."}
+        if path == "/api/harden/undo":
+            from .leaks import undo_all
+            undo_all()
+            ok = self.elevate(["harden", "--undo"])
+            return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to restore your previous settings."}
+        if path == "/api/hardware/report":
+            from .devices import history, live_log, timeline
+            from .hardware import write_report
+            out, data = write_report(timeline(history(fallback=False), live_log()))
+            atomic_write(user_dir() / "hardware.json", json.dumps(data, default=str))
+            os.startfile(str(out))
+            return 200, {"ok": True, "message": f"Report saved to {out}"}
+        if path == "/api/hardware/refresh":
+            from .hardware import collect
+            from .devices import history, live_log, timeline
+            def run():
+                atomic_write(user_dir() / "hardware.json", json.dumps(collect(timeline(history(fallback=False), live_log())), default=str))
+            threading.Thread(target=run, daemon=True).start()
+            return 200, {"ok": True, "message": "Reading hardware, ports and downloads…"}
+        if path == "/api/feeds/key":
+            key = str(body.get("key", "")).strip()
+            if key and not re.fullmatch(r"[A-Za-z0-9]{20,100}", key):
+                return 400, {"error": "That doesn't look like an abuse.ch Auth-Key (letters and digits only)."}
+            try:
+                self.settings.save({"abusech_key": key})
+                inbox({"type": "reload"})
+                inbox({"type": "update_feeds"})
+                return 200, {"ok": True, "message": "Key saved. Feeds are refreshing now."}
+            except PermissionError:
+                tmp = user_dir() / "pending_settings.json"
+                tmp.write_text(json.dumps({"abusech_key": key}), encoding="utf-8")
+                ok = self.elevate(["settings", "--apply", str(tmp)])
+                return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to save the key."}
         if path == "/api/theme":
-            if body.get("name") not in PRESETS:
+            if body.get("name") not in PRESETS and body.get("name") != "Wallpaper":
                 return 400, {"error": "unknown theme"}
             prefs = load_json(user_dir() / "agent_prefs.json", {}) or {}
             prefs["theme"] = body["name"]
@@ -359,6 +747,7 @@ class Api:
             prefs = load_json(user_dir() / "agent_prefs.json", {}) or {}
             prefs["theme"] = body["name"]                       # the app takes on the look too
             (user_dir() / "agent_prefs.json").write_text(json.dumps(prefs), encoding="utf-8")
+            Api._wall_cache = (None, None)
             return 200, {**res, "theme": self.theme()}
         if path == "/api/studio/set":
             b = body
@@ -414,6 +803,19 @@ def make_handler(api, token, port_ref, extra_hosts=()):
                 return self._send(403, {"error": "bad host"})
             u = urllib.parse.urlparse(self.path)
             q = urllib.parse.parse_qs(u.query)
+            if u.path == "/api/current-wallpaper" and q.get("t", [""])[0] == token:   # <img> carries the token in the URL
+                from io import BytesIO
+                from PIL import Image
+                from .studio import current_wallpaper
+                wp = current_wallpaper()
+                if not wp or not os.path.exists(wp):
+                    return self._send(404, {"error": "no wallpaper"})
+                with Image.open(wp) as im:
+                    im = im.convert("RGB")
+                    im.thumbnail((1280, 800) if q.get("full") else (480, 300))
+                    buf = BytesIO()
+                    im.save(buf, "JPEG", quality=85)
+                return self._send(200, buf.getvalue(), "image/jpeg")
             if u.path == "/icon.png":                       # public asset: <img> can't send the token header
                 return self._send(200, (HERE / "ui" / "icon.png").read_bytes(), "image/png")
             if u.path == "/":
@@ -438,12 +840,33 @@ def make_handler(api, token, port_ref, extra_hosts=()):
             return self._send(404, {"error": "not found"})
 
         def do_POST(self):
-            if not self._ok_host() or self.headers.get("X-Aureon-Token") != token \
-                    or not self.headers.get("Content-Type", "").startswith("application/json"):
-                return self._send(403, {"error": "forbidden"})
-            n = int(self.headers.get("Content-Length") or 0)
             try:
-                body = json.loads(self.rfile.read(min(n, 1_000_000)) or b"{}")
+                n = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                return self._send(400, {"error": "invalid content length"})
+            if n < 0 or self.headers.get("Transfer-Encoding"):
+                return self._send(400, {"error": "unsupported body framing"})
+            if n > 1_000_000:
+                return self._send(413, {"error": "body too large"})
+            # Consume bounded bodies before rejecting them, avoiding TCP resets
+            # from unread POST data on Windows. Never dispatch unauthenticated input.
+            self.connection.settimeout(5)
+            try:
+                raw = self.rfile.read(n)
+            except (OSError, TimeoutError):
+                return self._send(408, {"error": "body timeout"})
+            if len(raw) != n:
+                return self._send(400, {"error": "incomplete body"})
+            if not self._ok_host() or self.headers.get("X-Aureon-Token") != token \
+                    or self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                return self._send(403, {"error": "forbidden"})
+            try:
+                body = json.loads(raw or b"{}")
+                if not isinstance(body, dict):
+                    return self._send(400, {"error": "body must be an object"})
+            except (ValueError, UnicodeDecodeError):
+                return self._send(400, {"error": "invalid JSON"})
+            try:
                 code, out = api.post(urllib.parse.urlparse(self.path).path, body)
             except Exception as e:
                 code, out = 500, {"error": f"{e.__class__.__name__}: {e}"}

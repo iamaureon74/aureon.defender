@@ -17,6 +17,11 @@ NOWIN = 0x08000000
 
 
 def icon_path():
+    try:
+        from .icon import find
+        return find("icon.png")
+    except Exception:
+        pass
     for p in (Path(sys.executable).parent / "_internal" / "aureon_defender" / "ui" / "icon.png",
               Path(__file__).parent / "ui" / "icon.png"):
         if p.exists():

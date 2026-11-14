@@ -66,7 +66,10 @@ def main():
     frames = [draw(s, detail=s >= 32) for s in sizes]
     frames[-1].save(HERE / "aureon.ico", sizes=[(s, s) for s in sizes], append_images=frames[:-1])
     ui = HERE.parent / "aureon_defender" / "ui"
-    draw(128).save(ui / "icon.png")
+    draw(256).save(ui / "icon.png")
+    for n in (180, 192, 512):
+        draw(n).save(ui / f"icon-{n}.png")
+    draw(512).save(ui / "icon-maskable-512.png")
     preview = Image.new("RGBA", (sum(sizes) + 12 * len(sizes), 270), (30, 28, 30, 255))
     x = 8
     for s, f in zip(sizes, frames):
@@ -75,5 +78,23 @@ def main():
     preview.save(HERE / "icon-preview.png")
 
 
+def from_photo(src):
+    """python make_icon.py path\\to\\photo.jpg  -> builds every icon size from that picture."""
+    import shutil
+    import sys
+    sys.path.insert(0, str(HERE.parent))
+    from aureon_defender.icon import make_set
+    ui = HERE.parent / "aureon_defender" / "ui"
+    paths = make_set(src, ui)
+    shutil.copy(paths["aureon.ico"], HERE / "aureon.ico")
+    shutil.copy(paths["icon-512.png"], HERE / "aureon.png")
+    (ui / "aureon.ico").unlink()
+    print("icon set built from", src)
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1:
+        from_photo(sys.argv[1])
+    else:
+        main()

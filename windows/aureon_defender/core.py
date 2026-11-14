@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.2.0"
+VERSION = "0.4.0"
 APP = "aureon.defender"
 
 
@@ -60,12 +60,20 @@ DEFAULTS = {
     "daily_report": True,
     "radar": True,                      # hidden-software radar sweep every 30 min
     "device_history": True,             # log every device connect/disconnect (local only, clearable)
+    "sentry": True,                     # watch mic / camera / hidden screen capture
+    "asset_registry": True,             # roll-call of your devices, present and past
+    "hide_from_capture": False,         # hide the aureon window from screen recording
     "device_history_days": 365,
     "defender_relay": True,             # show Microsoft Defender's detections as Aureon alerts
     "block_trackers": False,            # opt-in: noah.shield's tracker list blocked system-wide via hosts
     "clipboard_guard": True,            # warn when a key / card / seed phrase sits on the clipboard
     "clipboard_clear_seconds": 60,
     "leak_audit": True,
+    "abusech_key": "",                  # free Auth-Key from https://auth.abuse.ch/ (MalwareBazaar, URLhaus, ThreatFox)
+    "scan_removable": True,
+    "auto_clean_downloads": False,      # strip metadata from photos, audio, documents and videos as they download
+    "bt_limit": 4,
+    "bt_allowed": ["audio", "input", "phone", "wearable"],             # scan USB drives / SD cards when they're plugged in
     "phone_watch": True,                # scan Android/iPhone automatically when plugged in (agent)
     "watch_folders": ["~/Downloads", "~/Desktop", "%TEMP%",
                       "%APPDATA%/Microsoft/Windows/Start Menu/Programs/Startup"],

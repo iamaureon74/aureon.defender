@@ -124,6 +124,7 @@ def install():
     src = Path(sys.executable).resolve().parent            # the unzipped program folder
     if src != TARGET.resolve():
         ps(f"Stop-ScheduledTask -TaskName {psq(ENGINE_TASK)} -ErrorAction SilentlyContinue")
+        ps(f"Stop-ScheduledTask -TaskName {psq(AGENT_TASK)} -ErrorAction SilentlyContinue")
         log(f"stopped {stop_installed_copies()}")
         for attempt in range(5):                 # a file can stay locked for a moment after its process dies
             try:

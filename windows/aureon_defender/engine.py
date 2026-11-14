@@ -69,11 +69,23 @@ class Engine:
             ("defender_relay", 60, self.t_defender_relay, "defender_relay"),
             ("leaks", 6 * 3600, self.t_leaks, "leak_audit"),
             ("hosts", 600, self.t_hosts, None),
+            ("sentry", 45, self.t_sentry, "sentry"),
+            ("assets", 600, self.t_assets, "asset_registry"),
+            ("integrity", 300, self.t_integrity, None),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}
 
     # ---------------- reactions ----------------
+    def alert_once(self, key, e, cool=0):
+        last = self.errors.get(key, 0)
+        if cool and time.time() - last < cool:
+            return
+        if not cool and key in self.errors:
+            return
+        self.errors[key] = time.time()
+        self.emit(e)
+
     def emit(self, e):
         if not e:
             return
@@ -82,6 +94,15 @@ class Engine:
         self.j.add(**e)
 
     def on_file(self, path):
+        if self.s.get("auto_clean_downloads") and path.parent.name.lower() == "downloads":
+            from .clean import SUPPORTED, clean_file
+            if path.suffix.lower() in SUPPORTED:
+                try:
+                    res = clean_file(path, in_place=True)
+                    if res["removed"]:
+                        self.j.add("info", "clean", f"Cleaned {path.name}", "Removed: " + ", ".join(res["removed"]))
+                except Exception:
+                    pass
         r = self.scanner.scan(path)
         self.state["counts"]["scanned"] += 1
         if r["verdict"] == "malicious":
@@ -184,6 +205,52 @@ class Engine:
             sev = "medium" if is_tracker(e["name"]) else "low" if loud else "info"
             verb = "connected" if e["kind"] == "connected" else "disconnected"
             self.emit({"severity": sev, "kind": "device", "title": f"{e['name']} {verb}", "detail": f"{e['category']} · {e['id']}"})
+            if e["kind"] == "connected":
+                self.check_plugged(e)
+            if e["kind"] == "connected" and e["category"] in ("Storage", "Phone / media device") and self.s.get("scan_removable", True):
+                threading.Thread(target=self.scan_removable, daemon=True).start()
+
+    def check_plugged(self, e):
+        """A device was plugged in: say what it can do, loudly if it can type or see network traffic."""
+        from .controls import bt_check, plugged_devices
+        try:
+            for dev in plugged_devices():
+                if dev["level"] == "high" and dev["name"] not in self.state.setdefault("plugged_warned", []):
+                    self.state["plugged_warned"].append(dev["name"])
+                    self.emit({"severity": "high", "kind": "device", "title": f"{dev['name']} can do more than it looks like",
+                               "detail": " ".join(dev["capabilities"].values())})
+            if "Bluetooth" in e["category"]:
+                from .devices import describe, present_ids
+                names = sorted({describe(i)["name"] for i in present_ids() if i.upper().startswith(("BTHENUM\\", "BTHLE\\DEV_"))})
+                for msg in bt_check(names, self.s.get("bt_limit", 4), self.s.get("bt_allowed", [])):
+                    self.emit({"severity": "medium", "kind": "device", "title": "Bluetooth limit", "detail": msg})
+        except Exception:
+            pass
+
+    def scan_removable(self):
+        """A USB drive or SD card was plugged in: scan what's on it before anything gets opened (CIRCLean idea)."""
+        import psutil
+        time.sleep(3)                                   # let Windows mount it
+        seen = self.state.setdefault("removable_scanned", [])
+        for part in psutil.disk_partitions(all=False):
+            if "removable" not in part.opts or part.mountpoint in seen:
+                continue
+            seen.append(part.mountpoint)
+            root = Path(part.mountpoint)
+            files = []
+            for dirpath, _dirs, names in os.walk(root):
+                files += [Path(dirpath) / n for n in names]
+                if len(files) > 5000:
+                    break
+            found = 0
+            for f in files[:5000]:
+                ev = self.on_file(f)
+                if ev:
+                    found += 1
+                    self.emit(ev)
+            self.emit({"severity": "medium" if found else "info", "kind": "device",
+                       "title": f"Scanned the drive in {part.mountpoint}: {len(files[:5000])} files, {found} finding{'s' if found != 1 else ''}",
+                       "detail": "Autorun is ignored; nothing on the drive was opened."})
 
     def t_devices(self):
         from .devices import prune, sweep
@@ -247,6 +314,55 @@ class Engine:
         except OSError as ex:
             self.errors["hosts"] = f"needs the installed engine: {ex}"
 
+    def t_sentry(self):
+        """Microphone / camera / hidden-capture watch. Reminds you while the mic stays on."""
+        from . import sentry
+        snap = sentry.collect()
+        self.state["sentry"] = snap
+        mic = snap["mic"]
+        if mic.get("listening_while_off"):
+            self.alert_once("sentry:mic-off", {"severity": "high", "kind": "sentry",
+                "title": "Something is using the microphone while it's turned off",
+                "detail": "Using it now: " + ", ".join(u["app"] for u in mic["using"]) + ". This shouldn't be possible with mic access off."})
+        elif mic.get("on"):
+            # a fresh reminder every ~5 minutes while the mic stays live
+            last = self.state.setdefault("_mic_reminded", 0)
+            if time.time() - last > 300:
+                self.state["_mic_reminded"] = time.time()
+                names = ", ".join(u["app"] for u in mic["using"]) or "an app"
+                self.emit({"severity": "medium", "kind": "sentry", "title": "Your microphone is on",
+                           "detail": f"{names} is listening right now. If you didn't start it, close it or turn the mic off."})
+        else:
+            self.state["_mic_reminded"] = 0
+        cam = snap["camera"]
+        if cam.get("on"):
+            self.alert_once("sentry:cam", {"severity": "medium", "kind": "sentry", "title": "Your camera is on",
+                "detail": ", ".join(u["app"] for u in cam["using"]) + " is using the camera."}, cool=300)
+        scr = snap["screen"]
+        for c in scr.get("capturers", []):
+            self.alert_once("sentry:cap:" + c["process"], {"severity": "high", "kind": "sentry",
+                "title": "Your screen is being captured",
+                "detail": c["what"] + " is recording or streaming your screen right now."}, cool=600)
+        if scr.get("recall_on"):
+            self.alert_once("sentry:recall", {"severity": "high", "kind": "sentry",
+                "title": "Windows Recall is taking snapshots of your screen",
+                "detail": "Recall saves a picture of everything you do every few seconds. Turn it off in Protect your PC."}, cool=3600)
+
+    def t_assets(self):
+        """Roll-call of devices on your network and paired to this PC; alerts on a stranger."""
+        from . import assets
+        try:
+            r = assets.scan()
+        except Exception:
+            return
+        self.state["assets"] = {"present": r["present"], "total": r["total"]}
+        for rec in r["new"]:
+            if rec.get("trusted"):
+                continue
+            self.emit({"severity": "medium", "kind": "asset",
+                       "title": f"New {rec['kind']} on your network: {rec.get('name') or rec.get('mac') or 'unknown device'}",
+                       "detail": "First time this device has been seen. If it's yours, mark it trusted in Devices; if not, it's sharing your network."})
+
     def t_radar(self):
         from .radar import Radar
         for e in Radar().tick():
@@ -254,6 +370,15 @@ class Engine:
 
     def t_defender(self):
         self.state["defender"] = defender_status()
+
+    def t_integrity(self):
+        from .integrity import check
+        result = check()
+        self.state['integrity'] = result
+        if result['status'] in ('changed', 'collection_failed'):
+            self.alert_once('integrity:' + json.dumps(result, sort_keys=True),
+                {'severity':'medium', 'kind':'integrity', 'title':'Aureon resource integrity needs review',
+                 'detail':json.dumps(result)[:1200]}, cool=3600)
 
     def t_posture(self):
         try:
@@ -270,14 +395,15 @@ class Engine:
         on = feedmod.online()
         self.state["online"] = on
         if not on:
-            return
-        rep = self.feeds.update(self.rep)
+            return {"_module_status": "offline_cached"}
+        rep = self.feeds.update(self.rep, key=self.s.get("abusech_key", ""))
         self.state["feeds"] = rep
         self.j.add("info", "update", "Threat feeds updated", ", ".join(f"{k}: {v}" for k, v in rep.items()))
         self.next["hosts"] = 0                    # fresh lists -> refresh the DNS shield
         exe = mpcmdrun()
         if exe:
             subprocess.run([str(exe), "-SignatureUpdate"], capture_output=True, timeout=600, creationflags=NOWIN)
+        return {"_module_status": "partial" if any(not isinstance(v, int) for v in rep.values()) else "ok"}
 
     def t_report(self):
         evs = [e for e in self.j.recent(2000) if e["t"] > time.time() - 86400]
@@ -338,12 +464,13 @@ class Engine:
 
     # ---------------- loop ----------------
     def write_status(self):
-        st = dict(self.state, heartbeat=time.time(), settings=self.s, reputation=self.rep.count(),
+        st = dict(self.state, heartbeat=time.time(), settings={**self.s, "abusech_key": "set" if self.s.get("abusech_key") else ""},
+                  reputation=self.rep.count(),
                   feeds_age={k: self.feeds.age_hours(k) for k in feedmod.FEEDS}, quarantine=len(self.vault.list()),
                   pid=os.getpid(), errors={k: v for k, v in self.errors.items() if not k.startswith("wifi:")})
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
-    SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay",
+    SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
             "leaks", "hosts"}
 
     def run_once(self, which="all"):
@@ -357,8 +484,8 @@ class Engine:
             if now >= self.next[name]:
                 self.next[name] = now + every
                 try:
-                    fn()
-                    self.state["modules"][name] = "ok"
+                    result = fn()
+                    self.state["modules"][name] = result.get("_module_status", "ok") if isinstance(result, dict) else "ok"
                     self.errors.pop(name, None)
                 except Exception as ex:
                     self.state["modules"][name] = "error"

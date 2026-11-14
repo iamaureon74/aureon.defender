@@ -53,6 +53,9 @@ def main(argv=None):
     lk = sub.add_parser("leaks"); lk.add_argument("action", choices=["list", "fix"]); lk.add_argument("id", nargs="?")
     dv = sub.add_parser("devices"); dv.add_argument("action", choices=["list", "sweep", "clear"])
     sub.add_parser("native-host")
+    ct = sub.add_parser("controls"); ct.add_argument("action", choices=["telemetry-close", "telemetry-open", "usb-block", "usb-allow", "wifi-on", "wifi-off"])
+    hd = sub.add_parser("harden"); hd.add_argument("--apply", action="store_true"); hd.add_argument("--undo", action="store_true")
+    hw = sub.add_parser("hardware"); hw.add_argument("--report", action="store_true")
     args = ap.parse_args(argv)
     cmd = args.cmd or "open"
 
@@ -110,10 +113,11 @@ def main(argv=None):
         bad = 0
         for f in files:
             r = sc.scan(f)
+            if r["verdict"] not in ("clean", "skipped"):
+                bad += 1
             if args.json:
                 print(json.dumps(r))
             elif r["verdict"] not in ("clean", "skipped"):
-                bad += 1
                 print(f"{r['verdict'].upper():<10} {f}\n           {'; '.join(r['reasons'])}")
         if not args.json:
             print(f"{len(files)} files scanned, {bad} findings")
@@ -149,6 +153,40 @@ def main(argv=None):
             print("restored to", v.restore(args.id))
         else:
             v.delete(args.id)
+        return 0
+    if cmd == "harden":
+        from .harden import apply_machine, plan, score, undo_machine
+        from .core import log
+        if args.apply:
+            changed = apply_machine()
+            log(f"protect-this-PC applied: {changed}")
+            print("changed:", ", ".join(changed) or "nothing")
+            return 0
+        if args.undo:
+            print(f"restored {undo_machine()} settings")
+            return 0
+        items = plan()
+        for i in items:
+            print(f"{'ok  ' if i['done'] else 'TODO'} {i['group']:<9} {i['title']}")
+        print(f"{score(items)}% protected")
+        return 0
+    if cmd == "hardware":
+        from .hardware import write_report
+        from .devices import timeline, history, live_log
+        out, data = write_report(timeline(history(fallback=False), live_log()))
+        print(out)
+        if args.report:
+            os.startfile(str(out))
+        return 0
+    if cmd == "controls":
+        from . import controls as c
+        from .core import log
+        a = args.action
+        res = {"telemetry-close": c.close_telemetry, "telemetry-open": c.reopen_telemetry,
+               "usb-block": lambda: c.set_usb_storage(True), "usb-allow": lambda: c.set_usb_storage(False),
+               "wifi-on": lambda: c.set_wifi_allowlist(True), "wifi-off": lambda: c.set_wifi_allowlist(False)}[a]()
+        log(f"controls {a}: {res}")
+        print(res)
         return 0
     if cmd == "native-host":
         from .noah import native_host_loop

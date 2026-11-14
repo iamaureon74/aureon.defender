@@ -1,11 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark light">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="dark light" name="color-scheme"/>
+<meta content="#060608" id="tcolor" name="theme-color"/>
 <title>aureon.defender</title>
-<link rel="icon" href="data:,">
+<link href="/icon.png" rel="icon" type="image/png"/>
+<link href="/icon-180.png" rel="apple-touch-icon"/>
+<link href="/manifest.webmanifest" rel="manifest"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="aureon.defender" name="apple-mobile-web-app-title"/>
+<meta content="yes" name="mobile-web-app-capable"/>
 <style>
 /* aureon.defender UI
    App shell: header (wordmark, status, clock) / grouped sidebar / one content pane. Solid surfaces, hairline borders,
@@ -189,134 +196,287 @@ input[type=color]{width:38px;height:28px;border:1px solid var(--line-strong);bor
   .banner{flex-wrap:wrap}.banner .act{margin-left:0}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---- soft and borderless: shapes are separated by tone and space, corners curve, no hairlines ---- */
+:root{--r:18px;--r-sm:12px;--tint:color-mix(in srgb,var(--text) 5%,transparent);--tint2:color-mix(in srgb,var(--text) 8%,transparent)}
+header{border-bottom:0;background:var(--raise)}
+nav{border-right:0;background:var(--raise);padding:16px 12px}
+main{background:var(--bg)}
+.card{border:0;border-radius:var(--r);background:var(--surface)}
+.card>.hd{border-bottom:0;padding:16px 18px 6px}
+.card>.bd{padding:12px 18px 16px}
+.card>.bd.flush{padding:4px 8px 8px}
+.rows>div{border-top:0;border-radius:var(--r-sm);padding:10px 12px}
+.rows>div:hover{background:var(--tint)}
+.tbl{border-collapse:separate;border-spacing:0 2px}
+.tbl th{border-bottom:0;background:var(--surface);padding:8px 12px}
+.tbl td{border-top:0;padding:9px 12px}
+.tbl td:first-child{border-radius:var(--r-sm) 0 0 var(--r-sm)}.tbl td:last-child{border-radius:0 var(--r-sm) var(--r-sm) 0}
+.tbl tbody tr:nth-child(odd) td{background:var(--tint)}
+.tbl tbody tr:hover td{background:var(--tint2)}
+.day{border-top:0;padding:14px 12px 6px}
+.field{border-top:0;border-radius:var(--r-sm);padding:10px 12px}
+.field:hover{background:var(--tint)}
+.tabs{border-bottom:0;padding:6px 8px;gap:6px}
+.tabs button{border:0;border-radius:999px;padding:7px 14px;margin:0}
+.tabs button[aria-selected="true"]{background:var(--sel);color:var(--fg)}
+.btn{border:0;background:var(--tint2);border-radius:999px;padding:7px 15px}
+.btn:hover{background:color-mix(in srgb,var(--text) 13%,transparent)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.sm{padding:4px 11px}
+input[type=text],input[type=password],input[type=search],select{border:0;background:var(--tint);border-radius:var(--r-sm);padding:9px 12px}
+input[type=text]:focus,input[type=password]:focus,input[type=search]:focus,select:focus{background:var(--tint2);outline:0}
+input[type=color]{border:0;border-radius:10px;background:var(--tint)}
+.seg{border:0;background:var(--tint);border-radius:999px;padding:3px}
+.seg button{border-radius:999px;padding:5px 12px}
+.state{border:0;background:var(--tint)}
+.tag{border:0;background:var(--tint2);border-radius:999px;padding:2px 9px}
+.tag.danger{background:color-mix(in srgb,var(--danger) 18%,transparent);color:var(--danger)}
+.tag.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.tag.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.look{border:0;border-radius:var(--r);position:relative}
+.look[aria-pressed="true"]{box-shadow:none;background:var(--sel)}
+.look[aria-pressed="true"] .meta b::after{content:"  ✓";color:var(--accent)}
+.look img,.look .ph-img{border-radius:var(--r) var(--r) 0 0}
+.toast{border:0;border-radius:var(--r);background:color-mix(in srgb,var(--surface) 90%,var(--text))}
+nav button{border-radius:var(--r-sm);padding:9px 12px}
+nav button[aria-current="page"]{background:var(--sel)}
+:focus-visible{outline:0;border-radius:var(--r-sm)}
+button:focus-visible,nav button:focus-visible,.look:focus-visible,.btn:focus-visible{background:var(--sel)}
+.sw input:focus-visible+span{outline:0;box-shadow:0 0 0 4px var(--sel)}
+.banner .glyph{border-radius:14px}
+.ic{border-radius:10px}
+.meter-row{display:flex;align-items:center;gap:14px}
+.ring{--p:0;width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:radial-gradient(closest-side,var(--surface) 76%,transparent 78%),conic-gradient(var(--accent) calc(var(--p)*1%),var(--tint2) 0)}
+.ring b{font:600 15px var(--display);font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;padding:4px 12px 10px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;overflow-wrap:anywhere}
+a.ext{color:var(--accent);text-decoration:none}a.ext:hover{text-decoration:underline}
+
+/* ---- your wallpaper behind the whole app ---- */
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:-40px;z-index:-1;background:var(--bg) var(--wall,none) center/cover no-repeat;filter:blur(26px) saturate(1.15) brightness(.42);transform:translateZ(0)}
+header,nav{background:color-mix(in srgb,var(--raise) 72%,transparent);backdrop-filter:blur(18px)}
+main{background:transparent}
+.card{background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(14px)}
+.tbl th,.day{background:transparent}
+
+/* ---- overview: the machine ---- */
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media (max-width:980px){.hero{grid-template-columns:1fr}}
+.stage{position:relative;min-height:340px;border-radius:var(--r);overflow:hidden;background:radial-gradient(120% 90% at 50% 100%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 60%),color-mix(in srgb,var(--surface) 70%,transparent);perspective:1100px}
+.laptop{position:absolute;left:50%;top:64%;width:300px;height:190px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(58deg) rotateZ(-28deg);animation:sway 16s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:translate(-50%,-50%) rotateX(58deg) rotateZ(-28deg)}50%{transform:translate(-50%,-50%) rotateX(56deg) rotateZ(-14deg)}}
+.base{position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--text) 22%,#2a2a2e),color-mix(in srgb,var(--text) 8%,#141416));box-shadow:0 30px 60px rgba(0,0,0,.55)}
+.base::before{content:"";position:absolute;left:8%;right:8%;top:10%;height:52%;border-radius:8px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 16px,transparent 16px 19px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 14px,transparent 14px 17px)}
+.base::after{content:"";position:absolute;left:36%;right:36%;bottom:9%;height:22%;border-radius:8px;background:rgba(255,255,255,.07)}
+.lid{position:absolute;left:0;right:0;top:0;height:190px;transform-origin:top center;transform:rotateX(100deg);transform-style:preserve-3d;border-radius:16px;background:#2c2c31;box-shadow:inset 0 0 0 6px #1c1c20}
+.screen{position:absolute;inset:8px;border-radius:10px;background:var(--accent) var(--wall,none) center/cover;overflow:hidden;transform:rotate(180deg)}
+.screen .hud{position:absolute;right:10px;top:8px;font:600 22px var(--display);color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.screen .glow{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--accent) 30%,transparent))}
+.port{position:absolute;width:10px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--text) 25%,transparent);transform:translateZ(1px)}
+.port.on{background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.sat{position:absolute;display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(10px);font-size:12.5px;max-width:200px;animation:float 7s ease-in-out infinite}
+.sat svg{width:15px;height:15px;color:var(--accent);flex:none}
+.sat span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.stage .caption{position:absolute;left:18px;bottom:14px;right:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.stage .caption b{font:600 15px var(--display)}
+.vitalgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.vital{padding:14px 16px}
+.vital .l{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}.vital .l svg{width:14px;height:14px}
+.vital .v{font:600 20px var(--display);margin-top:4px;font-variant-numeric:tabular-nums}
+.vital .h{color:var(--muted);font-size:12px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars{display:inline-flex;gap:2px;align-items:flex-end;height:14px}.bars i{width:4px;border-radius:2px;background:var(--tint2)}.bars i.on{background:var(--accent)}
+.batt{display:inline-block;width:34px;height:15px;border-radius:5px;background:var(--tint2);position:relative;vertical-align:-2px;overflow:hidden}.batt i{position:absolute;inset:0 auto 0 0;background:var(--ok);border-radius:5px}
+
+/* ---- calendar ---- */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;padding:4px 10px 12px}
+.cal .dow{font:600 11px var(--font);color:var(--muted);text-align:center;padding:4px 0}
+.cal button{all:unset;cursor:pointer;aspect-ratio:1.35;border-radius:12px;padding:6px 8px;display:flex;flex-direction:column;justify-content:space-between;background:var(--tint);font-variant-numeric:tabular-nums}
+.cal button:hover{background:var(--tint2)}
+.cal button.out{opacity:.35}.cal button.today b{color:var(--accent)}
+.cal button[aria-pressed="true"]{background:var(--sel)}
+.cal .heat{display:flex;gap:3px;flex-wrap:wrap}.cal .heat i{width:6px;height:6px;border-radius:50%;background:var(--info)}
+.cal .heat i.high{background:var(--danger)}.cal .heat i.medium{background:var(--warn)}.cal .heat i.low{background:var(--accent)}
+.day24{position:relative;padding:4px 10px 12px 64px}
+.hr{position:relative;height:38px}
+.hr::before{content:attr(data-h);position:absolute;left:-56px;top:-7px;font:500 11.5px var(--mono);color:var(--muted)}
+.hr::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--tint2)}
+.pin{position:absolute;left:64px;right:10px;display:flex;align-items:center;gap:8px;padding:3px 10px;border-radius:9px;background:var(--tint);font-size:12.5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;z-index:1}
+.pin .mono{color:var(--muted)}
+.drop{border-radius:var(--r);background:var(--tint);padding:22px;text-align:center;color:var(--muted)}
+.drop b{color:var(--fg);display:block;margin-bottom:6px;font-weight:600}
+.sent{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.sent .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--tint);flex:none}
+.sent .ico svg{width:18px;height:18px;color:var(--muted)}
+.sent.on .ico{background:color-mix(in srgb,var(--danger) 22%,transparent)}.sent.on .ico svg{color:var(--danger)}
+.sent .grow{flex:1;min-width:0}.sent b{font-weight:600}.sent .muted{font-size:12.5px}
+.pill{font-size:11.5px;padding:3px 9px;border-radius:999px;background:var(--tint);color:var(--muted)}
+.pill.live{background:color-mix(in srgb,var(--danger) 20%,transparent);color:var(--danger)}
+.pill.safe{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.np{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.steps{margin:6px 0 0 18px;padding:0;color:var(--muted);font-size:13px}.steps li{margin:4px 0}
+.pi{border-radius:12px;background:var(--tint);padding:12px 14px;margin-top:10px;font-size:13px}
+.pi b{font-weight:600;color:var(--fg)}.pi .muted{display:block;margin-top:3px}
+.find{display:flex;gap:10px;padding:10px 0}.find .sev{margin-top:6px;flex:none}
+.aset{display:flex;align-items:center;gap:12px;padding:10px 14px}
+.aset .k{width:30px;text-align:center;flex:none;color:var(--muted)}
+.aset .grow{flex:1;min-width:0}.aset .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aset .sub{color:var(--muted);font-size:12px}
 </style>
-</head>
+<style id="signal-design">/* Signal 0.4 — native dashboard layout, live content, no external assets. */
+:root{--bg:#0d1012;--surface:#14191c;--raise:#0d1012;--accent:#d9ff70;--text:#f1f3f2;--fg:#f1f3f2;--muted:#9da8ad;--faint:#7d8b91;--line:#293136;--line-strong:#3d4a50;--on-accent:#17210b;--ok:#78dcb3;--warn:#f5c879;--danger:#ff9f9d;--r:7px;--r-sm:5px;--tint:#1b2226;--tint2:#222c31;--hover:#1b2226;--sel:#1b2226}
+body{grid-template-columns:216px 1fr;grid-template-rows:66px minmax(0,1fr);grid-template-areas:"nav top" "nav main";font:13px/1.55 var(--font)}
+body>header{padding:0 34px;border-bottom:1px solid var(--line);background:var(--bg);min-width:0}body>header .breadcrumb{font-size:11px;color:var(--muted);display:flex;gap:14px;align-items:center;min-width:0}#crumbtitle{color:var(--fg)}
+#nav{background:var(--bg);border-right:1px solid var(--line);padding:24px 16px 14px;gap:2px;overscroll-behavior:contain}#nav .brand{padding:0 8px 22px;font-size:18px;letter-spacing:-.4px;flex:none}#nav .brand img{width:33px;height:33px;border-radius:6px}#nav .brand small{display:block;font:500 9px var(--font);color:var(--muted);letter-spacing:2.1px;margin-top:3px}#nav .navlabel{font-size:9px;font-weight:500;letter-spacing:1.7px;text-transform:uppercase;padding:15px 10px 6px;color:var(--muted)}#nav button{box-sizing:border-box;flex-shrink:0;padding:9px 11px;min-height:36px;font-size:12px;border-radius:5px;transition:background 140ms,color 140ms}#nav button[aria-current=page]{background:var(--sel);color:var(--fg)}#nav button[aria-current=page]::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);margin-left:5px;flex:none}#nav button svg{stroke-width:1.5}#nav .navfoot{font-size:10px;color:var(--muted);padding:18px 10px 0;border-top:1px solid var(--line);margin-top:20px;line-height:1.9}.navfoot strong{color:var(--fg);font-weight:450}
+main{background:var(--bg);scroll-behavior:auto;scrollbar-gutter:stable}.page{max-width:1480px;padding:34px 38px 60px;gap:22px}.page.on{animation:signal-enter 180ms cubic-bezier(.2,.7,.2,1)}@keyframes signal-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.signal-eyebrow{font-size:10px;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;display:flex;gap:13px;align-items:center;margin-bottom:-5px}.signal-eyebrow .dot{width:5px;height:5px}.ph{align-items:flex-end;margin-bottom:2px}.ph h1{font:450 clamp(28px,2.6vw,40px)/1.13 var(--display);letter-spacing:-1.3px;margin:0 0 12px;text-wrap:balance}.ph .sub{font-size:12px;line-height:1.8;max-width:78ch;margin:0}.ph .btns{align-self:flex-end}.grid{gap:22px}.card{border:1px solid var(--line);background:var(--surface);border-radius:7px;box-shadow:none}.card>.hd{padding:19px 22px 15px;border-bottom:1px solid var(--line);min-height:56px}.card>.bd{padding:19px 22px 23px}.card>.bd.flush{padding:0 10px 10px}.card h2{font-size:15px;font-weight:550;letter-spacing:-.2px}.btn{border:1px solid var(--line-strong);border-radius:5px;padding:10px 15px;font-size:12px;min-height:39px;background:transparent;transition:background 140ms,border-color 140ms,transform 100ms}.btn:active:not(:disabled){transform:scale(.98)}.btn:hover{background:var(--hover);border-color:var(--muted)}.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600;box-shadow:none}.btn.primary:hover{background:color-mix(in srgb,var(--accent) 85%,var(--fg));border-color:var(--accent)}.btn.sm{padding:6px 10px;font-size:11px;min-height:30px}.btn:disabled{cursor:wait;opacity:.55}.btns{gap:9px}.state,.pill,.tag{border-radius:3px;border:1px solid var(--line);background:transparent;font-size:10px;padding:4px 7px}.state{padding:5px 9px}.tag{font-weight:450}.pill.safe{background:transparent;color:var(--ok)}.sw{border-radius:20px}.sw>span{transition:background 150ms}.sw>span::before{transition:transform 150ms}.hstat{font-size:11px;gap:16px}.clock{font-size:12px}.hstat .state{border:0;padding:0}.hstat .dot:not(.off):not(.danger):not(.warn){animation:signal-live 6s ease-out 1}@keyframes signal-live{0%,100%{box-shadow:0 0 0 0 transparent}20%{box-shadow:0 0 0 5px color-mix(in srgb,var(--ok) 12%,transparent)}}
+.signal-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(230px,.75fr);align-items:center;min-height:240px;gap:35px}.signal-hero h1{font:450 clamp(32px,3.2vw,49px)/1.08 var(--display);letter-spacing:-1.9px;margin:0 0 18px}.signal-hero p{font-size:13px;line-height:1.8;color:var(--muted);margin:0 0 20px}.signal-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}.signal-orbit{width:166px;height:166px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;position:relative}.signal-orbit::before{content:"";position:absolute;inset:26px;border:1px solid var(--line);border-radius:50%}.signal-orbit::after{content:"";position:absolute;top:15px;right:29px;width:6px;height:6px;background:var(--accent);border-radius:50%}.signal-orbit svg{height:61px;width:61px;stroke:var(--accent);position:relative;background:var(--bg);padding:8px}.signal-visual #mfam{color:var(--muted);font-size:10px}.signal-visual #mname{font-size:12px;font-weight:450}.signal-visual .state{margin-top:7px}
+#p-overview>#stats{gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0;background:transparent}.stat{padding:21px 22px}.stat .l{text-transform:uppercase;font-size:9px;letter-spacing:1.4px}.stat .v{font-size:28px;font-weight:450;letter-spacing:-1px;margin:7px 0}.stat .h{font-size:11px;color:var(--muted)}#stats .stat{border:0;background:transparent;border-radius:0;padding-left:0}#stats .stat+.stat{border-left:1px solid var(--line);padding-left:25px}.banner{padding:18px 22px;background:transparent;border-left:2px solid var(--ok);border-radius:0 5px 5px 0}.banner.warn{border-left-color:var(--warn)}.banner.danger{border-left-color:var(--danger)}.banner.off{border-left-color:var(--faint)}.banner .glyph{width:28px;height:28px;background:none!important}.banner .t{font-size:15px;font-weight:550}.banner .s{font-size:11px}.banner .act{display:none}
+.vitalgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:6px;background:var(--surface)}.vitalgrid .vital{border:0;border-radius:0;background:none;padding:17px 18px;min-width:0}.vitalgrid .vital+.vital{border-left:1px solid var(--line)}.vital .l{font-size:10px;color:var(--muted)}.vital .l svg{width:13px;height:13px}.vital .v{font-size:19px;font-weight:450;margin:8px 0;white-space:nowrap}.vital .h{font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.signal-overview-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr);gap:22px}.signal-history{height:120px;width:100%;display:block}.signal-history text{font-size:9px;fill:var(--muted);font-family:var(--font)}.signal-history-note{font-size:11px;color:var(--muted);margin-top:10px}.signal-feed-line{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:11px}.signal-feed-line:last-child{border-bottom:0}.signal-feed-line span:last-child{color:var(--muted)}.signal-action-state{font-size:10px;display:none;align-items:center;gap:8px;color:var(--accent)}body[data-busy=true] .signal-action-state{display:inline-flex}.signal-spinner{width:11px;height:11px;border:1px solid var(--line-strong);border-top-color:var(--accent);border-radius:50%;animation:signal-spin .8s linear infinite}@keyframes signal-spin{to{transform:rotate(360deg)}}
+.rows>div{border-top:1px solid var(--line);border-radius:0;padding:13px 14px}.rows>div:first-child{border-top:0}.rows>div:hover{background:var(--hover)}.rows .r{font-size:11px}.rows .muted{font-size:11px}.tbl{border-collapse:collapse;border-spacing:0;font-size:12px}.tbl th{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:450;border-bottom:1px solid var(--line);padding:14px}.tbl td{border-top:1px solid var(--line);padding:15px 14px;word-break:break-word}.tbl td:first-child,.tbl td:last-child{border-radius:0}.tbl tbody tr:nth-child(odd) td{background:none}.tbl .muted{font-size:11px}.ic,.sent .ico,.aset .k{border-radius:5px;background:var(--tint)}.empty{padding:45px 22px;font-size:12px}.empty b{font-size:17px;font-weight:450;margin-bottom:8px}.seg{padding:0;gap:13px;border:0;border-bottom:1px solid var(--line);border-radius:0;flex-wrap:wrap}.seg button{border-radius:0;padding:9px 0 12px;margin-right:4px;font-size:11px;border-bottom:2px solid transparent}.seg button[aria-pressed=true]{background:none;border-bottom-color:var(--accent);color:var(--fg)}.tabs{padding:0 20px;border-bottom:1px solid var(--line);gap:20px;border-radius:0}.tabs button{background:none;border-radius:0;padding:16px 0;font-size:11px;border-bottom:2px solid transparent}.tabs button[aria-selected=true]{border-bottom-color:var(--accent);background:none}.field{border-top:1px solid var(--line);padding:16px 18px;border-radius:0}.field:first-child{border-top:0}.field label{font-size:12px}.field .d{font-size:11px;color:var(--muted)}input[type=text],input[type=password],input[type=search],select{border-radius:5px;border-color:var(--line-strong);font-size:12px;padding:10px 12px;min-height:38px;background:var(--bg)}.pi{background:var(--tint);border-left:2px solid var(--line-strong);border-radius:0;padding:14px 16px;font-size:12px}.steps{font-size:12px;line-height:1.8}.drop{border:1px dashed var(--line-strong);background:transparent;border-radius:7px;padding:30px}.sent{padding:14px}.sent .muted{font-size:11px}.np{gap:22px}.aset{padding:15px}.aset .sub{font-size:11px}
+#p-scan .scan-select{border:1px dashed var(--line-strong);padding:35px;background:transparent;min-height:215px;display:flex;align-items:center;justify-content:center;text-align:center}#p-scan .scan-select .bd{max-width:650px}.scan-emblem{color:var(--accent);margin-bottom:15px}.scan-emblem svg{height:34px;width:34px}.scan-select h2{font-size:23px;font-weight:450;margin-bottom:10px}.scan-select p{font-size:12px;color:var(--muted);margin-bottom:19px}.scan-select .btns{justify-content:center}#p-scan .grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}#p-passwords #vbody>.card:first-child{max-width:650px;margin:10px auto}#p-passwords #vbody>.card:first-child>.bd{padding:35px}#p-passwords #vbody p{font-size:12px;line-height:1.9}#p-passwords #vbody h2{font-size:26px;font-weight:450;margin-bottom:15px}#p-passwords #vbody .btns{margin-top:22px}#p-controls #cbody{display:grid;grid-template-columns:1fr 1fr;gap:22px}#p-controls #cbody>.card:last-child{grid-column:1/-1}#p-controls #cbody>.card{margin:0!important}#p-settings #toggles{display:grid!important;grid-template-columns:1fr 1fr;align-items:start;gap:22px!important}#p-settings #toggles .card{min-width:0}#p-netpower .card>.hd h2{font-size:15px}#p-activity .cal{padding:10px 18px 18px}.cal button{border-radius:4px;transition:background 120ms}.pin{border-radius:4px;font-size:11px}.look{border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--surface);transition:border-color 140ms,transform 140ms}.look:hover{transform:translateY(-2px);border-color:var(--muted)}.look[aria-pressed=true]{outline:1px solid var(--accent);border-color:var(--accent)}.looks{gap:18px}.look .meta{padding:15px}.look .meta b{font-weight:500}.group{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;margin:20px 0 12px}.toasts{bottom:24px;right:24px}.toast{border-radius:6px;background:var(--surface);border:1px solid var(--line-strong);box-shadow:0 12px 35px #0003;animation:signal-toast 180ms ease-out}@keyframes signal-toast{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}.sk{background:var(--tint);animation:signal-skeleton 1.5s ease-in-out infinite}@keyframes signal-skeleton{50%{opacity:.45}}
+.signal-palettes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.signal-palette{border:1px solid var(--line-strong);background:var(--bg);color:var(--fg);border-radius:6px;padding:18px;text-align:left;cursor:pointer}.signal-palette[aria-pressed=true]{border-color:var(--accent)}.signal-swatches{display:flex;gap:6px;margin-bottom:15px}.signal-swatches i{height:18px;width:18px;border-radius:50%;border:1px solid #ffffff22}.signal-palette b{font-size:13px;display:block}.signal-palette span{font-size:11px;color:var(--muted)}.signal-motion-control{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:12px}.signal-motion-control label{display:flex;gap:10px;align-items:center}.signal-motion-control input{accent-color:var(--accent)}
+body[data-page=scan][data-busy=true] .scan-emblem{animation:signal-scan 1.5s ease-in-out infinite}@keyframes signal-scan{50%{transform:translateY(3px);opacity:.45}}
+body[data-reduced=true] *,body[data-reduced=true] *::before,body[data-reduced=true] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(min-width:1600px){.page{padding-left:52px;padding-right:52px}.signal-hero{min-height:275px}}
+@media(max-width:1200px){.vitalgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.vitalgrid .vital:nth-child(4){border-left:0}.vitalgrid .vital:nth-child(n+4){border-top:1px solid var(--line)}#p-scan .grid.g3{grid-template-columns:1fr}.signal-overview-grid{grid-template-columns:1fr 1fr}.signal-hero h1{font-size:38px}.page{padding:28px}}
+@media(max-width:950px){body{grid-template-columns:180px 1fr}#nav{padding:22px 10px}#nav .brand{font-size:15px}#nav button{font-size:11px}.signal-hero{grid-template-columns:1fr 180px}.signal-orbit{width:140px;height:140px}.signal-overview-grid,#p-controls #cbody,#p-settings #toggles{grid-template-columns:1fr}.hstat .eng,.hstat .clock{display:none}#p-overview>#stats{grid-template-columns:repeat(2,minmax(0,1fr))}#stats .stat:nth-child(3){border-left:0;padding-left:0}#stats .stat:nth-child(n+3){border-top:1px solid var(--line)}}
+@media(max-width:820px){body{grid-template-columns:1fr;grid-template-rows:58px auto minmax(0,1fr);grid-template-areas:"top" "nav" "main"}body>header{padding:0 20px}#nav{padding:7px 12px;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;gap:6px;overflow-x:auto;scrollbar-width:none}#nav .brand,#nav .navlabel,#nav .navfoot,#nav .spacer{display:none}#nav button{padding:8px 10px;font-size:11px;min-height:38px}#nav button[aria-current=page]::after{display:none}.page{padding:24px 20px 50px;gap:20px}.ph h1{font-size:33px}.signal-hero{grid-template-columns:1fr 160px;gap:15px;min-height:220px}.signal-hero h1{font-size:36px}.signal-hero p{font-size:12px}.signal-orbit{width:130px;height:130px}.signal-palettes{grid-template-columns:1fr}.signal-overview-grid{grid-template-columns:1fr}.g2,.g3{grid-template-columns:1fr}#p-scan .scan-select{padding:23px}.btn{min-height:42px}.signal-eyebrow{font-size:9px}.card>.hd{padding:17px 18px}.card>.bd{padding:17px 18px}.card>.bd.flush{padding:0 8px 8px}}
+@media(max-width:540px){.signal-hero{grid-template-columns:1fr;min-height:0}.signal-visual{display:none}.signal-hero h1{font-size:36px}.ph h1{font-size:30px}.ph .sub{font-size:12px}.vitalgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.vitalgrid .vital:nth-child(n){border-left:0;border-top:1px solid var(--line)}.vitalgrid .vital:nth-child(even){border-left:1px solid var(--line)}.vitalgrid .vital:nth-child(-n+2){border-top:0}.banner{gap:8px;padding:14px}.banner .glyph{display:none}.np{grid-template-columns:minmax(0,1fr)}.hstat{gap:5px}body>header .breadcrumb{gap:8px;font-size:10px}.signal-action-state{font-size:9px}.toasts{right:12px;left:12px;bottom:14px;width:auto}.toast{width:100%}.tbl th,.tbl td{padding:12px 9px}.scroll{max-width:100%}#p-passwords #vbody>.card:first-child>.bd{padding:24px}.page{min-width:0}input[type=text],input[type=password],input[type=search],select{font-size:16px}.btns{min-width:0}#stats .stat .v{font-size:25px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.signal-preview-missing{height:130px;display:grid;place-items:center;background:var(--tint);color:var(--muted);font-size:11px}
+</style></head>
 <body>
-<header>
-  <div class="brand"><img src="/icon.png" alt=""><span>aureon<i>.</i>defender</span></div>
-  <div class="hstat"><span class="state" id="hstate"><span class="dot off"></span>Starting</span><span class="eng" id="heng"></span><span class="clock" id="clock"></span></div>
-</header>
+<header><div class="breadcrumb"><span>Workspace</span><span>/</span><strong id="crumbtitle">Overview</strong></div><div class="hstat"><span aria-live="polite" class="signal-action-state" role="status"><i class="signal-spinner"></i><span id="action-label">Working</span></span><span class="state" id="hstate"><span class="dot off"></span>Connecting</span><span class="eng" id="heng"></span><span class="clock" id="clock"></span></div></header>
+<nav aria-label="Sections" id="nav"></nav>
+<main id="main"><section aria-labelledby="signal-title" class="page on" id="p-overview"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> OVERVIEW</div>
+<div class="signal-hero"><div><h1 id="signal-title">Everything in view.<br/>Nothing in the way.</h1><p>Your hardware, privacy and protection.<br/>One considered place to keep watch.</p><div class="btns"><button class="btn primary" data-go="scan">Start a scan <span aria-hidden="true">→</span></button><button class="btn" data-go="activity">View activity</button></div></div><div class="signal-visual"><div aria-hidden="true" class="signal-orbit"><svg fill="none" stroke-width="1.4" viewbox="0 0 24 24"><path d="M12 2 4 5v7c0 5 8 10 8 10s8-5 8-10V5z"></path><path d="m8 15 4-8 4 8m-6-3h4"></path></svg></div><div><div id="mfam"></div><b id="mname">This laptop</b><br/><span class="state" id="mstate">Connecting</span></div></div></div><div class="grid g4" id="stats"></div><div class="vitalgrid" id="vitals"></div><div class="signal-overview-grid"><div class="card"><div class="hd"><h2>Recorded activity</h2><span class="muted">Last 24 hours</span></div><div class="bd"><div id="signal-history"></div><div class="signal-history-note">Event counts from loaded local history. This is not a scan-progress estimate.</div></div></div><div class="card"><div class="hd"><h2>Feed coverage</h2><button class="btn sm" data-go="settings">Configure</button></div><div class="bd" id="signal-feeds"></div></div></div>
+<div class="card" id="sentrycard"><div class="hd"><h2>Privacy sentry</h2><span class="sw" title="Hide this window from screen recording"><input aria-label="Hide window from screen recording" id="hidecap" type="checkbox"/><span></span></span></div><div class="bd flush rows" id="sentry"></div></div>
+<div class="card banner" id="banner"><div class="glyph" id="bglyph"></div><div><div class="t" id="t-overview">Starting…</div><div class="s" id="bsub"></div></div>
+<div class="act"><button class="btn" data-go="scan">Scan</button><button class="btn" data-post="/api/radar">Sweep radar</button></div></div>
 
-<nav id="nav" aria-label="Sections"></nav>
-
-<main id="main">
-<section class="page on" id="p-overview" aria-labelledby="t-overview">
-  <div class="card banner" id="banner"><div class="glyph" id="bglyph"></div><div><div class="t" id="t-overview">Starting…</div><div class="s" id="bsub"></div></div>
-    <div class="act"><button class="btn" data-go="scan">Scan</button><button class="btn" data-post="/api/radar">Sweep radar</button></div></div>
-  <div class="grid g4" id="stats"></div>
-  <div class="grid g2">
-    <div class="card"><div class="hd"><h2>Needs attention</h2><button class="btn sm" data-go="activity">All activity</button></div><div class="bd flush rows" id="attention"></div></div>
-    <div class="card"><div class="hd"><h2>Protection</h2><span class="muted" id="modsum"></span></div><div class="bd flush rows scroll" id="mods" style="max-height:330px"></div></div>
-  </div>
-  <div class="grid g4" id="discover"></div>
-</section>
-
-<section class="page" id="p-activity" aria-labelledby="t-activity">
-  <div class="ph"><div><h1 id="t-activity">Activity</h1><p class="sub">Everything aureon.defender noticed, newest first.</p></div>
-    <div class="btns"><input type="search" id="aq" placeholder="Filter" aria-label="Filter activity"><div class="seg" id="af"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="alerts">Alerts</button><button aria-pressed="false" data-f="device">Devices</button><button aria-pressed="false" data-f="defender">Defender</button></div></div></div>
-  <div class="card"><div class="bd flush scroll" id="events" style="max-height:none"></div></div>
-</section>
-
-<section class="page" id="p-scan" aria-labelledby="t-scan">
-  <div class="ph"><div><h1 id="t-scan">Scan and tools</h1><p class="sub">Every file goes through reputation, delivery-trick checks, YARA (Aureon's and noah.shield's rules) and the Microsoft Defender engine. Works offline.</p></div></div>
-  <div class="card"><div class="bd"><div class="btns"><input type="text" id="spath" placeholder="C:\Users\you\Downloads" aria-label="File or folder"><button class="btn primary" id="sgo">Scan</button></div>
-    <div class="btns" style="margin-top:10px"><button class="btn" data-quick="~/Downloads">Downloads</button><button class="btn" data-quick="~/Desktop">Desktop</button><button class="btn" data-quick="~/Documents">Documents</button>
-    <span class="faint">·</span><button class="btn" data-post="/api/update">Update threat feeds</button><button class="btn" data-post="/api/posture">Check security settings</button></div></div></div>
-  <div class="grid g3">
-    <div class="card"><div class="hd"><h2>Clean photo metadata</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">Removes location, camera and serial data from JPEG/PNG without re-compressing. From noah.shield.</p>
-      <div class="btns"><input type="text" id="cpath" placeholder="Photo or folder" aria-label="Photo or folder"><button class="btn" id="cgo">Clean</button></div><div id="cres" class="muted" style="margin-top:8px"></div></div></div>
-    <div class="card"><div class="hd"><h2>Find leaked keys</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">Looks for 220 kinds of API keys and tokens in code and notes (noah.shield's Gitleaks rules).</p>
-      <div class="btns"><input type="text" id="kpath" placeholder="Folder" aria-label="Folder to check"><button class="btn" id="kgo">Check</button></div><div id="kres" style="margin-top:8px"></div></div></div>
-    <div class="card"><div class="hd"><h2>Password breach check</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">Only the first 5 characters of the password's hash leave this PC. Nothing is stored.</p>
-      <div class="btns"><input type="password" id="pw" autocomplete="off" placeholder="Password" aria-label="Password to check"><button class="btn" id="pwgo">Check</button></div><div id="pwres" class="muted" style="margin-top:8px"></div></div></div>
-  </div>
-</section>
-
-<section class="page" id="p-vault" aria-labelledby="t-vault">
-  <div class="ph"><div><h1 id="t-vault">Vault</h1><p class="sub">Blocked files are scrambled so they can't run. Restore only what you are sure is safe.</p></div></div>
-  <div class="card"><div class="bd flush" id="vault"></div></div>
-</section>
-
-<section class="page" id="p-radar" aria-labelledby="t-radar">
-  <div class="ph"><div><h1 id="t-radar">Radar</h1><p class="sub">What every company has installed, running or watching on this PC, plus Windows' own record of camera, microphone, location and screen access.</p></div>
-    <button class="btn primary" data-post="/api/radar">Sweep now</button></div>
-  <div class="grid g4" id="rstats"></div>
-  <div class="card"><div class="tabs" role="tablist" id="rtabs"></div><div class="bd flush scroll" id="rbody" style="max-height:560px"></div></div>
-</section>
-
-<section class="page" id="p-devices" aria-labelledby="t-devices">
-  <div class="ph"><div><h1 id="t-devices">Devices</h1><p class="sub">Everything that has connected to this PC, by USB, Bluetooth, WiFi, cable or dock, from Windows' own records and Aureon's live log.</p></div>
-    <div class="btns"><button class="btn" data-post="/api/devices/sweep">Read history</button><button class="btn" id="dclear">Clear Aureon's log</button></div></div>
-  <div class="grid g4" id="dstats"></div>
-  <div class="card"><div class="hd"><div class="seg" id="dfilter"></div><input type="search" id="dq" placeholder="Filter devices" aria-label="Filter devices" style="max-width:240px"></div><div class="bd flush scroll" id="dtimeline" style="max-height:620px"></div></div>
-</section>
-
-<section class="page" id="p-leaks" aria-labelledby="t-leaks">
-  <div class="ph"><div><h1 id="t-leaks">Leaks</h1><p class="sub">What this PC gives away to Microsoft, advertisers and the network around it, and the fix for each.</p></div>
-    <button class="btn" data-post="/api/leaks/undo">Undo my fixes</button></div>
-  <div class="card"><div class="bd flush rows" id="leaks"></div></div>
-  <div class="card"><div class="hd"><h2>Security products registered with Windows</h2></div><div class="bd flush" id="products"></div></div>
-</section>
-
-<section class="page" id="p-phones" aria-labelledby="t-phones">
-  <div class="ph"><div><h1 id="t-phones">Phones</h1><p class="sub">Any Android (USB debugging on) or iPhone. Every package by company, apps with no icon, carrier and maker preloads, and recent camera, microphone and location use.</p></div>
-    <button class="btn primary" data-post="/api/phones/scan">Scan phones</button></div>
-  <div id="phones"></div>
-  <div class="grid g2">
-    <div class="card"><div class="hd"><h2>Connect a phone</h2></div><div class="bd"><p style="margin:0 0 8px"><b>Android</b> <span class="muted">· Pixel, Samsung, Xiaomi, OnePlus, Motorola…</span></p>
-      <p class="muted" style="margin:0 0 12px">About phone › tap Build number 7 times › Developer options › USB debugging. Plug in and tap Allow; Aureon scans by itself.</p>
-      <p style="margin:0 0 8px"><b>iPhone</b></p><p class="muted" style="margin:0">Install libimobiledevice and trust this computer. For a deep spyware check use an encrypted backup with MVT.</p></div></div>
-    <div class="card"><div class="hd"><h2>Open on your phone</h2><span class="sw"><input type="checkbox" id="plink" aria-label="Phone link"><span></span></span></div><div class="bd">
-      <p class="muted" style="margin:0 0 8px">A view-only copy on your home WiFi, behind a long private key.</p><div id="plinkurl" class="mono"></div></div></div>
-  </div>
-</section>
-
-<section class="page" id="p-browsers" aria-labelledby="t-browsers">
-  <div class="ph"><div><h1 id="t-browsers">Browsers</h1><p class="sub">noah.shield runs inside each browser; aureon.defender is its companion on this PC (brightness, Tor, local AI) and runs its system-wide parts.</p></div></div>
-  <div class="card"><div class="hd"><h2>noah.shield <span class="muted" id="nver"></span></h2></div><div class="bd flush" id="browsers"></div></div>
-  <div class="grid g2">
-    <div class="card"><div class="hd"><h2>In the browser (noah.shield)</h2></div><div class="bd"><div class="muted" style="columns:2;column-gap:22px">
-      <div>Trackers, ads and data grabs blocked</div><div>Cookie walls and consent tricks</div><div>Fingerprinting and screen-capture guard</div><div>Dark patterns and pressure tactics</div><div>Lookalike sites and fake support pages</div><div>Paste guard for keys and cards</div><div>Link cleaning and redirect unwrapping</div><div>Social feeds without the manipulation</div><div>Shopping: prices and working codes</div><div>Search cleanup and content farms</div><div>Tunnel that fails closed, Tor routes</div><div>Footprint and username checks</div><div>Site security audit and page inspect</div><div>Screenshots and screen recording</div></div></div></div>
-    <div class="card"><div class="hd"><h2>System-wide (aureon.defender)</h2></div><div class="bd"><div class="muted" style="columns:2;column-gap:22px">
-      <div>noah's tracker list for every app (DNS)</div><div>noah's YARA rules in the file scanner</div><div>Clipboard guard for keys, cards, seeds</div><div>Leaked-key scan of folders</div><div>Photo metadata cleaning</div><div>Password breach check</div><div>Extensions that can record the screen</div><div>Screen brightness for noah's Light</div><div>Tor for noah's tunnel</div><div>Local AI for noah's second opinions</div><div>noah's looks as Studio themes</div></div></div></div>
-  </div>
-</section>
-
-<section class="page" id="p-studio" aria-labelledby="t-studio">
-  <div class="ph"><div><h1 id="t-studio">Studio</h1><p class="sub">A look sets the wallpaper, Windows colours, the desktop clock and this app's colours. Undo puts everything back.</p></div>
-    <button class="btn" id="restore">Undo Studio changes</button></div>
-  <div id="looks" style="display:flex;flex-direction:column;gap:14px"></div>
-  <div class="grid g3">
-    <div class="card"><div class="hd"><h2>Windows</h2></div><div class="bd flush">
-      <div class="field"><label>Mode</label><div class="seg" data-set="theme"><button data-v="light">Light</button><button data-v="dark">Dark</button></div></div>
-      <div class="field"><label for="acc">Accent</label><span class="btns"><input type="color" id="acc"><label class="muted"><input type="checkbox" id="acctb"> taskbar</label></span></div>
-      <div class="field"><label>Transparency</label><div class="seg" data-set="transparency"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
-      <div class="field"><label>Taskbar icons</label><div class="seg" data-set="taskbar"><button data-v="left">Left</button><button data-v="center">Centre</button></div></div>
-      <div class="field"><label for="bright">Brightness</label><input type="range" id="bright" min="0" max="100" step="5"></div></div></div>
-    <div class="card"><div class="hd"><h2>Time</h2></div><div class="bd flush">
-      <div class="field"><label>Clock</label><div class="seg" data-set="hours"><button data-v="12">12-hour</button><button data-v="24">24-hour</button></div></div>
-      <div class="field"><label>Seconds on taskbar</label><div class="seg" data-set="seconds"><button data-v="true">Show</button><button data-v="false">Hide</button></div></div>
-      <div class="field"><label for="datef">Date</label><select id="datef"><option>yyyy-MM-dd</option><option>dd/MM/yyyy</option><option>MM/dd/yyyy</option><option>d MMM yyyy</option></select></div></div></div>
-    <div class="card"><div class="hd"><h2>Desktop clock</h2></div><div class="bd flush">
-      <div class="field"><label>Show</label><div class="seg" data-w="enabled"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
-      <div class="field"><label for="wpos">Position</label><select id="wpos"><option>top-left</option><option>top-right</option><option>center</option><option>bottom-left</option><option>bottom-right</option></select></div>
-      <div class="field"><label for="wfont">Font</label><select id="wfont"></select></div>
-      <div class="field"><label for="wsize">Size</label><input type="range" id="wsize" min="48" max="200" step="4"></div>
-      <div class="field"><label for="wcol">Colour</label><input type="color" id="wcol"></div></div></div>
-  </div>
-  <div class="card"><div class="hd"><h2>Your own files</h2></div><div class="bd"><div class="btns"><input type="text" id="wpp" placeholder="Wallpaper image, e.g. C:\Pictures\photo.jpg" aria-label="Wallpaper image"><button class="btn" id="wpgo">Set wallpaper</button></div>
-    <div class="btns" style="margin-top:8px"><input type="text" id="fnt" placeholder="Font file, e.g. C:\Fonts\Inter.ttf" aria-label="Font file"><button class="btn" id="fntgo">Install font</button></div></div></div>
-</section>
-
-<section class="page" id="p-settings" aria-labelledby="t-settings">
-  <div class="ph"><div><h1 id="t-settings">Settings</h1><p class="sub">Once installed, changes here ask for administrator approval so malware running as you can't switch protection off.</p></div></div>
-  <div id="toggles" style="display:flex;flex-direction:column;gap:14px"></div>
-  <div class="card"><div class="hd"><h2>About</h2></div><div class="bd flush rows" id="about"></div></div>
-</section>
-</main>
-
-<div class="toasts" id="toasts" aria-live="polite"></div>
-
+<div class="grid g2">
+<div class="card"><div class="hd"><h2>Needs attention</h2><button class="btn sm" data-go="activity">All activity</button></div><div class="bd flush rows" id="attention"></div></div>
+<div class="card"><div class="hd"><h2>Protection</h2><span class="muted" id="modsum"></span></div><div class="bd flush rows scroll" id="mods" style="max-height:330px"></div></div>
+</div>
+<div class="card"><div class="hd"><h2>Protect this PC</h2><div class="btns"><button class="btn" id="hundo">Undo</button><button class="btn primary" id="happly">Protect this PC</button></div></div>
+<div class="bd"><div class="meter-row"><div class="ring" id="hring"><b id="hscore">–</b></div><div><div id="hsum">Checking your settings…</div><div class="muted" style="font-size:12.5px">One click sets every protection below to its safest value. One administrator prompt. Everything can be undone.</div></div></div>
+<div class="rows" id="hlist" style="margin-top:10px"></div></div></div>
+<div class="grid g4" id="discover"></div>
+</section><section aria-labelledby="t-activity" class="page" id="p-activity"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> ACTIVITY</div>
+<div class="ph"><div><h1 id="t-activity">A clear record.</h1><p class="sub">Follow observed changes, checks and findings. Filter by source and inspect their evidence.</p></div>
+<div class="btns"><input aria-label="Filter activity" id="aq" placeholder="Filter" type="search"/><div class="seg" id="af"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="alerts">Alerts</button><button aria-pressed="false" data-f="device">Devices</button><button aria-pressed="false" data-f="defender">Defender</button></div></div></div>
+<div class="grid g2">
+<div class="card"><div class="hd"><button aria-label="Previous month" class="btn sm" id="calprev">‹</button><h2 id="calmonth"></h2><button aria-label="Next month" class="btn sm" id="calnext">›</button></div><div class="cal" id="cal"></div></div>
+<div class="card"><div class="hd"><h2 id="dayhead">Today</h2><span class="muted" id="daycount"></span></div><div class="bd flush scroll" style="max-height:520px"><div class="day24" id="day24"></div></div></div>
+</div>
+<div class="card"><div class="bd flush scroll" id="events" style="max-height:none"></div></div>
+</section><section aria-labelledby="t-scan" class="page" id="p-scan"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> SCAN</div>
+<div class="ph"><div><h1 id="t-scan">Check before you trust.</h1><p class="sub">Choose files for local scanning, inspect sensitive metadata, or review exposed secrets.</p></div></div>
+<div class="card scan-select"><div class="bd"><div aria-hidden="true" class="scan-emblem"><svg fill="none" stroke="currentColor" stroke-width="1.4" viewbox="0 0 24 24"><circle cx="10" cy="10" r="7"></circle><path d="m16 16 6 6"></path></svg></div><h2>A closer look starts here.</h2><p>Choose files or a folder. Results identify which scanning layers actually ran.</p><div class="btns"><button class="btn primary" data-pickscan="files">Choose files to scan</button><button class="btn" data-pickscan="folder">Choose a folder</button></div><div class="btns" style="margin-top:14px"><button class="btn sm" data-quick="~/Downloads">Downloads</button><button class="btn sm" data-quick="~/Desktop">Desktop</button><button class="btn sm" data-quick="~/Documents">Documents</button><button class="btn sm" data-post="/api/update">Update threat feeds</button><button class="btn sm" data-post="/api/posture">Check security settings</button></div></div></div><div class="grid g3">
+<div class="card"><div class="hd"><h2>Clean hidden data</h2><span class="sw" title="Clean every download automatically"><input aria-label="Clean downloads automatically" id="autoclean" type="checkbox"/><span></span></span></div><div class="bd"><p class="muted" style="margin:0 0 10px">Removes location, camera, author, device and editing history from photos, music, videos, Word/Excel/PowerPoint and PDF. The switch above does it to every download automatically.</p>
+<div class="btns"><button class="btn primary" data-pickclean="files">Choose files</button><button class="btn" data-pickclean="folder">Choose a folder</button></div><div class="muted" id="cres" style="margin-top:10px"></div></div></div>
+<div class="card"><div class="hd"><h2>Find leaked keys</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">Checks code, notes and documents for 220 kinds of passwords, API keys and tokens, card numbers and wallet phrases, and tells you what to do about each.</p>
+<div class="btns"><button class="btn primary" id="kgo">Choose a folder to check</button></div><div id="kres" style="margin-top:10px"></div></div></div>
+<div class="card"><div class="hd"><h2>Password breach check</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">Only the first 5 characters of the password's hash leave this PC. Nothing is stored.</p>
+<div class="btns"><input aria-label="Password to check" autocomplete="off" id="pw" placeholder="Password" type="password"/><button class="btn" id="pwgo">Check</button></div><div class="muted" id="pwres" style="margin-top:8px"></div></div></div>
+</div>
+</section><section aria-labelledby="t-passwords" class="page" id="p-passwords"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> PASSWORDS</div>
+<div class="ph"><div><h1 id="t-passwords">Your secrets. Your space.</h1><p class="sub">A local vault protected by your PIN and Windows account. Keep your recovery limits in mind.</p></div>
+<div class="btns" id="vacts"></div></div>
+<div id="vbody"></div>
+</section><section aria-labelledby="t-controls" class="page" id="p-controls"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> CONTROLS</div>
+<div class="ph"><div><h1 id="t-controls">Control, with intention.</h1><p class="sub">Review the scope and consequence before changing device access or system settings.</p></div></div>
+<div id="cbody"></div>
+</section><section aria-labelledby="t-vault" class="page" id="p-vault"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> QUARANTINE</div>
+<div class="ph"><div><h1 id="t-vault">Contained. Documented.</h1><p class="sub">Review quarantined files and their evidence before restoring or deleting them.</p></div></div>
+<div class="card"><div class="bd flush" id="vault"></div></div>
+</section><section aria-labelledby="t-radar" class="page" id="p-radar"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> RADAR</div>
+<div class="ph"><div><h1 id="t-radar">Know what is present.</h1><p class="sub">Installed software, startup entries and Windows privacy observations. Presence alone is not proof of misuse.</p></div>
+<button class="btn primary" data-post="/api/radar">Sweep now</button></div>
+<div class="grid g4" id="rstats"></div>
+<div class="card"><div class="tabs" id="rtabs" role="tablist"></div><div class="bd flush scroll" id="rbody" style="max-height:560px"></div></div>
+</section><section aria-labelledby="t-hardware" class="page" id="p-hardware"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> HARDWARE</div>
+<div class="ph"><div><h1 id="t-hardware">Built to be understood.</h1><p class="sub">Explore hardware inventory, physical interfaces, network listeners and available download records.</p></div>
+<div class="btns"><button class="btn" data-post="/api/hardware/refresh">Refresh</button><button class="btn primary" data-post="/api/hardware/report">Export report</button></div></div>
+<div id="hwbody"></div>
+</section><section aria-labelledby="t-devices" class="page" id="p-devices"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> DEVICES</div>
+<div class="ph"><div><h1 id="t-devices">A familiar roll call.</h1><p class="sub">Label devices you recognize. Device names and identifiers do not authenticate an owner.</p></div>
+<div class="btns"><button class="btn" data-post="/api/devices/sweep">Read history</button><button class="btn" id="dclear">Clear Aureon's log</button></div></div>
+<div class="grid g4" id="dstats"></div>
+<div class="card"><div class="hd"><h2>Your devices — present and past</h2><button class="btn sm" data-post="/api/assets/scan">Scan network</button></div>
+<p class="muted" style="margin:-4px 14px 6px">Every laptop, tablet and phone seen on your network or paired here. Mark the ones that are yours; a stranger stands out.</p>
+<div class="bd flush scroll" id="assets" style="max-height:460px"></div></div>
+<div class="card"><div class="hd"><div class="seg" id="dfilter"></div><input aria-label="Filter devices" id="dq" placeholder="Filter devices" style="max-width:240px" type="search"/></div><div class="bd flush scroll" id="dtimeline" style="max-height:620px"></div></div>
+</section><section aria-labelledby="t-netpower" class="page" id="p-netpower"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> NETWORK &amp; POWER</div>
+<div class="ph"><div><h1 id="t-netpower">Connections. With context.</h1><p class="sub">Keep Wi-Fi and HomePlug observations separate from measured electrical evidence.</p></div></div>
+<div id="netpower"></div>
+</section><section aria-labelledby="t-leaks" class="page" id="p-leaks"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> LEAKS</div>
+<div class="ph"><div><h1 id="t-leaks">Less exposure. More understanding.</h1><p class="sub">Review privacy settings and their sources. A setting alone does not prove data was transmitted.</p></div>
+<button class="btn" data-post="/api/leaks/undo">Undo my fixes</button></div>
+<div class="card"><div class="bd flush rows" id="leaks"></div></div>
+<div class="card"><div class="hd"><h2>Security products registered with Windows</h2></div><div class="bd flush" id="products"></div></div>
+</section><section aria-labelledby="t-phones" class="page" id="p-phones"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> PHONES</div>
+<div class="ph"><div><h1 id="t-phones">Protection travels. Privileges do not.</h1><p class="sub">Authorized phone inspection and phone-local protection have different capabilities.</p></div>
+<button class="btn primary" data-post="/api/phones/scan">Scan phones</button></div>
+<div id="phones"></div>
+<div class="grid g2">
+<div class="card"><div class="hd"><h2>Connect a phone</h2></div><div class="bd"><p style="margin:0 0 8px"><b>Android</b> <span class="muted">· Pixel, Samsung, Xiaomi, OnePlus, Motorola…</span></p>
+<p class="muted" style="margin:0 0 12px">About phone › tap Build number 7 times › Developer options › USB debugging. Plug in and tap Allow; Aureon scans by itself.</p>
+<p style="margin:0 0 8px"><b>iPhone</b></p><p class="muted" style="margin:0">Install libimobiledevice and trust this computer. For a deep spyware check use an encrypted backup with MVT.</p></div></div>
+<div class="card"><div class="hd"><h2>Open on your phone</h2><span class="sw"><input aria-label="Phone link" id="plink" type="checkbox"/><span></span></span></div><div class="bd">
+<p class="muted" style="margin:0 0 8px">A view-only copy on your home WiFi, behind a long private key.</p><div class="mono" id="plinkurl"></div></div></div>
+</div>
+</section><section aria-labelledby="t-browsers" class="page" id="p-browsers"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> BROWSERS</div>
+<div class="ph"><div><h1 id="t-browsers">A closer boundary to the web.</h1><p class="sub">Inspect browser companions, supported integrations and their actual installation state.</p></div></div>
+<div class="card"><div class="hd"><h2>noah.shield <span class="muted" id="nver"></span></h2></div><div class="bd flush" id="browsers"></div></div>
+<div class="card"><div class="hd"><h2>Browsers from around the world</h2><span class="muted">Install with one click</span></div><div class="bd flush scroll" id="bcat" style="max-height:520px"></div></div>
+<div class="grid g2">
+<div class="card"><div class="hd"><h2>In the browser (noah.shield)</h2></div><div class="bd"><div class="muted" style="columns:2;column-gap:22px">
+<div>Trackers, ads and data grabs blocked</div><div>Cookie walls and consent tricks</div><div>Fingerprinting and screen-capture guard</div><div>Dark patterns and pressure tactics</div><div>Lookalike sites and fake support pages</div><div>Paste guard for keys and cards</div><div>Link cleaning and redirect unwrapping</div><div>Social feeds without the manipulation</div><div>Shopping: prices and working codes</div><div>Search cleanup and content farms</div><div>Tunnel that fails closed, Tor routes</div><div>Footprint and username checks</div><div>Site security audit and page inspect</div><div>Screenshots and screen recording</div></div></div></div>
+<div class="card"><div class="hd"><h2>System-wide (aureon.defender)</h2></div><div class="bd"><div class="muted" style="columns:2;column-gap:22px">
+<div>noah's tracker list for every app (DNS)</div><div>noah's YARA rules in the file scanner</div><div>Clipboard guard for keys, cards, seeds</div><div>Leaked-key scan of folders</div><div>Photo metadata cleaning</div><div>Password breach check</div><div>Extensions that can record the screen</div><div>Screen brightness for noah's Light</div><div>Tor for noah's tunnel</div><div>Local AI for noah's second opinions</div><div>noah's looks as Studio themes</div></div></div></div>
+</div>
+</section><section aria-labelledby="t-studio" class="page" id="p-studio"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> STUDIO</div>
+<div class="ph"><div><h1 id="t-studio">Make room for your own taste.</h1><p class="sub">Style Aureon independently, or deliberately change your Windows appearance below.</p></div>
+<button class="btn" id="restore">Undo Studio changes</button></div><div class="card"><div class="hd"><h2>Your Aureon interface</h2><span class="muted">App only</span></div><div class="bd"><div class="signal-palettes"><button aria-pressed="true" class="signal-palette" data-ui-palette="signal"><div class="signal-swatches"><i style="background:#0d1012"></i><i style="background:#f1f3f2"></i><i style="background:#d9ff70"></i></div><b>Signal</b><span>Ink, crisp type, quiet lime.</span></button><button aria-pressed="false" class="signal-palette" data-ui-palette="frost"><div class="signal-swatches"><i style="background:#f5f6f2"></i><i style="background:#13201b"></i><i style="background:#344f1a"></i></div><b>Frost</b><span>A clear, considered light surface.</span></button><button aria-pressed="false" class="signal-palette" data-ui-palette="studio"><div class="signal-swatches"><i style="background:#302725"></i><i style="background:#d4a077"></i><i style="background:#eedbc8"></i></div><b>Follow Studio</b><span>Use the selected Windows look.</span></button></div><div class="signal-motion-control"><label><input id="signal-reduced" type="checkbox"/> Reduce interface motion</label><span class="muted">System reduced-motion settings are always respected.</span></div></div></div>
+<div id="looks" style="display:flex;flex-direction:column;gap:14px"></div>
+<div class="grid g3">
+<div class="card"><div class="hd"><h2>Windows</h2></div><div class="bd flush">
+<div class="field"><label>Mode</label><div class="seg" data-set="theme"><button data-v="light">Light</button><button data-v="dark">Dark</button></div></div>
+<div class="field"><label for="acc">Accent</label><span class="btns"><input id="acc" type="color"/><label class="muted"><input id="acctb" type="checkbox"/> taskbar</label></span></div>
+<div class="field"><label>Transparency</label><div class="seg" data-set="transparency"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
+<div class="field"><label>Taskbar icons</label><div class="seg" data-set="taskbar"><button data-v="left">Left</button><button data-v="center">Centre</button></div></div>
+<div class="field"><label for="bright">Brightness</label><input id="bright" max="100" min="0" step="5" type="range"/></div></div></div>
+<div class="card"><div class="hd"><h2>Time</h2></div><div class="bd flush">
+<div class="field"><label>Clock</label><div class="seg" data-set="hours"><button data-v="12">12-hour</button><button data-v="24">24-hour</button></div></div>
+<div class="field"><label>Seconds on taskbar</label><div class="seg" data-set="seconds"><button data-v="true">Show</button><button data-v="false">Hide</button></div></div>
+<div class="field"><label for="datef">Date</label><select id="datef"><option>yyyy-MM-dd</option><option>dd/MM/yyyy</option><option>MM/dd/yyyy</option><option>d MMM yyyy</option></select></div></div></div>
+<div class="card"><div class="hd"><h2>Desktop clock</h2></div><div class="bd flush">
+<div class="field"><label>Show</label><div class="seg" data-w="enabled"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
+<div class="field"><label for="wpos">Position</label><select id="wpos"><option>top-left</option><option>top-right</option><option>center</option><option>bottom-left</option><option>bottom-right</option></select></div>
+<div class="field"><label for="wfont">Font</label><select id="wfont"></select></div>
+<div class="field"><label for="wsize">Size</label><input id="wsize" max="200" min="48" step="4" type="range"/></div>
+<div class="field"><label for="wcol">Colour</label><input id="wcol" type="color"/></div></div></div>
+</div>
+<div class="card"><div class="hd"><h2>Your own files</h2></div><div class="bd"><div class="btns"><button class="btn primary" id="wpgo">Choose a wallpaper picture</button><button class="btn" id="fntgo">Install a font</button></div></div></div>
+<div class="card"><div class="hd"><h2>App logo</h2></div><div class="bd"><div style="display:flex;gap:14px;align-items:center"><img alt="" id="logoimg" src="/icon.png?r=1" style="width:56px;height:56px;border-radius:14px"/>
+<div style="flex:1"><p class="muted" style="margin:0">Make any picture the app's icon — title bar, taskbar, notifications and the phone home-screen icon. It's cropped to the brightest part and rounded.</p></div></div>
+<div class="btns" style="margin-top:12px"><button class="btn primary" id="logogo">Choose a picture</button><button class="btn" id="logoreset">Back to default</button></div><div class="muted" id="logores" style="margin-top:8px"></div></div></div>
+</section><section aria-labelledby="t-settings" class="page" id="p-settings"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> SETTINGS</div>
+<div class="ph"><div><h1 id="t-settings">Quietly configurable.</h1><p class="sub">Local protection settings, threat-feed dependencies and diagnostics. Sensitive changes may require administrator approval.</p></div></div>
+<div class="card"><div class="hd"><h2>Threat feeds</h2></div><div class="bd">
+<p class="muted" style="margin:0 0 10px">abuse.ch retired its public lists. MalwareBazaar, URLhaus and ThreatFox now need a free Auth-Key: sign in at <a class="ext" href="https://auth.abuse.ch/" rel="noopener" target="_blank">auth.abuse.ch</a>, open Optional, copy the Auth-Key and paste it here. Feodo works without one.</p>
+<div class="btns"><input aria-label="abuse.ch Auth-Key" autocomplete="off" id="akey" placeholder="abuse.ch Auth-Key" type="password"/><button class="btn primary" id="akeygo">Save key</button></div>
+<div class="rows" id="feedrows" style="margin-top:10px"></div></div></div>
+<div id="toggles" style="display:flex;flex-direction:column;gap:14px"></div>
+<div class="card"><div class="hd"><h2>About</h2></div><div class="bd flush rows" id="about"></div></div>
+</section></main>
+<div aria-live="polite" class="toasts" id="toasts"></div>
 <script>
 "use strict";
 const TOKEN="__TOKEN__"; let S=null; let firstLoad=true; const seenEv=new Set();
@@ -333,6 +493,12 @@ const I={
  phones:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',browsers:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 2.5 15.2 0 18M12 3c-2.5 2.8-2.5 15.2 0 18"/>',
  studio:'<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.9-.6-1.3-.6-2.2 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/>',
  settings:'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+ passwords:'<rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4"/>',
+ controls:'<path d="M5 4v16M12 4v16M19 4v16"/><circle cx="5" cy="9" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="19" cy="7" r="2"/>',
+ netpower:'<path d="M12 3v6M8 9h8l-1.5 7a2.5 2.5 0 0 1-2.5 2 2.5 2.5 0 0 1-2.5-2z"/><path d="M12 18v3"/>',
+ shield2:'<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/>',
+ battery:'<rect x="2" y="7" width="17" height="10" rx="2.5"/><path d="M21 10.5v3"/>',
+ hardware:'<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/>',
  check:'<path d="M12 3 5 6v6c0 4.5 3 8 7 9 4-1 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/>',alert:'<path d="M12 3 5 6v6c0 4.5 3 8 7 9 4-1 7-4.5 7-9V6z"/><path d="M12 8v5M12 16h.01"/>',
  camera:'<path d="M15 10l5-3v10l-5-3z"/><rect x="3" y="6" width="12" height="12" rx="2"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
  screen:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',pin:'<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
@@ -342,16 +508,24 @@ const I={
  drive:'<rect x="4" y="8" width="16" height="8" rx="2"/><path d="M8 12h.01"/>',key:'<path d="M3 12h11M7 12v3M10 12v2"/><circle cx="17" cy="12" r="4"/>',x:'<path d="M6 6l12 12M18 6 6 18"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'};
 const svg=(n)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]||I.info}</svg>`;
 
-const NAV=[["Overview",[["overview","Overview"]]],["Protect",[["activity","Activity"],["scan","Scan and tools"],["vault","Vault"]]],
-  ["Discover",[["radar","Radar"],["devices","Devices"],["leaks","Leaks"],["phones","Phones"],["browsers","Browsers"]]],["Personalize",[["studio","Studio"]]]];
-$("#nav").innerHTML=NAV.map(([g,items])=>`<div class="navlabel">${g}</div>`+items.map(([k,l])=>`<button data-go="${k}" ${k==="overview"?'aria-current="page"':""}>${svg(k)}<span>${l}</span><span class="count" id="c-${k}"></span></button>`).join("")).join("")
-  +`<div class="spacer"></div><button data-go="settings">${svg("settings")}<span>Settings</span></button>`;
+const NAV=[["Workspace",[["overview","Overview"]]],["Protection",[["activity","Activity"],["scan","Scan and clean"],["passwords","Passwords"],["controls","Controls"],["vault","Quarantine"]]],
+  ["Discover",[["radar","Radar"],["hardware","Hardware"],["devices","Devices"],["netpower","Network & power"],["leaks","Leaks"],["phones","Phones"],["browsers","Browsers"]]],["Personalize",[["studio","Studio"]]]];
+$("#nav").innerHTML='<div class="brand"><img src="/icon.png" alt="Aureon logo"><div>aureon<small>DEFENDER</small></div></div>'+NAV.map(([g,items])=>`<div class="navlabel">${g}</div>`+items.map(([k,l])=>`<button data-go="${k}" ${k==="overview"?'aria-current="page"':""}>${svg(k)}<span>${l}</span><span class="count" id="c-${k}"></span></button>`).join("")).join("")
+  +`<div class="spacer"></div><button data-go="settings">${svg("settings")}<span>Settings</span></button><div class="navfoot"><strong>Local workspace</strong><br>Signal interface · <span id="signal-version"></span></div>`;
 function go(k){
+  if(!$("#p-"+k))return;
+  document.body.dataset.page=k;
+  $("#crumbtitle").textContent=k==="settings"?"Settings":NAV.flatMap(x=>x[1]).find(x=>x[0]===k)?.[1]||k;
   $$("nav button").forEach(b=>{if(b.dataset.go===k)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
   $$(".page").forEach(p=>p.classList.toggle("on",p.id==="p-"+k));$("#main").scrollTop=0;history.replaceState(null,"","#"+k)}
 
-async function api(path,body){const r=await fetch(path,{method:body?"POST":"GET",headers:{"X-Aureon-Token":TOKEN,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
-  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||j.message||"Request failed ("+r.status+")");return j}
+let activeWrites=0;
+async function api(path,body){const writing=body!==undefined;
+  if(writing){activeWrites++;document.body.dataset.busy="true";$("#action-label").textContent=path.includes("scan")?"Requesting check…":path.includes("pick")?"Choosing files…":"Applying request…";}
+  try{const r=await fetch(path,{method:writing?"POST":"GET",headers:{"X-Aureon-Token":TOKEN,"Content-Type":"application/json"},body:writing?JSON.stringify(body):undefined});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||j.message||"Request failed ("+r.status+")");return j;
+  }finally{if(writing){activeWrites--;document.body.dataset.busy=String(activeWrites>0);}}
+}
 function toast(title,body="",kind="ok",ms=5200){const box=$("#toasts");while(box.children.length>=3)box.firstChild.remove();
   const el=document.createElement("div");el.className="toast "+kind;el.setAttribute("role",kind==="high"?"alert":"status");
   el.innerHTML=`<span class="ic">${svg(kind==="high"||kind==="medium"?"alert":kind==="ok"?"check":"info")}</span><div><b>${esc(title)}</b>${body?`<p>${esc(body)}</p>`:""}</div><button class="x" aria-label="Dismiss">${svg("x")}</button>`;
@@ -359,12 +533,28 @@ function toast(title,body="",kind="ok",ms=5200){const box=$("#toasts");while(box
 async function post(path,body,ok){try{const r=await api(path,body||{});toast(r.message||ok||"Done","", "ok");setTimeout(refresh,700);return r}catch(e){toast("That didn't work",e.message,"medium",7000)}}
 
 /* ---------- theme from the selected look ---------- */
-function applyTheme(t){if(!t)return;const [bg,surface,accent,text]=t.palette, r=document.documentElement.style, light=t.mode==="light";
-  r.setProperty("--bg",bg);r.setProperty("--surface",surface);r.setProperty("--raise",`color-mix(in srgb, ${bg} 55%, ${surface})`);
-  r.setProperty("--accent",accent);r.setProperty("--text",text);r.setProperty("--on-accent",light?"#ffffff":bg);
-  r.setProperty("--line",light?"rgba(0,0,0,.09)":`color-mix(in srgb, ${text} 9%, transparent)`);r.setProperty("--line-strong",light?"rgba(0,0,0,.16)":`color-mix(in srgb, ${text} 15%, transparent)`);
-  document.documentElement.style.colorScheme=light?"light":"dark"}
-
+const UIPREF_KEY="aureon.signal.interface.v1";
+let uiPrefs={palette:"signal",reduced:false};try{uiPrefs={...uiPrefs,...JSON.parse(localStorage.getItem(UIPREF_KEY)||"{}")};}catch(_){}
+let uiSaving=false;
+async function saveUi(){try{localStorage.setItem(UIPREF_KEY,JSON.stringify(uiPrefs));}catch(_){}applyTheme(S?.theme);
+  if(S?.readonly)return;uiSaving=true;try{const r=await api("/api/interface",uiPrefs);if(S)S.ui_appearance=r.ui_appearance||{...uiPrefs};}catch(e){toast("Saved for this browser only",e.message,"medium");}finally{uiSaving=false;}
+}
+function applyTheme(t){const frost=uiPrefs.palette==="frost",studio=uiPrefs.palette==="studio"&&t?.palette;
+  const palette=studio?t.palette:frost?["#f5f6f2","#ffffff","#344f1a","#13201b"]:["#0d1012","#14191c","#d9ff70","#f1f3f2"];
+  const [bg,surface,accent,text]=palette,light=studio?t.mode==="light":frost,r=document.documentElement.style;
+  const tokens={"--bg":bg,"--raise":bg,"--surface":surface,"--accent":accent,"--text":text,"--fg":text,
+    "--muted":studio?`color-mix(in srgb, ${text} 65%, ${bg})`:light?"#62716b":"#9da8ad",
+    "--faint":light?"#6e7e75":"#7d8b91","--line":light?"#d6ded7":"#293136","--line-strong":light?"#b8c7bc":"#3d4a50",
+    "--tint":light?"#e9eee5":"#1b2226","--tint2":light?"#dfe7db":"#222c31","--hover":light?"#e9eee5":"#1b2226","--sel":light?"#e3ebdc":"#1b2226",
+    "--on-accent":light?"#ffffff":"#17210b","--ok":light?"#227858":"#78dcb3","--warn":light?"#926d1b":"#f5c879","--danger":light?"#ab4543":"#ff9f9d"};
+  Object.entries(tokens).forEach(([k,v])=>r.setProperty(k,v));document.documentElement.style.colorScheme=light?"light":"dark";
+  document.body.dataset.reduced=String(uiPrefs.reduced);$("#tcolor").content=bg;
+  $$("[data-ui-palette]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.uiPalette===uiPrefs.palette)));
+  const motion=$("#signal-reduced");if(motion)motion.checked=uiPrefs.reduced;
+}
+applyTheme(null);
+document.addEventListener("click",e=>{const palette=e.target.closest("[data-ui-palette]");if(palette){uiPrefs.palette=palette.dataset.uiPalette;saveUi();toast("Interface updated","This choice affects Aureon only.");}});
+$("#signal-reduced").onchange=e=>{uiPrefs.reduced=e.target.checked;saveUi();};
 /* ---------- overview ---------- */
 const MOD={realtime:"Real-time file protection",canary:"Ransomware tripwires",hid:"USB keyboard guard",network:"Network watch",devices_live:"Device log",
   wifi:"WiFi impersonation watch",persistence:"Autostart watch",defender:"Defender engine",defender_relay:"Defender alerts",radar:"Hidden-software radar",
@@ -374,9 +564,9 @@ function renderOverview(){const e=S.engine,alive=e.alive,c=e.counts||{},now=Date
   const open=day.filter(x=>!x.quarantine_id&&x.severity==="high");
   const state=!alive?"off":open.length?"danger":day.length?"warn":"ok";
   $("#banner").className="card banner "+state;$("#bglyph").innerHTML=svg(state==="ok"?"check":"alert");
-  $("#t-overview").textContent=!alive?"Protection engine isn't running":open.length?`${open.length} alert${open.length>1?"s":""} need you`:day.length?`Protected · ${day.length} thing${day.length>1?"s":""} to look at`:"Protected";
+  $("#t-overview").textContent=!alive?"Protection engine isn't running":open.length?`${open.length} alert${open.length>1?"s":""} need you`:day.length?`Protected · ${day.length} thing${day.length>1?"s":""} to look at`:"Monitoring active";
   $("#bsub").textContent=!alive?"Start aureon.defender from the Start menu, or run aureon.defender.exe install.":`${e.online?"Online":"Offline, using local rules and signatures"} · watching since ${new Date(e.started*1000).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}`;
-  $("#hstate").innerHTML=`<span class="dot ${state==="ok"?"":state}"></span>${state==="ok"?"Protected":state==="off"?"Engine off":state==="danger"?"Needs you":"Attention"}`;
+  $("#hstate").innerHTML=`<span class="dot ${state==="ok"?"":state}"></span>${state==="ok"?"Engine active":state==="off"?"Engine off":state==="danger"?"Needs you":"Attention"}`;
   $("#heng").textContent=alive?(e.online?"Online":"Offline mode"):"";
   $("#stats").innerHTML=[["Files scanned",c.scanned??0,"since the engine started"],["Threats blocked",c.quarantined??0,"moved to the Vault"],["Alerts",c.alerts??0,"medium or high"],
     ["Known-bad hashes",(e.reputation??0).toLocaleString(),e.feeds_age&&e.feeds_age.malwarebazaar!=null?`feeds ${Math.round(e.feeds_age.malwarebazaar)} h old`:"feeds not fetched yet"]]
@@ -386,7 +576,7 @@ function renderOverview(){const e=S.engine,alive=e.alive,c=e.counts||{},now=Date
     :`<div class="empty"><b>Nothing needs you</b>Alerts show up here and as notifications.</div>`;
   const m=e.modules||{}, keys=Object.keys(MOD), ok=keys.filter(k=>m[k]==="ok").length;
   $("#modsum").textContent=alive?`${ok} of ${keys.length} running`:"";
-  $("#mods").innerHTML=keys.map(k=>{const st=m[k]||(alive?"starting":"off");return `<div><span class="dot ${st==="ok"?"":st==="error"?"danger":"off"}"></span><span class="grow">${MOD[k]}</span><span class="r">${st==="ok"?"Running":st==="off"?"Off":st==="error"?"Error":"Starting"}</span></div>`}).join("");
+  $("#mods").innerHTML=keys.map(k=>{const st=m[k]||(alive?"starting":"off");return `<div><span class="dot ${st==="ok"?"":st==="error"?"danger":"off"}"></span><span class="grow">${MOD[k]}</span><span class="r">${st==="ok"?"Running":st==="off"?"Off":st==="error"?"Error":st==="partial"?"Partial":st==="offline_cached"?"Offline · cached":"Starting"}</span></div>`}).join("");
   const r=S.radar, d=S.devices, lk=(S.leaks&&S.leaks.checks)||[], ph=S.phones;
   const capUsers=r?new Set(r.privacy.filter(p=>/screen/.test(p.what)).map(p=>base(p.app))).size:null;
   const cards=[["radar","Radar",r?`${r.installed.filter(p=>p.hidden).length} hidden programs`:"Not swept yet",r?`${capUsers} apps captured the screen · ${r.background.filter(b=>b.telemetry).length} telemetry services`:"Press Sweep radar"],
@@ -449,7 +639,7 @@ function renderDevices(){const d=S.devices;
 
 /* ---------- leaks ---------- */
 function renderLeaks(){const L=S.leaks||{checks:[]};const open=L.checks.filter(c=>!c.ok);$("#c-leaks").textContent=open.length||"";
-  $("#leaks").innerHTML=L.checks.map(c=>`<div style="align-items:flex-start"><span class="ic ${c.ok?"":"hot"}" style="margin-top:2px">${svg(c.ok?"check":"leaks")}</span><div class="grow"><div><b style="font-weight:600">${esc(c.title)}</b> ${c.ok?'<span class="tag ok">private</span>':'<span class="tag warn">leaking</span>'}</div><div class="muted">${esc(c.why)}</div>${c.ok?"":`<div class="faint" style="margin-top:2px">${esc(c.fix)}</div>`}</div>${!c.ok&&c.one_click?`<button class="btn sm" data-leak="${c.id}">${c.machine?"Fix as admin":"Fix"}</button>`:""}</div>`).join("");
+  $("#leaks").innerHTML=L.checks.map(c=>`<div style="align-items:flex-start"><span class="ic ${c.ok?"":"hot"}" style="margin-top:2px">${svg(c.ok?"check":"leaks")}</span><div class="grow"><div><b style="font-weight:600">${esc(c.title)}</b> ${c.ok?'<span class="tag ok">private</span>':'<span class="tag warn">leaking</span>'}</div><div class="muted">${esc(c.why)}</div>${c.ok?"":`<div class="faint" style="margin-top:2px">${esc(c.fix)}</div>`}</div>${!c.ok?`<button class="btn sm primary" data-leak="${c.id}">Fix</button>`:""}</div>`).join("");
   const P=L.products||[];$("#products").innerHTML=P.length?`<table class="tbl"><thead><tr><th>Product</th><th>Kind</th><th>State</th></tr></thead><tbody>${P.map(p=>`<tr><td>${esc(p.name)}</td><td class="muted">${esc(p.kind)}</td><td>${p.enabled?'<span class="tag ok">on</span>':'<span class="tag">off</span>'} ${p.up_to_date?"":'<span class="tag warn">out of date</span>'}</td></tr>`).join("")}</tbody></table>`:`<div class="empty">Read by the engine every 6 hours.</div>`}
 
 /* ---------- phones ---------- */
@@ -476,14 +666,15 @@ function renderBrowsers(){const B=S.browsers||{list:[]};$("#nver").textContent=B
 let built=false;const FONTS=["Bahnschrift Light","Bahnschrift","Segoe UI Variable Display Light","Segoe UI Variable Display","Segoe UI Variable Display Semibold","Georgia","Sitka Heading","Cascadia Mono","Consolas","Gabriola","Ink Free","Candara Light","Corbel Light"];
 function renderStudio(){const st=S.studio,w=S.widget;
   if(!built){built=true;const groups={};Object.entries(S.presets).forEach(([n,p])=>(groups[p.group||"More"]||=[]).push([n,p]));
-    $("#looks").innerHTML=Object.entries(groups).map(([g,items])=>`<div class="group">${esc(g)}</div><div class="looks">${items.map(([n,p])=>`<button class="look" data-preset="${esc(n)}" aria-pressed="${S.theme&&S.theme.name===n}"><img alt="" loading="lazy" data-src="/api/wallpaper-preview?name=${encodeURIComponent(n)}"><div class="meta"><b>${esc(n)}</b><span class="sws">${p.palette.map(c=>`<i style="background:${c}"></i>`).join("")}</span></div></button>`).join("")}</div>`).join("");
+    $("#looks").innerHTML=`<div class="group">Your wallpaper</div><div class="looks"><button class="look" data-theme="Wallpaper" aria-pressed="false"><img alt="" src="/api/current-wallpaper?t=${TOKEN}"><div class="meta"><b>Match my wallpaper</b><span class="sws" id="wsw"></span></div></button></div>`+Object.entries(groups).map(([g,items])=>`<div class="group">${esc(g)}</div><div class="looks">${items.map(([n,p])=>`<button class="look" data-preset="${esc(n)}" aria-pressed="${S.theme&&S.theme.name===n}"><img alt="" loading="lazy" data-src="/api/wallpaper-preview?name=${encodeURIComponent(n)}"><div class="meta"><b>${esc(n)}</b><span class="sws">${p.palette.map(c=>`<i style="background:${c}"></i>`).join("")}</span></div></button>`).join("")}</div>`).join("");
     const io=new IntersectionObserver(es=>es.forEach(async en=>{if(!en.isIntersecting)return;io.unobserve(en.target);try{const r=await fetch(en.target.dataset.src,{headers:{"X-Aureon-Token":TOKEN}});if(r.ok)en.target.src=URL.createObjectURL(await r.blob())}catch(_){}}));
     $$("img[data-src]").forEach(i=>io.observe(i));$("#wfont").innerHTML=FONTS.map(f=>`<option>${f}</option>`).join("")}
   const pick=(sel,v)=>$$(`${sel} button`).forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===String(v))));
   pick('[data-set="theme"]',st.apps);pick('[data-set="transparency"]',st.transparency);pick('[data-set="taskbar"]',st.taskbar);pick('[data-set="hours"]',st.time&&/H/.test(st.time)?24:12);pick('[data-set="seconds"]',st.seconds);pick('[data-w="enabled"]',w.enabled);
   if(document.activeElement!==$("#acc"))$("#acc").value=st.accent||S.theme.accent;if(st.date)$("#datef").value=st.date;
   $("#wpos").value=w.position;$("#wfont").value=w.font;$("#wsize").value=w.clock_size;$("#wcol").value=w.color;$("#restore").disabled=!st.has_backup;
-  $$(".look").forEach(b=>b.setAttribute("aria-pressed",String(S.theme&&b.dataset.preset===S.theme.name)))}
+  $$(".look").forEach(b=>b.setAttribute("aria-pressed",String(S.theme&&(b.dataset.preset||b.dataset.theme)===S.theme.name)));
+  const ws=$("#wsw");if(ws&&S.theme.name==="Wallpaper")ws.innerHTML=S.theme.palette.map(c=>`<i style="background:${c}"></i>`).join("")}
 
 /* ---------- settings ---------- */
 const TOG=[["Protection",[["realtime","Real-time file protection","New files in Downloads, Desktop, Temp and Startup, as soon as they finish arriving."],["auto_quarantine","Quarantine threats automatically","Malicious files go to the Vault; suspicious ones only raise an alert."],["use_defender_engine","Microsoft Defender engine","Microsoft's offline signatures as one more scanner."],["defender_relay","Show Defender's detections in Aureon","Everything Defender catches appears here and as an Aureon notification."],["use_yara","YARA rules","Aureon's and noah.shield's pattern rules."],["canary","Ransomware tripwires","Hidden decoy documents; touching them is an instant alert."],["canary_suspend_writer","Freeze ransomware automatically","Suspend the unsigned program writing the most when a tripwire fires."]]],
@@ -494,11 +685,183 @@ function renderSettings(){const s=S.settings;if(document.activeElement&&document
   $("#toggles").innerHTML=TOG.map(([g,items])=>`<div class="card"><div class="hd"><h2>${g}</h2></div><div class="bd flush">${items.map(([k,t,d])=>`<div class="field"><div><label for="t-${k}">${t}</label><div class="d">${d}</div></div><span class="sw"><input type="checkbox" id="t-${k}" data-k="${k}" ${s[k]?"checked":""} ${S.readonly?"disabled":""}><span></span></span></div>`).join("")}</div></div>`).join("");
   const e=S.engine;$("#about").innerHTML=[["Version",S.version],["Engine",e.alive?`running, pid ${e.pid}`:"not running"],["Data folder",e.settings?"%ProgramData%\\Aureon":"–"],["Look",S.theme.name]].map(([k,v])=>`<div><span class="grow muted">${k}</span><span class="r" style="color:var(--fg)">${esc(v)}</span></div>`).join("")}
 
+/* ---------- protect this PC ---------- */
+function renderHarden(){const H=S.harden||{};$("#hscore").textContent=H.score!=null?H.score+"%":"–";$("#hring").style.setProperty("--p",H.score||0);
+  const todo=(H.items||[]).filter(i=>!i.done);$("#hsum").innerHTML=H.score==null?"Checking your settings…":todo.length?`<b>${todo.length} protection${todo.length>1?"s":""} not on yet</b>`:"<b>Everything is at its safest setting</b>";
+  $("#hlist").innerHTML=todo.slice(0,8).map(i=>`<div><span class="sev ${i.group==="Defender"||i.group==="Network"?"medium":"low"}"></span><div class="grow"><div>${esc(i.title)}</div><div class="muted">${esc(i.why)}</div></div><span class="r">${esc(i.group)}</span></div>`).join("")+(todo.length>8?`<div class="muted" style="padding:6px 12px">and ${todo.length-8} more</div>`:"");
+  $("#happly").disabled=!todo.length}
+
+/* ---------- hardware ---------- */
+let hwtab="machine";const fmtBytes=n=>n==null?"":n<1024?n+" B":n<1048576?(n/1024).toFixed(0)+" KB":n<1073741824?(n/1048576).toFixed(1)+" MB":(n/1073741824).toFixed(2)+" GB";
+const extLink=u=>u&&/^(https?|ftp):\/\//.test(u)?`<a class="ext" href="${esc(u)}" target="_blank" rel="noopener noreferrer" title="${esc(u)}">${esc(u.length>70?u.slice(0,70)+"…":u)}</a>`:esc(u||"");
+function renderHardware(){const H=S.hardware,box=$("#hwbody");
+  if(!H){box.innerHTML=`<div class="card"><div class="empty"><b>Not read yet</b>Press Refresh. It takes a few seconds.</div></div>`;return}
+  const i=H.inventory,s=i.system,b=i.battery;
+  const tabs=[["machine","Machine"],["ports","Ports"],["network","Network ports"],["downloads",`Downloads (${H.downloads.length})`]];
+  let h=`<div class="grid g4">${[["Model",`${s.maker||""}`,s.model],["Processor",(i.cpu[0]||{}).name||"–",`${(i.cpu[0]||{}).cores||"?"} cores · ${s.memory_gb} GB memory`],["Battery",b?b.health_pct+"%":"none",b?`of original capacity · ${b.cycles??"?"} cycles`:""],["Read",fmtAgo(H.t),"hardware, ports, downloads"]]
+    .map(([l,v,x])=>`<div class="card stat"><div class="l">${l}</div><div class="v" style="font-size:16px">${esc(v)}</div><div class="h trunc" title="${esc(x)}">${esc(x)}</div></div>`).join("")}</div>
+    <div class="card"><div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${hwtab===k}" data-hw="${k}">${l}</button>`).join("")}</div><div class="bd flush scroll" style="max-height:640px">`;
+  if(hwtab==="machine"){h+=`<dl class="kv">${[["Maker / model",`${s.maker} ${s.model}`],["Family",s.family],["Firmware",`${i.bios.vendor} ${i.bios.version} (${i.bios.date})`],["Serial number",i.bios.serial],
+      ["Processor",i.cpu.map(c=>`${c.name} · ${c.cores} cores / ${c.threads} threads`).join("; ")],["Memory",s.memory_gb+" GB"],["Graphics",i.gpu.map(g=>`${g.name} (driver ${g.driver})`).join("; ")],
+      ["Storage",i.disks.map(d=>`${d.model} · ${d.gb} GB · ${d.bus}`).join("; ")],["Network adapters",i.network.map(n=>`${n.name} · ${n.mac||"no MAC"} · ${n.state}`).join("; ")],
+      ["Cameras, mics, Bluetooth",i.peripherals.map(p=>`${p.name} (${p.class})`).join("; ")||"–"]].map(([k,v])=>`<dt>${k}</dt><dd>${esc(v||"–")}</dd>`).join("")}</dl>`}
+  if(hwtab==="ports"){h+=`<table class="tbl"><thead><tr><th>USB port</th><th>Plugged in now</th><th>Devices seen on this port</th></tr></thead><tbody>${H.usb_ports.map(p=>`<tr><td>${esc(p.port)}</td><td>${esc(p.now.join(", ")||"empty")}</td><td>${p.seen.map(x=>`<div>${esc(x.name)} <span class="muted">${esc(x.category)}${x.last?" · last "+fmtAgo(x.last):""}</span></div>`).join("")}</td></tr>`).join("")}</tbody></table>`
+    +(i.ports.length?`<div class="day">Connectors listed by the firmware</div><table class="tbl"><tbody>${i.ports.map(p=>`<tr><td>${esc(p.label)}</td><td class="muted">${esc(p.kind)}</td></tr>`).join("")}</tbody></table>`:"")}
+  if(hwtab==="network"){h+=`<table class="tbl"><thead><tr><th>Port</th><th>Listening on</th><th>Program</th></tr></thead><tbody>${H.net_ports.map(r=>`<tr><td class="num">${r.proto} ${r.port}</td><td>${esc(r.address)} ${r.exposed?'<span class="tag warn">whole network</span>':'<span class="tag">this PC only</span>'}</td><td>${esc(r.program)}<div class="mono muted">${esc(r.path)}</div></td></tr>`).join("")}</tbody></table>`}
+  if(hwtab==="downloads"){h+=`<table class="tbl"><thead><tr><th>When</th><th>File</th><th>From</th><th>Browser</th></tr></thead><tbody>${H.downloads.slice(0,400).map(d=>`<tr><td class="num muted" style="white-space:nowrap">${d.t?new Date(d.t*1000).toLocaleString([], {month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}):"–"}</td><td><div>${esc(d.name)}</div><div class="muted">${fmtBytes(d.size)}${d.exists?"":" · deleted"}${d.flagged_by_browser?' · <span class="tag danger">browser warned</span>':""}</div></td><td>${d.domain?`<b>${esc(d.domain)}</b><br>`:""}${extLink(d.url)}${d.page||d.referrer?`<div class="muted">page: ${extLink(d.page||d.referrer)}</div>`:""}</td><td class="muted">${esc(d.browser)}</td></tr>`).join("")}</tbody></table>`}
+  box.innerHTML=h+"</div></div>"}
+
+/* ---------- feeds ---------- */
+function renderFeeds(){const f=S.engine.feeds||{},age=S.engine.feeds_age||{};const names={feodo:"Feodo Tracker · botnet servers",malwarebazaar:"MalwareBazaar · malware hashes",urlhaus:"URLhaus · malware sites",threatfox:"ThreatFox · fresh C2 servers"};
+  $("#feedrows").innerHTML=Object.keys(names).map(k=>{const v=f[k];const ok=typeof v==="number";return `<div><span class="dot ${ok?"":v?"warn":"off"}"></span><span class="grow">${names[k]}</span><span class="r">${ok?v.toLocaleString()+" indicators"+(age[k]!=null?" · "+Math.round(age[k])+" h old":""):esc(v||"not fetched yet")}</span></div>`}).join("");
+  $("#akey").placeholder=S.settings.abusech_key?"Key saved · paste a new one to replace it":"abuse.ch Auth-Key"}
+
+/* ---------- the machine (overview) ---------- */
+const BI={Storage:"drive","Phone / media device":"phones",Camera:"camera",Audio:"audio",Display:"display",Keyboard:"usb",Mouse:"usb"};
+function renderMachine(){const L=S.live||{},v=S.engine.vitals||{},inv=S.hardware?.inventory;
+  $("#mname").textContent=(inv?.system?.model||"This laptop").replace(/_.*/,"");$("#mfam").textContent=inv?.system?.maker||"PRIMARY DEVICE";
+  $("#mstate").innerHTML=`<span class="dot ${S.engine.alive?"":"off"}"></span>${S.engine.alive?"Engine active":"Engine off"}`;
+  const cells=[["battery","Battery",v.battery!=null?Math.round(v.battery)+"%":"Unavailable",v.battery!=null?(v.plugged?"Charging":"On battery"):"No reading"],
+    ["wifi","Wi-Fi",L.wifi?.ssid?L.wifi.signal||"Connected":"Not connected",L.wifi?.ssid||"No connection observed"],
+    ["bt","Bluetooth",(L.bluetooth||[]).length+" connected",(L.bluetooth||[]).join(", ")||"None observed"],
+    ["usb","Plugged in",(L.devices||[]).length+" devices",(L.devices||[]).map(d=>d.name).join(", ")||"None observed"],
+    ["activity","Processor",v.cpu!=null?Math.round(v.cpu)+"%":"Unavailable",inv?.cpu?.[0]?.name||"Live utilization"],
+    ["hardware","Memory",v.ram!=null?Math.round(v.ram)+"%":"Unavailable",inv?.system?.memory_gb?inv.system.memory_gb+" GB installed":"Live utilization"]];
+  $("#vitals").innerHTML=cells.map(([ico,l,val,h])=>`<div class="vital"><div class="l">${svg(ico)} ${l}</div><div class="v">${esc(val)}</div><div class="h" title="${esc(h)}">${esc(h)}</div></div>`).join("");
+}
+function renderSignal(){
+  $("#signal-version").textContent=S.version||"";
+  const now=Date.now()/1000,bins=Array(24).fill(0);(S.events||[]).forEach(e=>{const age=now-e.t;if(age>=0&&age<86400)bins[23-Math.floor(age/3600)]++;});
+  const max=Math.max(1,...bins),total=bins.reduce((a,b)=>a+b,0);
+  $("#signal-history").innerHTML=total?`<svg class="signal-history" viewBox="0 0 600 120" role="img" aria-label="${total} recorded events in the loaded 24-hour history"><path d="M0 28H600M0 65H600M0 102H600" stroke="var(--line)"/>${bins.map((n,i)=>`<rect x="${i*25+4}" y="${100-n/max*83}" width="16" height="${Math.max(n?2:0,n/max*83)}" fill="var(--accent)" opacity=".8"><title>${n} events</title></rect>`).join("")}<text x="0" y="118">24h ago</text><text x="566" y="118">Now</text></svg>`:`<div class="empty"><b>No recent events loaded</b>New recorded events will appear here.</div>`;
+  const feeds=S.engine.feeds||{};$("#signal-feeds").innerHTML=[["feodo","Feodo"],["malwarebazaar","MalwareBazaar"],["urlhaus","URLhaus"],["threatfox","ThreatFox"]].map(([k,label])=>`<div class="signal-feed-line"><span>${label}</span><span>${typeof feeds[k]==="number"?feeds[k].toLocaleString()+" indicators":esc(feeds[k]||"Not fetched yet")}</span></div>`).join("");
+}
+/* ---------- calendar + 24-hour day ---------- */
+let calRef=new Date();calRef.setDate(1);let calSel=new Date().toDateString();
+function renderCalendar(){const y=calRef.getFullYear(),m=calRef.getMonth();$("#calmonth").textContent=calRef.toLocaleDateString([], {month:"long",year:"numeric"});
+  const byDay={};S.events.forEach(e=>{(byDay[new Date(e.t*1000).toDateString()] ||= []).push(e)});
+  const first=new Date(y,m,1),start=new Date(first);start.setDate(1-((first.getDay()+6)%7));
+  let h=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>`<div class="dow">${d}</div>`).join("");
+  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=d.toDateString(),ev=byDay[k]||[];
+    const sev=["high","medium","low","info"].flatMap(s=>ev.filter(e=>e.severity===s).slice(0,4).map(()=>s)).slice(0,8);
+    h+=`<button data-day="${k}" class="${d.getMonth()!==m?"out":""} ${k===new Date().toDateString()?"today":""}" aria-pressed="${k===calSel}" aria-label="${d.toDateString()}, ${ev.length} events"><b>${d.getDate()}</b><span class="heat">${sev.map(s=>`<i class="${s}"></i>`).join("")}</span></button>`}
+  $("#cal").innerHTML=h;renderDay()}
+function renderDay(){const ev=S.events.filter(e=>new Date(e.t*1000).toDateString()===calSel).sort((a,b)=>a.t-b.t);
+  const d=new Date(calSel);$("#dayhead").textContent=d.toLocaleDateString([], {weekday:"long",month:"long",day:"numeric"});$("#daycount").textContent=ev.length+" events";
+  const HH=38;let h="";for(let i=0;i<24;i++)h+=`<div class="hr" data-h="${String(i).padStart(2,"0")}:00"></div>`;
+  const used={};ev.forEach(e=>{const t=new Date(e.t*1000),mins=t.getHours()*60+t.getMinutes();let top=mins/60*HH;
+    const k=Math.round(top/24);let off=0;while(used[k+off])off++;used[k+off]=1;top=(k+off)*24;
+    h+=`<div class="pin" style="top:${top+4}px" title="${esc(e.detail||"")}"><span class="sev ${e.severity}"></span><span class="mono">${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}:${String(t.getSeconds()).padStart(2,"0")}</span><span class="trunc">${esc(e.title)}</span></div>`});
+  $("#day24").innerHTML=h;$("#day24").style.height=(24*HH+16)+"px"}
+
+/* ---------- passwords ---------- */
+let ventries=null;
+function renderVault2(){const V=S.vault||{};
+  if(!V.exists){$("#vacts").innerHTML="";$("#vbody").innerHTML=`<div class="card"><div class="bd"><h2>Create your vault</h2><p class="muted">Choose a PIN you will remember. It can't be recovered: without it the vault can't be opened, by anyone.</p>
+    <div class="btns"><input type="password" id="vpin" inputmode="numeric" autocomplete="new-password" placeholder="New PIN (4+ characters)" aria-label="New PIN"><button class="btn primary" id="vcreate">Create vault</button></div></div></div>`;return}
+  if(!V.unlocked||!ventries){$("#vacts").innerHTML="";$("#vbody").innerHTML=`<div class="card"><div class="bd"><h2>Unlock</h2><div class="btns"><input type="password" id="vpin" autocomplete="current-password" placeholder="PIN" aria-label="PIN"><button class="btn primary" id="vunlock">Unlock</button></div></div></div>`;return}
+  $("#vacts").innerHTML=`<button class="btn" id="vimport">Import from a browser export</button><button class="btn" id="vlock">Lock</button>`;
+  $("#vbody").innerHTML=`<div class="card"><div class="hd"><h2>Add a password</h2></div><div class="bd"><div class="btns"><input type="text" id="vsite" placeholder="Website or app" aria-label="Website"><input type="text" id="vuser" placeholder="Username or email" aria-label="Username"><input type="password" id="vpass" placeholder="Password (leave empty to generate a strong one)" aria-label="Password"><button class="btn primary" id="vadd">Save</button></div></div></div>
+    <div class="card"><div class="bd flush">${ventries.length?`<table class="tbl"><thead><tr><th>Site</th><th>Username</th><th></th></tr></thead><tbody>${ventries.map(e=>`<tr><td>${esc(e.site)}</td><td>${esc(e.username)}</td><td class="n"><button class="btn sm" data-vcopy="${e.id}">Copy password</button> <button class="btn sm" data-vdel="${e.id}">Delete</button></td></tr>`).join("")}</tbody></table>`:`<div class="empty"><b>No passwords yet</b>Add one above, or import a browser export.</div>`}</div></div>`}
+
+/* ---------- controls ---------- */
+function renderControls(){const C=S.controls||{};if(C.error){$("#cbody").innerHTML=`<div class="card"><div class="empty">${esc(C.error)}</div></div>`;return}
+  const tel=C.telemetry||[],on=tel.filter(t=>t.active);
+  const kinds=C.bt_kinds||{},allowed=S.settings.bt_allowed||[];
+  $("#cbody").innerHTML=`<div class="card"><div class="hd"><h2>Companies watching</h2><div class="btns">${on.length?`<button class="btn primary" data-ctl="telemetry-close">Close off all ${on.length}</button>`:`<button class="btn" data-ctl="telemetry-open">Reopen</button>`}</div></div>
+      <div class="bd flush rows">${tel.map(t=>`<div><span class="dot ${t.active?"warn":""}"></span><div class="grow"><div>${esc(t.what)}</div><div class="muted">${esc(t.company)} · ${t.active?"collecting":"closed off"}</div></div></div>`).join("")||'<div class="muted" style="padding:10px 12px">No company collectors found.</div>'}
+      <div class="muted" style="padding:6px 12px 10px;font-size:12.5px">Only data collectors are touched. Drivers, updates, sound, touchpad, charging and keyboard lights keep working.</div></div></div>
+    <div class="grid g3">
+      <div class="card"><div class="hd"><h2>USB storage</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">${C.usb_blocked?"Blocked: USB sticks and drives won't open. Keyboards, mice and chargers still work.":"Allowed: USB sticks and drives open normally."}</p><button class="btn ${C.usb_blocked?"":"primary"}" data-ctl="${C.usb_blocked?"usb-allow":"usb-block"}">${C.usb_blocked?"Allow USB storage":"Block USB storage"}</button></div></div>
+      <div class="card"><div class="hd"><h2>WiFi</h2></div><div class="bd"><p class="muted" style="margin:0 0 10px">${C.wifi_allowlist?"Only networks you approved can be joined.":`Any network can be joined. You have ${C.saved_networks} saved networks.`}</p><button class="btn ${C.wifi_allowlist?"":"primary"}" data-ctl="${C.wifi_allowlist?"wifi-off":"wifi-on"}">${C.wifi_allowlist?"Allow any network":"Only my saved networks"}</button></div></div>
+      <div class="card"><div class="hd"><h2>Bluetooth</h2></div><div class="bd"><div class="field" style="padding:4px 0"><label for="btlim">Most devices at once</label><select id="btlim">${[1,2,3,4,6,8].map(n=>`<option ${n===(S.settings.bt_limit||4)?"selected":""}>${n}</option>`).join("")}</select></div>
+        ${Object.entries(kinds).map(([k,l])=>`<label class="field" style="padding:4px 0"><span>${esc(l)}</span><span class="sw"><input type="checkbox" data-btk="${k}" ${allowed.includes(k)?"checked":""}><span></span></span></label>`).join("")}
+        <button class="btn primary" id="btsave" style="margin-top:8px">Save Bluetooth limits</button></div></div>
+    </div>
+    <div class="card"><div class="hd"><h2>What your plugged-in devices can do</h2></div><div class="bd flush rows">${(C.plugged||[]).map(d=>`<div style="align-items:flex-start"><span class="sev ${d.level==="high"?"high":d.level==="medium"?"medium":"low"}" style="margin-top:6px"></span><div class="grow"><div>${esc(d.name)}</div>${Object.values(d.capabilities).map(c=>`<div class="muted">${esc(c)}</div>`).join("")}</div></div>`).join("")||'<div class="empty"><b>Nothing plugged in</b>Plug in a cable, stick, phone or headset to see what it can collect or send.</div>'}</div></div>`}
+
+/* ---------- browsers catalogue ---------- */
+function renderCatalog(){const C=S.catalog||[],P={best:"Most private",good:"Private",standard:"Standard",caution:"Collects data"};
+  $("#bcat").innerHTML=C.length?`<table class="tbl"><thead><tr><th>Browser</th><th>Made in</th><th>Privacy</th><th></th></tr></thead><tbody>${C.map(b=>`<tr><td><b style="font-weight:600">${esc(b.name)}</b><div class="muted">${esc(b.note)}</div></td><td class="muted">${esc(b.region)}<div>${esc(b.maker)}</div></td><td><span class="tag ${b.privacy==="best"?"ok":b.privacy==="caution"?"warn":""}">${P[b.privacy]}</span></td><td class="n">${b.installed?'<span class="muted">Installed</span>':`<button class="btn sm" data-binst="${esc(b.id)}">Install</button>`}</td></tr>`).join("")}</tbody></table>`:`<div class="empty">Windows Package Manager isn't available on this PC.</div>`}
+
+/* ---------- privacy sentry ---------- */
+function renderSentry(){const S0=S.sentry;if(!S0||S0.error){$("#sentrycard").style.display="none";return}
+  $("#sentrycard").style.display="";const hc=$("#hidecap");if(hc&&document.activeElement!==hc)hc.checked=!!S.settings.hide_from_capture;
+  const mic=S0.mic||{},cam=S0.camera||{},scr=S0.screen||{};
+  const row=(on,ico,title,sub,pill,pcls)=>`<div class="sent ${on?"on":""}"><div class="ico">${svg(ico)}</div><div class="grow"><b>${title}</b><div class="muted">${esc(sub)}</div></div><span class="pill ${pcls}">${pill}</span></div>`;
+  let h="";
+  h+=row(mic.on,"mic",mic.listening_while_off?"Microphone on — while turned off!":mic.on?"Microphone is on":"Microphone off",
+    mic.on?("In use by "+mic.using.map(u=>u.app).join(", ")):(mic.access==="Deny"?"Blocked for all apps":"No app is listening"),
+    mic.on?"Live":"Off",mic.on?"live":"safe");
+  h+=row(cam.on,"camera",cam.on?"Camera is on":"Camera off",cam.on?("In use by "+cam.using.map(u=>u.app).join(", ")):"No app is using the camera",cam.on?"Live":"Off",cam.on?"live":"safe");
+  const cap=scr.capturers||[];
+  h+=row(scr.watched,"activity",scr.watched?"Your screen is being watched":"Screen not being captured",
+    scr.recall_on?"Windows Recall is snapshotting your screen":(cap.length?cap.map(c=>c.what).join(", "):"No recorder or remote viewer running"),
+    scr.watched?"Watch":"Clear",scr.watched?"live":"safe");
+  $("#sentry").innerHTML=h}
+
+/* ---------- devices roll-call ---------- */
+const KICON={phone:"📱",tablet:"▭",computer:"💻",pi:"▦",tv:"📺",bluetooth:"❖",device:"•"};
+function renderAssets(){const A=(S.assets&&S.assets.devices)||[];const box=$("#assets");if(!box)return;
+  box.innerHTML=A.length?A.map(d=>`<div class="aset"><div class="k">${KICON[d.kind]||"•"}</div>
+    <div class="grow"><div class="n">${esc(d.label||d.name||d.mac||"Unknown device")} ${d.trusted?'<span class="pill safe">yours</span>':d.present?'<span class="pill live">here now</span>':""}</div>
+      <div class="sub">${esc([d.maker,d.kind,d.ip,d.mac].filter(Boolean).join(" · "))} · ${d.present?"seen now":"last seen "+fmtAgo(d.last_seen)}</div></div>
+    <div class="btns">${d.trusted?"":`<button class="btn sm" data-trust="${esc(d.id)}">This is mine</button>`}<button class="btn sm" data-forget="${esc(d.id)}">Forget</button></div></div>`).join(""):`<div class="empty"><b>No devices yet</b>Press “Scan network”.</div>`}
+
+/* ---------- network & power ---------- */
+function fsev(l){return l==="high"?"high":l==="medium"?"medium":l==="ok"?"ok":"low"}
+function renderNetPower(){const N=S.netpower;const box=$("#netpower");if(!box)return;
+  if(!N||N.error){box.innerHTML=`<div class="card"><div class="empty">${esc((N&&N.error)||"Loading…")}</div></div>`;return}
+  const w=N.wifi||{},pl=N.powerline||{};const i=w.interface||{};
+  const wf=(w.findings||[]).map(f=>`<div class="find"><span class="sev ${fsev(f.level)}"></span><div>${esc(f.text)}</div></div>`).join("")||'<div class="muted">No finding from these limited checks; negotiated PMF is unverified.</div>';
+  const ps=w.pi_sensor||{};
+  const plf=(pl.findings||[]).map(f=>`<div class="find"><span class="sev ${fsev(f.level)}"></span><div><b style="font-weight:600">${esc(f.title)}</b><div class="muted">${esc(f.text)}</div></div></div>`).join("");
+  const pia=pl.pi_audit||{};
+  const node=N.security_node;
+  const nodeHtml=!node?'No Pi report imported. Run python -m aureon.security_node --out security-node.json on the Pi and copy the report into Aureon data.':node.error?esc(node.error):
+    `<div class="muted">${node.stale?'Stale or clock-invalid report':'Recent report'} · ${esc(node.generated_at)} · Operator import, not authenticated attestation.</div>`+
+    Object.entries(node.services||{}).map(([name,state])=>`<div>${esc(name)}: ${esc(state)}</div>`).join('')+
+    (node.findings||[]).map(f=>`<div class="find"><span class="sev ${fsev(f.level)}"></span><div>${esc(f.text)}</div></div>`).join('');
+  const infra=N.infrastructure;
+  const infraHtml=!infra?'No infrastructure inventory configured. Import recorded outlet mappings and sensor telemetry to audit them.':infra.error?esc(infra.error):
+    `<div class="muted">Read-only · ${infra.outlets.length} recorded outlets · People and hidden wiring are not identified.</div>`+
+    (infra.findings||[]).map(f=>`<div class="find"><span class="sev ${fsev(f.level)}"></span><div><b>${esc(f.asset)}: ${esc(f.code)}</b><div>${esc(f.evidence)}</div><div class="muted">${esc(f.impact)} ${esc(f.patch)}</div></div></div>`).join('');
+
+  box.innerHTML=`<div class="np">
+    <div class="card"><div class="hd"><h2>Wi-Fi shield</h2>${i.ssid?`<span class="pill ${w.protected?"safe":""}">${w.protected?"Protected":i.ssid}</span>`:""}</div><div class="bd">
+      <div class="muted" style="margin:0 0 8px">${i.ssid?`On <b style="color:var(--fg)">${esc(i.ssid)}</b> · ${esc(i.band||"")} ${esc(i.signal||"")} · ${esc(i.auth||"")}`:"Not connected to Wi-Fi."}
+        ${w.kicks_24h?` · <b style="color:var(--fg)">${w.kicks_24h}</b> disconnect events in 24h`:""}</div>
+      ${wf}
+      <div class="btns" style="margin-top:10px"><button class="btn primary" data-post="/api/wifi/favor">Prefer this network on this laptop</button></div>
+      <div class="pi"><b>Optional radio sensor: ${esc(ps.what||"")}</b><span class="muted">${esc(ps.parts||"")}</span><span class="muted">${esc(ps.software||"")}</span>${ps.link?`<a class="ext" href="${esc(ps.link)}" target="_blank" rel="noopener">${esc(ps.link)}</a>`:""}</div>
+    </div></div>
+    <div class="card"><div class="hd"><h2>Powerline / outlet audit</h2><span class="pill ${pl.present?"":"safe"}">${pl.present?"HomePlug observed":"Visibility unknown"}</span></div><div class="bd">
+      ${plf}
+      ${pl.present&&pl.attacker_path?`<details style="margin-top:10px"><summary class="muted">How someone could abuse it</summary><ol class="steps">${pl.attacker_path.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></details>`:""}
+      <details style="margin-top:8px" open><summary class="muted">How to lock it down</summary><ol class="steps">${(pl.how_to_patch||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ol></details>
+      <div class="pi"><b>Optional HomePlug inventory: ${esc(pia.what||"")}</b><span class="muted">${esc(pia.parts||"")}</span><span class="muted">${esc(pia.software||"")}</span>${pia.install?`<span class="muted mono">${esc(pia.install)}</span>`:""}${pia.link?`<a class="ext" href="${esc(pia.link)}" target="_blank" rel="noopener">${esc(pia.link)}</a>`:""}</div>
+    </div></div>
+    <div class="card"><div class="hd"><h2>Pi security sensor</h2></div><div class="bd">${nodeHtml}</div></div>
+    <div class="card"><div class="hd"><h2>Measured infrastructure</h2></div><div class="bd">${infraHtml}</div></div>
+  </div>`}
+
 /* ---------- render + events ---------- */
 function notifyNew(){const fresh=S.events.filter(x=>!seenEv.has(x.id));fresh.forEach(x=>seenEv.add(x.id));if(firstLoad)return;
   fresh.filter(x=>x.severity==="high"||x.severity==="medium").slice(0,3).forEach(x=>toast(x.title,x.detail||"",x.severity,x.severity==="high"?9000:6000))}
-function render(){applyTheme(S.theme);notifyNew();renderOverview();renderActivity();renderVault();renderRadar();renderDevices();renderLeaks();renderPhones();renderBrowsers();renderStudio();renderSettings()}
-async function refresh(){try{S=await api("/api/state");render();firstLoad=false}catch(e){$("#t-overview").textContent="Can't reach aureon.defender";$("#bsub").textContent=e.message}}
+function renderCore(){if(S.ui_appearance&&!uiSaving&&["signal","frost","studio"].includes(S.ui_appearance.palette)&&typeof S.ui_appearance.reduced==="boolean")uiPrefs={...S.ui_appearance};applyTheme(S.theme);notifyNew();renderMachine();renderOverview();renderHarden();renderHardware();renderFeeds();renderCalendar();renderVault2();renderControls();renderCatalog();renderSentry();renderAssets();renderNetPower();
+  const ac=$("#autoclean");if(ac&&document.activeElement!==ac)ac.checked=!!S.settings.auto_clean_downloads;renderActivity();renderVault();renderRadar();renderDevices();renderLeaks();renderPhones();renderBrowsers();renderStudio();renderSettings()}
+function render(){
+  const active=document.activeElement;const fields=$$("input[id]").filter(i=>["text","password","search"].includes(i.type)).map(i=>({id:i.id,value:i.value,focused:i===active,start:i.selectionStart,end:i.selectionEnd}));
+  const scrolls=$$(".page.on .scroll").map(e=>e.scrollTop);
+  renderCore();renderSignal();
+  fields.forEach(f=>{const i=document.getElementById(f.id);if(!i)return;i.value=f.value;if(f.focused){i.focus({preventScroll:true});try{i.setSelectionRange(f.start,f.end);}catch(_){}}});
+  $$(".page.on .scroll").forEach((e,i)=>{if(scrolls[i]!=null)e.scrollTop=scrolls[i];});
+}
+let refreshing=null;
+async function refresh(){if(refreshing)return refreshing;
+  refreshing=(async()=>{try{S=await api("/api/state");render();firstLoad=false;}catch(e){$("#t-overview").textContent="Dashboard data unavailable";$("#bsub").textContent=e.message;$("#hstate").innerHTML='<span class="dot off"></span>Connection unavailable';}})();
+  try{return await refreshing;}finally{refreshing=null;}
+}
 
 document.addEventListener("click",async e=>{const t=e.target;
   const g=t.closest("[data-go]");if(g){go(g.dataset.go);return}
@@ -506,6 +869,23 @@ document.addEventListener("click",async e=>{const t=e.target;
   const q=t.closest("[data-quick]");if(q)return post("/api/scan",{path:q.dataset.quick});
   const v=t.closest("[data-q]");if(v)return post("/api/quarantine/"+v.dataset.q,{id:v.dataset.id});
   const rt=t.closest("[data-rt]");if(rt){rtab=rt.dataset.rt;renderRadar();return}
+  const hw=t.closest("[data-hw]");if(hw){hwtab=hw.dataset.hw;renderHardware();return}
+  const dy=t.closest("[data-day]");if(dy){calSel=dy.dataset.day;renderCalendar();return}
+  const ps=t.closest("[data-pickscan]");if(ps){const r=await api("/api/pick",{kind:ps.dataset.pickscan});for(const p of r.paths)await post("/api/scan",{path:p},"Scanning");return}
+  const pc=t.closest("[data-pickclean]");if(pc){const r=await api("/api/pick",{kind:pc.dataset.pickclean});if(!r.paths.length)return;$("#cres").textContent="Cleaning…";const c=await post("/api/clean",{paths:r.paths});if(c)$("#cres").textContent=c.message;return}
+  const ct=t.closest("[data-ctl]");if(ct)return post("/api/controls",{action:ct.dataset.ctl});
+  const tr=t.closest("[data-trust]");if(tr){const r=await api("/api/assets/label",{id:tr.dataset.trust,trusted:true});S.assets={devices:r.devices};renderAssets();return}
+  const fg=t.closest("[data-forget]");if(fg){const r=await api("/api/assets/forget",{id:fg.dataset.forget});S.assets={devices:r.devices};renderAssets();return}
+  const bi=t.closest("[data-binst]");if(bi){bi.disabled=true;bi.textContent="Installing…";return post("/api/browsers/install",{id:bi.dataset.binst})}
+  const rd=t.closest("[data-redact]");if(rd)return post("/api/secrets/redact",{path:rd.dataset.redact,rule:rd.dataset.rule});
+  const vc=t.closest("[data-vcopy]");if(vc){try{const r=await api("/api/vault/reveal",{id:vc.dataset.vcopy});await navigator.clipboard.writeText(r.password);toast("Password copied","It clears from the clipboard in 60 seconds.");setTimeout(()=>navigator.clipboard.writeText("").catch(()=>{}),60000)}catch(e){toast("Couldn't copy",e.message,"medium")}return}
+  const vd=t.closest("[data-vdel]");if(vd){const r=await api("/api/vault/delete",{id:vd.dataset.vdel});ventries=r.entries;renderVault2();return}
+  if(t.id==="vcreate"||t.id==="vunlock"){try{const r=await api("/api/vault/"+(t.id==="vcreate"?"create":"unlock"),{pin:$("#vpin").value});ventries=r.entries;S.vault={exists:true,unlocked:true};renderVault2()}catch(e){toast("Vault",e.message,"medium")}return}
+  if(t.id==="vlock"){await api("/api/vault/lock",{});ventries=null;S.vault.unlocked=false;renderVault2();return}
+  if(t.id==="vadd"){try{const r=await api("/api/vault/add",{site:$("#vsite").value,username:$("#vuser").value,password:$("#vpass").value});ventries=r.entries;toast("Saved to the vault");renderVault2()}catch(e){toast("Vault",e.message,"medium")}return}
+  if(t.id==="vimport"){const p=await api("/api/pick",{kind:"files",filter:"Password export (*.csv)|*.csv"});if(!p.paths.length)return;try{const r=await api("/api/vault/import",{paths:p.paths});ventries=r.entries;toast("Imported",r.message);renderVault2()}catch(e){toast("Vault",e.message,"medium")}return}
+  if(t.id==="btsave"){return post("/api/controls",{action:"bt",limit:+$("#btlim").value,allowed:$$("[data-btk]").filter(i=>i.checked).map(i=>i.dataset.btk)})}
+  const th=t.closest("[data-theme]");if(th){await post("/api/theme",{name:th.dataset.theme},"The app now matches your wallpaper");return}
   const dc=t.closest("[data-dc]");if(dc){dcat=dc.dataset.dc;renderDevices();return}
   const lk=t.closest("[data-leak]");if(lk)return post("/api/leaks/fix",{id:lk.dataset.leak});
   const nb=t.closest("[data-noah]");if(nb)return post("/api/noah/setup",{browser:nb.dataset.noah});
@@ -516,22 +896,31 @@ document.addEventListener("click",async e=>{const t=e.target;
 });
 $("#aq").addEventListener("input",renderActivity);$("#dq").addEventListener("input",renderDevices);
 $("#af").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;af=b.dataset.f;$$("#af button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));renderActivity()});
-$("#sgo").onclick=()=>post("/api/scan",{path:$("#spath").value});
-$("#cgo").onclick=async()=>{const r=await post("/api/tools/clean",{path:$("#cpath").value});if(r)$("#cres").textContent=r.message};
-$("#kgo").onclick=async()=>{$("#kres").innerHTML='<div class="sk"></div>';try{const r=await api("/api/tools/secrets",{path:$("#kpath").value});$("#kres").innerHTML=`<div class="muted">${esc(r.message)}</div>`+r.hits.slice(0,30).map(h=>`<div class="mono" title="${esc(h.what)}">${esc(base(h.path))} <span class="muted">· ${esc(h.rule)}</span></div>`).join("")}catch(e){$("#kres").innerHTML=`<div class="muted">${esc(e.message)}</div>`}};
+$("#autoclean").onchange=e=>post("/api/settings",{auto_clean_downloads:e.target.checked},e.target.checked?"Downloads will be cleaned automatically":"Automatic cleaning is off");
+$("#kgo").onclick=async()=>{const p=await api("/api/pick",{kind:"folder"});if(!p.paths.length)return;$("#kres").innerHTML='<div class="sk"></div>';try{const r=await api("/api/secrets/scan",{paths:p.paths});
+  $("#kres").innerHTML=`<div class="muted">${esc(r.message)}</div>`+r.hits.slice(0,40).map(h=>`<div class="card" style="background:var(--tint);margin-top:8px"><div class="bd"><b style="font-weight:600">${esc(base(h.path))}</b> <span class="muted">· ${esc(h.what)}</span>
+    <ol class="muted" style="margin:6px 0 8px 18px;padding:0">${h.next.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol><div class="btns">${h.next.url?`<a class="btn sm" href="${esc(h.next.url)}" target="_blank" rel="noopener">Revoke at ${esc(h.next.who)}</a>`:""}<button class="btn sm" data-redact="${esc(h.path)}" data-rule="${esc(h.rule)}">Blank it in the file</button></div></div></div>`).join("")}catch(e){$("#kres").innerHTML=`<div class="muted">${esc(e.message)}</div>`}};
 $("#pwgo").onclick=async()=>{const v=$("#pw").value;$("#pw").value="";try{const r=await api("/api/tools/breach",{password:v});$("#pwres").textContent=r.message;$("#pwres").style.color=r.count?"var(--danger)":"var(--ok)"}catch(e){$("#pwres").textContent=e.message}};
 $("#dclear").onclick=()=>post("/api/devices/clear",{});
+$("#happly").onclick=()=>post("/api/harden/apply",{},"Protecting this PC");$("#hundo").onclick=()=>post("/api/harden/undo",{},"Restoring");
+$("#akeygo").onclick=async()=>{const k=$("#akey").value.trim();$("#akey").value="";await post("/api/feeds/key",{key:k},"Key saved")};
 $("#acc").onchange=e=>post("/api/studio/set",{accent:e.target.value,accent_taskbar:$("#acctb").checked},"Accent set");
 $("#acctb").onchange=()=>post("/api/studio/set",{accent:$("#acc").value,accent_taskbar:$("#acctb").checked},"Saved");
 $("#datef").onchange=()=>post("/api/studio/set",{hours:/H/.test(S.studio.time||"HH")?24:12,date:$("#datef").value},"Saved");
 $("#bright").onchange=e=>post("/api/brightness",{level:+e.target.value},"Brightness set");
 $("#wpos").onchange=e=>post("/api/widget",{position:e.target.value},"Saved");$("#wfont").onchange=e=>post("/api/widget",{font:e.target.value},"Saved");
 $("#wsize").onchange=e=>post("/api/widget",{clock_size:+e.target.value},"Saved");$("#wcol").onchange=e=>post("/api/widget",{color:e.target.value},"Saved");
-$("#wpgo").onclick=()=>post("/api/studio/wallpaper",{path:$("#wpp").value},"Wallpaper set");$("#fntgo").onclick=()=>post("/api/studio/font",{path:$("#fnt").value},"Font installed");
+$("#wpgo").onclick=async()=>{const p=await api("/api/pick",{kind:"files",filter:"Pictures|*.jpg;*.jpeg;*.png;*.webp;*.bmp"});if(p.paths[0])post("/api/studio/wallpaper",{path:p.paths[0]},"Wallpaper set")};
+$("#fntgo").onclick=async()=>{const p=await api("/api/pick",{kind:"files",filter:"Fonts|*.ttf;*.otf;*.ttc"});for(const f of p.paths)await post("/api/studio/font",{path:f},"Font installed")};
+$("#calprev").onclick=()=>{calRef.setMonth(calRef.getMonth()-1);renderCalendar()};$("#calnext").onclick=()=>{calRef.setMonth(calRef.getMonth()+1);renderCalendar()};
+$("#hidecap").onchange=e=>post("/api/sentry/protect",{on:e.target.checked},e.target.checked?"Window hidden from screen recording":"Window can be recorded again");
+$("#logogo").onclick=async()=>{const p=await api("/api/pick",{kind:"files",filter:"Pictures|*.jpg;*.jpeg;*.png;*.webp;*.bmp"});if(!p.paths[0])return;$("#logores").textContent="Making your icon…";try{const r=await api("/api/logo",{path:p.paths[0]});$("#logores").textContent=r.message;$("#logoimg").src="/icon.png?r="+Date.now();document.querySelector('link[rel=icon]').href="/icon.png?r="+Date.now()}catch(e){$("#logores").textContent=e.message}};
+$("#logoreset").onclick=async()=>{const r=await api("/api/logo",{path:"x",reset:true});$("#logores").textContent=r.message;$("#logoimg").src="/icon.png?r="+Date.now()};
 $("#restore").onclick=()=>post("/api/studio/restore",{},"Your original look is back");
 $("#plink").onchange=e=>post("/api/phone-link",{enabled:e.target.checked});
 $("#toggles").addEventListener("change",e=>{const i=e.target.closest("input[data-k]");if(i)post("/api/settings",{[i.dataset.k]:i.checked},"Saved")});
 function tick(){$("#clock").textContent=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}tick();setInterval(tick,15000);
+document.addEventListener("error",e=>{const img=e.target;if(img.tagName!=="IMG"||!img.closest(".look")||img.dataset.fallback)return;img.dataset.fallback="true";img.hidden=true;const missing=document.createElement("span");missing.className="signal-preview-missing";missing.textContent="Preview unavailable";img.before(missing);},true);
 const start=(location.hash||"#overview").slice(1);if($("#p-"+start))go(start);
 refresh();setInterval(refresh,5000);
 </script>

@@ -178,8 +178,30 @@ class Studio:
 
     @staticmethod
     def _spi_wallpaper(path):
-        if os.name == "nt":
-            ctypes.windll.user32.SystemParametersInfoW(20, 0, str(path), 0x01 | 0x02)   # SPI_SETDESKWALLPAPER, update+broadcast
+        """Make the desktop actually show `path`.
+
+        1. The file is copied to Pictures\\aureon: Windows' wallpaper renderer can't read some AppData folders
+           (a black desktop with no error), but always reads the user's Pictures.
+        2. IDesktopWallpaper sets it on every monitor and repaints now; SystemParametersInfo is only a fallback,
+           because it can update the registry without Explorer redrawing.
+        """
+        if os.name != "nt":
+            return
+        import subprocess
+        src = Path(path)
+        dst_dir = wallpaper_dir()
+        dst = src if dst_dir in src.parents else dst_dir / src.name
+        if dst != src:
+            shutil.copy2(src, dst)
+        ps1 = Path(__file__).parent / "wallpaper.ps1"
+        ok = False
+        if ps1.exists():
+            r = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(ps1),
+                                "-Path", str(dst), "-Position", "Fill"], capture_output=True, text=True, timeout=60, creationflags=0x08000000)
+            ok = r.returncode == 0
+        if not ok:
+            ctypes.windll.user32.SystemParametersInfoW(20, 0, str(dst), 0x01 | 0x02)   # SPI_SETDESKWALLPAPER
+        return str(dst)
 
     def install_font(self, src):
         """Per-user font install (no admin)."""
@@ -218,9 +240,9 @@ class Studio:
     def apply_preset(self, name, width=None, height=None, out_dir=None):
         p = PRESETS[name]
         w, h = (width, height) if width else screen_size()
-        out = Path(out_dir or user_dir() / "wallpapers")
+        out = Path(out_dir) if out_dir else wallpaper_dir()
         out.mkdir(parents=True, exist_ok=True)
-        img = out / f"{name.lower().replace(' ', '-')}-{w}x{h}.png"
+        img = out / f"{name.lower().replace(' ', '-')}-{w}x{h}.jpg"
         generate_wallpaper(p["wallpaper"], p["palette"], w, h, img, seed=preset_seed(name))
         self.set_theme(p["mode"], p["mode"])
         self.set_accent(p["accent"], on_taskbar=p.get("accent_taskbar", False), on_titlebars=True)
@@ -230,6 +252,21 @@ class Studio:
         widget_cfg = dict(WIDGET_DEFAULT, **p["widget"])
         (user_dir() / "widget.json").write_text(json.dumps(widget_cfg, indent=1), encoding="utf-8")
         return {"wallpaper": str(img), "widget": widget_cfg}
+
+
+def wallpaper_dir():
+    """Pictures\\aureon (Windows' wallpaper renderer can always read it). Respects a moved/OneDrive Pictures folder."""
+    pics = None
+    if os.name == "nt":
+        try:
+            buf = ctypes.create_unicode_buffer(260)
+            if ctypes.windll.shell32.SHGetFolderPathW(None, 0x27, None, 0, buf) == 0:   # CSIDL_MYPICTURES
+                pics = Path(buf.value)
+        except OSError:
+            pics = None
+    d = (pics or Path.home() / "Pictures") / "aureon"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
 
 
 def screen_size():
@@ -395,3 +432,63 @@ def generate_wallpaper(style, palette, w, h, out, seed=7):
     img = Image.blend(img, grain, 0.035)
     img.save(out, optimize=True)
     return out
+
+
+# ---------------- reliable wallpaper apply ----------------
+def write_theme(wallpaper, current_theme=None, out=None, name="aureon"):
+    """A .theme copy of the current theme with this wallpaper on every monitor.
+
+    Windows only redraws reliably through its own theme path. Per-monitor entries (Wallpaper1, Wallpaper2...)
+    are dropped: an OEM tool (e.g. ASUS OLED Care's pixel shifter) can leave one pointing at a file that no longer
+    exists, and then every wallpaper change fails with "file not found" and the desktop stays black.
+    """
+    import re as _re
+    src = Path(current_theme or os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\Windows\Themes\Custom.theme"))
+    text = src.read_text(encoding="utf-8", errors="ignore") if src.exists() else "[Theme]\nDisplayName=aureon\n\n[Control Panel\\Desktop]\n"
+    lines, out_lines, in_desktop, wrote = text.splitlines(), [], False, False
+    for line in lines:
+        s = line.strip()
+        if s.startswith("["):
+            if in_desktop and not wrote:
+                out_lines += [f"Wallpaper={wallpaper}", "MultimonBackgrounds=0", "PicturePosition=4"]
+                wrote = True
+            in_desktop = s.lower() == "[control panel\\desktop]"
+        if in_desktop and _re.match(r"(?i)^(wallpaper\d*|multimonbackgrounds|pictureposition|wallpaperwriteback)\s*=", s):
+            continue
+        if s.lower().startswith("displayname="):
+            line = f"DisplayName={name}"
+        out_lines.append(line)
+    if in_desktop and not wrote:
+        out_lines += [f"Wallpaper={wallpaper}", "MultimonBackgrounds=0", "PicturePosition=4"]
+        wrote = True
+    if not wrote:
+        out_lines += ["", "[Control Panel\\Desktop]", f"Wallpaper={wallpaper}", "MultimonBackgrounds=0", "PicturePosition=4"]
+    out = Path(out or (user_dir() / "aureon.theme"))
+    out.write_text("\n".join(out_lines) + "\n", encoding="utf-8")
+    return out
+
+
+def apply_theme_file(theme):
+    """Apply a .theme like double-clicking it, then close the Settings window it opens."""
+    import subprocess
+    import time
+    if os.name != "nt":
+        return False
+    os.startfile(str(theme))
+    for _ in range(40):
+        time.sleep(0.25)
+        r = subprocess.run(["tasklist", "/fi", "imagename eq SystemSettings.exe", "/fo", "csv", "/nh"], capture_output=True, text=True,
+                           creationflags=0x08000000).stdout
+        if "SystemSettings.exe" in r:
+            time.sleep(1.5)
+            subprocess.run(["taskkill", "/im", "SystemSettings.exe"], capture_output=True, creationflags=0x08000000)
+            break
+    return True
+
+
+def current_wallpaper():
+    if os.name != "nt":
+        return None
+    buf = ctypes.create_unicode_buffer(520)
+    ctypes.windll.user32.SystemParametersInfoW(0x73, 520, buf, 0)
+    return buf.value or None

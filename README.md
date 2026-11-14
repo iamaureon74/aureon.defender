@@ -1,98 +1,62 @@
-# Aureon Hardware
+# Aureon Defender
 
-One system for **laptops and phones** that makes them safer, freer, faster and more capable. It's built by
-reading all **790** open-source projects in [shep95/rasberry-pi](https://github.com/shep95/rasberry-pi),
-taking each one's best capability, and combining them into **53 Aureon capabilities** organised as
-**20 organs** that depend on each other, like a body.
+Signal interface, local security observations and direct downloads. **No app store is required for these downloads. Platform editions have different capabilities.**
 
-- **[windows/](windows/README.md): aureon.defender**, a one-exe Windows app that runs the laptop-side organs 24/7 (protection engine, dashboard, Studio looks and desktop widget)
-- [docs/CAPABILITIES.md](docs/CAPABILITIES.md): all 790 projects, the best capability taken from each, and the fused Aureon capability it feeds
-- [docs/ORGANISM.md](docs/ORGANISM.md): the 20 organs, what each needs, and what fails if it fails
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how Agent, Node, Mobile and Key fit together
-- [docs/CATALOG.md](docs/CATALOG.md): why each project was or wasn't pinned (215 pinned under `upstream/`)
-- [docs/PHONE.md](docs/PHONE.md): phone protection steps, and [docs/EXTENSIONS.md](docs/EXTENSIONS.md)
+## Downloads
 
-## The organism
-
-| Organ | Job | Built here |
+| Device | Direct distribution | Scope |
 |---|---|---|
-| Skin | Filtered DNS + firewall keep most threats out | `deploy/shield`, harden scripts |
-| Circulatory system | WireGuard/mesh carry traffic between phone, laptop, Node | `deploy/shield` wg-easy |
-| Immune system | IDS/IPS, EDR, tripwires, phone spyware checks | `deploy/shield`, `aureon audit` |
-| Nervous system | Metrics, logs and alerts from every sensor | Netdata, `aureon audit` |
-| Brain | Local LLM security analyst + private assistant | `deploy/ai`, `aureon analyst` |
-| Reflexes | Instant lock with no AI in the loop | `key/firmware`, `aureon hidguard`, `aureon.keyagent` |
-| Ears | Rogue WiFi and fake cell-tower (IMSI catcher) watch | `aureon rf` |
-| Hands | Below-OS rescue of a laptop that won't boot | `aureon rescue` (PiKVM) |
-| Voice | Off-grid encrypted texting over LoRa | `deploy/offgrid`, `aureon mesh` |
-| Memory | Photos, files, passwords on your own hardware | `deploy/cloud` |
-| Digestive system | Offline Wikipedia, manuals and courses | `deploy/offgrid` Kiwix |
-| ...and 9 more | DNA, Skeleton, Heart, Lungs, Liver, Vaccination, Eyes, Endocrine, Muscles | see docs/ORGANISM.md |
+| Windows 10/11 x64 | [Windows ZIP · 0.4.0](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-windows-x64-0.4.0.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
+| Android 12+ | [Android APK · 0.4.1](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/aureon-defender-android-0.4.1.apk) | Native local monitor; floating navigation; Android limits apply |
+| iPhone / iPad | [Installable web edition](https://shep95.github.io/aureon.defender/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
+| macOS Apple silicon / Intel | [Available preview assets](https://github.com/shep95/aureon.defender/releases/tag/v0.4.1) | Limited portable companion; unsigned/not notarized; native runner smoke tests, not full user-hardware validation |
+| Linux x64 / ARM64 | [Available preview assets](https://github.com/shep95/aureon.defender/releases/tag/v0.4.1) | Limited portable companion; build/runtime compatibility depends on distribution |
+| Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.1.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
 
-## Commands
+[Release notes and all downloads](https://github.com/shep95/aureon.defender/releases/tag/v0.4.1) · [SHA-256 checksums](https://github.com/shep95/aureon.defender/releases/download/v0.4.1/SHA256SUMS.txt)
 
-```bash
-python -m aureon body                      # live vitals of every organ on this machine (+ Node if AUREON_NODE set)
-python -m aureon body --fail blood         # what breaks if the VPN layer dies
-python -m aureon caps                      # the 53 fused capabilities
-python -m aureon caps wireless-watch       # one capability + the projects it came from
-python -m aureon audit                     # read-only security/perf score
-python -m aureon plan laptop-windows       # step-by-step plan: laptop-linux, laptop-windows, phone-android, phone-ios, node, lab
-python -m aureon rf wifi --learn ; python -m aureon rf wifi          # evil-twin / downgrade detection
-python -m aureon rf cell                   # (Android/Termux) 2G-downgrade / new-cell / new-LAC heuristics
-python -m aureon rf gsm --kal kal.txt      # compare a kalibrate-rtl GSM survey
-python -m aureon analyst --suricata eve.json --canary canary.log --audit --since 24h --out report.md
-python -m aureon hidguard --learn ; python -m aureon hidguard --lock  # BadUSB keystroke-injection guard
-python -m aureon rescue status|power on|screenshot|type ...|key Delete|iso rescue.iso   # PiKVM
-python -m aureon mesh send --port COM7 "on my way"                   # Meshtastic LoRa
-python -m aureon.keyagent --port COM5 --alert-report report.md       # Aureon Key host agent
-python -m aureon fetch defend              # pull pinned upstream source for a layer
+Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
+
+## Windows
+
+Extract the whole ZIP and retain `_internal` beside `aureon.defender.exe`. Open the executable for a portable session. Run `aureon.defender.exe install` to request the administrator-approved machine installation. Do not disable operating-system protections to install this software.
+
+Existing functions include Defender/YARA/reputation/heuristic file checks, selected-folder monitoring, quarantine, Windows privacy and configuration observations, device history, explicit controls and an authenticated local dashboard. Some functions need administrator access, extra software, an API key, or hardware. Three abuse.ch feeds require a key; Feodo does not. Check the actual module state and evidence.
+
+## Android
+
+Download the APK directly, verify its hash, and choose whether to permit installation from your download source in Android settings. The package is `org.aureon.defender`. Tap **Start monitoring**. Android displays a quiet foreground-service notification and can defer/stop work. Force-stop requires reopening; uninterrupted 24/7 execution is not guaranteed.
+
+The app reviews selected granted-permission combinations, visible-package installs/removals/updates and history, screen-lock status, exposed USB host devices, and selected-file SHA-256 matches against operator-imported lists. It does not have Windows Defender, arbitrary process visibility, system-wide quarantine or building-wiring discovery. Permissions and unfamiliar devices are review prompts, not malware verdicts.
+
+## macOS / Linux portable preview
+
+The [portable companion](portable/) offers a loopback-only, token-protected browser dashboard, read-only supported OS posture checks, local resource observations and browser-local file/hash tools. It does not block processes or change firewall settings.
+
+Run from source:
+
+```sh
+python -m pip install psutil==7.2.2
+python -m portable.app
 ```
 
-## Node stacks (Pi 5 8GB or any mini-PC)
+Close the process when finished. A Mac `.app` preview is not Apple Developer ID signed or notarized. Linux binaries are built on Ubuntu 22.04 runners for the stated architecture; other distributions may require the Python source. A Chromebook may need its Linux environment; no native ChromeOS system-security integration is claimed.
 
-```bash
-cd deploy/shield  && cp .env.example .env && docker compose up -d     # Skin, Blood, Immune, Nerves
-cd deploy/cloud   && cp .env.example .env && docker compose up -d     # Memory
-cd deploy/ai      && docker compose up -d                              # Brain (+ hourly analyst)
-cd deploy/offgrid && docker compose up -d                              # Voice + Digestion
-```
+## iPhone / iPad web edition
 
-## Hardening scripts (dry-run / read-only unless you opt in)
+Open the [web edition](https://shep95.github.io/aureon.defender/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
 
-```bash
-./scripts/linux/harden.sh ; sudo ./scripts/linux/harden.sh --apply all
-sudo ./scripts/linux/perf.sh --apply
-powershell -ExecutionPolicy Bypass -File scripts\windows\harden.ps1   # -Apply from an elevated shell
-bash scripts/android-termux/setup.sh                                  # inside Termux
-```
+## Verification
 
-## Tests
+- Windows: 101 tests ran successfully before packaging; one phone-connected test was skipped while disconnected. All 15 installed tabs were checked with live local state and no JavaScript errors. Isolated responsive checks covered 45 tab/width combinations.
+- Android: 10 rule/file-check assertions and 19 Pixel 9 instrumentation assertions passed, including all five navigation tabs, header safe-area clearance, dock placement and local file/report flows.
+- Portable preview: native CI tests and a packaged-executable smoke test must pass before each preview asset is uploaded. This does not replace real user-hardware testing.
+- Web edition: local hash, import validation, report rendering and offline-cache tests are recorded in CI/local release checks.
 
-```bash
-pip install pyyaml
-python -m unittest discover -s tests -v
-```
+There is no guarantee that all code works under every condition or that Windows/mobile features are identical. This code contains no country geofence. Network availability, OS rules, local requirements and hardware compatibility vary. The current interface is English with Unicode text support; it is not fully localized worldwide.
 
-53 tests cover:
-- **Coverage:** the capability map accounts for all 790 projects, and the pins match `stack.json`.
-- **Organism:** the organ graph is valid, with no cycles and every capability in exactly one organ.
-- **Detectors:** WiFi, cell-tower and GSM detection with real `netsh`, `nmcli` and `kal` output formats.
-- **Analyst:** every alert source parser, plus the analyst against fake Ollama and OpenAI-compatible servers.
-- **Rescue:** the PiKVM client against a fake KVM API, including streamed ISO upload and authentication.
-- **Reflexes:** Key agent lock logic, the HID guard, and a simulated run of the Pico firmware.
-- **Deploy stacks:** consistency of every compose file.
-- **Scripts:** the shell scripts in dry-run, and parsing of the PowerShell script.
+## Source, privacy and contributions
 
-CI runs the suite on Ubuntu and Windows, plus `docker compose config` and shellcheck.
+The original hardware project and pinned upstream references remain in [the legacy overview](docs/legacy-hardware-overview.md). The project catalog is research/selection metadata, not evidence that all listed projects are installed. Third-party code retains its own notices and licenses. This release does not invent a new blanket license grant over third-party components; see [notices](THIRD_PARTY.md).
 
-## Ground rules
-
-- Each upstream project keeps its own license. Submodules are not downloaded unless you `aureon fetch`.
-- The audit/"vaccination" organ (scanners, WiFi/password auditing, OSINT) is for systems you own or are
-  authorized to test. No profile installs it automatically.
-- RF tools only listen. Transmitter projects in the catalog need an amateur licence and are not wired in.
-- RF and cell-tower alerts are heuristics: a hit means "look closer", not proof.
-
-To change the selection: edit `tools/picks.py` / `tools/capmap_*.py`, then
-`python tools/build_catalog.py ../rasberry-pi --pin && python tools/build_organism_doc.py`.
+No signing keys, passwords, runtime history, personal reports or API credentials belong in this repository. Report defects with platform/version and redacted diagnostics. Do not publish secrets in issues.

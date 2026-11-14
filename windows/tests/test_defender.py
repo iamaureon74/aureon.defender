@@ -132,26 +132,29 @@ class Feeds(unittest.TestCase):
     def test_parsers(self):
         self.assertEqual(feeds.parse_sha256("# c\n" + "A" * 64 + "\nnope\n"), ["a" * 64])
         self.assertEqual(feeds.parse_ips("# x\n1.2.3.4\n999\n"), ["1.2.3.4"])
+        self.assertEqual(feeds.parse_ips("999.999.999.999\n1.2.3.4\n"), ["1.2.3.4"])
         self.assertEqual(feeds.parse_hosts("127.0.0.1 localhost\n127.0.0.1 bad.example.com\n# x"), ["bad.example.com"])
 
     def test_update_offline_safe_and_feeds_reputation(self):
         d = Path(tempfile.mkdtemp(dir=TMP))
-        good = {"malwarebazaar": "b" * 64, "feodo": "5.6.7.8", "urlhaus": "0.0.0.0 evil.example"}
+        good = {"malwarebazaar": json.dumps({"query_status":"ok", "data":[{"sha256_hash":"b" * 64}]}),
+                "feodo": "5.6.7.8", "urlhaus": json.dumps({"query_status":"ok", "urls":[{"host":"evil.example", "url_status":"online"}]}),
+                "threatfox": json.dumps({"query_status":"ok", "data":[]})}
 
-        def fetcher(url):
+        def fetcher(url, **kwargs):
             for k, v in good.items():
                 if feeds.FEEDS[k] == url:
                     return v
         rep = scanner.Reputation(d / "r.db")
         f = feeds.Feeds(d, fetcher)
-        self.assertEqual(f.update(rep), {"malwarebazaar": 1, "feodo": 1, "urlhaus": 1})
+        self.assertEqual(f.update(rep, key="test-only-key"), {"malwarebazaar": 1, "feodo": 1, "urlhaus": 1, "threatfox": 0})
         self.assertEqual(rep.lookup("b" * 64)[0], "bad")
         self.assertEqual(f.bad_ips(), {"5.6.7.8"})
 
-        def down(url):
+        def down(url, **kwargs):
             raise OSError("no network")
         f2 = feeds.Feeds(d, down)
-        self.assertTrue(all(v.startswith("error") for v in f2.update(rep).values()))
+        self.assertTrue(all(v.startswith("error") for v in f2.update(rep, key="test-only-key").values()))
         self.assertEqual(f2.bad_ips(), {"5.6.7.8"})          # cached copy still used offline
 
     def test_hosts_block_is_reversible(self):
@@ -376,6 +379,23 @@ class AgentApi(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertIn(self.info["token"].encode(), html)
 
+    def test_request_body_validation(self):
+        import http.client
+        for length, body, expected in (("-1", b"", 400), ("1000001", b"", 413), ("1", b"{", 400), ("2", b"[]", 400)):
+            c = http.client.HTTPConnection("127.0.0.1", self.info["port"], timeout=5)
+            c.request("POST", "/api/studio/restore", body=body, headers={"Content-Length": length, "Content-Type":"application/json", "X-Aureon-Token":self.info["token"]})
+            r = c.getresponse()
+            self.assertEqual(r.status, expected)
+            r.read(); c.close()
+
+    def test_interface_preferences_persist_and_validate(self):
+        value={"palette":"frost", "reduced":True}
+        self.assertEqual(self.req("/api/interface",value)[0],200)
+        self.assertEqual(json.loads((core.user_dir()/"interface.json").read_text()),value)
+        self.assertEqual(self.req("/api/interface",{"palette":"unexpected", "reduced":True})[0],400)
+        self.assertEqual(self.req("/api/interface",{"palette":"signal", "reduced":"false"})[0],400)
+        self.assertEqual(json.loads((core.user_dir()/"interface.json").read_text()),value)
+
     def test_state_and_studio_flow(self):
         code, raw = self.req("/api/state")
         st = json.loads(raw)
@@ -466,6 +486,9 @@ class Packaging(unittest.TestCase):
         r = subprocess.run([sys.executable, "-m", "aureon_defender", "scan", str(d)], capture_output=True, text=True, env=env, cwd=WIN)
         self.assertEqual(r.returncode, 3)
         self.assertIn("double extension", r.stdout)
+        r = subprocess.run([sys.executable, "-m", "aureon_defender", "scan", str(d), "--json"], capture_output=True, text=True, env=env, cwd=WIN)
+        self.assertEqual(r.returncode, 3, "JSON output must not hide the finding exit code")
+        self.assertTrue(any(json.loads(line)["verdict"] not in ("clean", "skipped") for line in r.stdout.splitlines()))
 
 
 def tearDownModule():

@@ -11,8 +11,13 @@ jobs:
       - uses: actions/checkout@v4      # submodules are NOT fetched: tests use pins, not sources
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+      - name: Prefer native Git Bash over the WSL launcher
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: '"C:\Program Files\Git\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append'
       - run: pip install pyyaml
       - run: python -m unittest discover -s tests -v
+      - run: python -m unittest portable.test_portable -v
       - name: docker compose config (validates every stack with the real parser)
         if: runner.os == 'Linux'
         run: |
@@ -22,3 +27,11 @@ jobs:
       - name: shellcheck
         if: runner.os == 'Linux'
         run: shellcheck -S error scripts/linux/*.sh scripts/android-termux/setup.sh
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -r windows/requirements.txt
+      - run: python -m unittest discover -s windows/tests -v

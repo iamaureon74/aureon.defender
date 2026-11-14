@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.aureon.defender.tests" android:versionCode="1" android:versionName="1">
+ <uses-sdk android:minSdkVersion="31" android:targetSdkVersion="36"/>
+ <application android:label="Aureon local test fixtures" android:allowBackup="false">
+  <provider android:name=".Fixtures" android:authorities="org.aureon.defender.tests.fixtures" android:exported="true" android:grantUriPermissions="true"/>
+ </application>
+ <instrumentation android:name=".DeviceTests" android:targetPackage="org.aureon.defender" android:label="Aureon on-device verification"/>
+</manifest>

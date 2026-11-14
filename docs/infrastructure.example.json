@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "wifi": {"pmf_required": null, "router_managed": false},
+  "circuits": [],
+  "outlets": []
+}

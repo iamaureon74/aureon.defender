@@ -121,7 +121,8 @@ def fix(cid, write=None, backup=None):
     return True
 
 
-MACHINE_SAFE = {"remote_assistance": 0, "llmnr": 0, "delivery_optimization": 0, "activity_history": 0, "telemetry_level": 0}
+MACHINE_SAFE = {"remote_assistance": 0, "llmnr": 0, "delivery_optimization": 0, "activity_history": 0, "telemetry_level": 0,
+                "find_my_device": 0}
 
 
 def fix_machine(cid):

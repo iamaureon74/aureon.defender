@@ -1,25 +1,40 @@
-"""Threat-intel feeds. Online: refresh from free abuse.ch feeds (nothing about you is sent).
-Offline: everything keeps working from the last cached copy.
+"""Threat-intel feeds from abuse.ch. Online: refresh (nothing about you is sent). Offline: the cached copy keeps working.
 
-  MalwareBazaar  recent malware SHA-256 hashes      -> reputation DB
-  Feodo Tracker  botnet command-and-control IPs     -> network monitor
-  URLhaus        malware-distribution hostnames     -> optional hosts-file DNS shield
+abuse.ch retired its public download lists in 2026 (they answer 410 Gone). What's left:
+  Feodo Tracker  botnet command-and-control IPs                  public, no key
+  MalwareBazaar  newest malware SHA-256 hashes -> reputation DB  API, needs a free Auth-Key
+  URLhaus        live malware-distribution hosts -> DNS shield   API, needs a free Auth-Key
+  ThreatFox      fresh C2 servers and malicious domains          API, needs a free Auth-Key
+Get the key at https://auth.abuse.ch/ (sign in, then "Optional" > Auth-Key) and paste it in Settings > Threat feeds.
+Indicators accumulate across refreshes and expire after 30 days, so short API windows still build a full list.
 """
+import ipaddress
 import json
 import re
 import socket
 import time
+import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
 from .core import data_dir
 
-FEEDS = {
-    "malwarebazaar": "https://bazaar.abuse.ch/export/txt/sha256/recent/",
-    "feodo": "https://feodotracker.abuse.ch/downloads/ipblocklist.txt",
-    "urlhaus": "https://urlhaus.abuse.ch/downloads/hostfile/",
+FEODO = "https://feodotracker.abuse.ch/downloads/ipblocklist.txt"
+SOURCES = {
+    "feodo":         {"url": FEODO, "key": False},
+    "malwarebazaar": {"url": "https://mb-api.abuse.ch/api/v1/", "key": True, "form": {"query": "get_recent", "selector": "time"}},
+    "urlhaus":       {"url": "https://urlhaus-api.abuse.ch/v1/urls/recent/", "key": True},
+    "threatfox":     {"url": "https://threatfox-api.abuse.ch/api/v1/", "key": True, "json": {"query": "get_iocs", "days": 1}},
 }
+FEEDS = {k: v["url"] for k, v in SOURCES.items()}      # kept for callers that list feed names
 UA = "aureon.defender"
+KEEP_DAYS = 30
+KEY_HELP = "https://auth.abuse.ch/"
+
+
+class NeedsKey(Exception):
+    pass
 
 
 def online(host="1.1.1.1", port=443, timeout=2.0):
@@ -30,10 +45,33 @@ def online(host="1.1.1.1", port=443, timeout=2.0):
         return False
 
 
-def fetch(url, timeout=30):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read(50_000_000).decode("utf-8", errors="ignore")
+def fetch(url, form=None, json_body=None, key=None, timeout=30):
+    headers = {"User-Agent": UA}
+    data = None
+    if key:
+        headers["Auth-Key"] = key
+    if form is not None:
+        data = urllib.parse.urlencode(form).encode()
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+    elif json_body is not None:
+        data = json.dumps(json_body).encode()
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST" if data else "GET")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read(50_000_000).decode("utf-8", errors="ignore")
+    except urllib.error.HTTPError as e:
+        if e.code in (401, 403):
+            raise NeedsKey("abuse.ch refused the Auth-Key" if key else "needs a free abuse.ch Auth-Key") from None
+        raise
+
+
+def _is_ip(s):
+    try:
+        ipaddress.ip_address(s)
+        return True
+    except ValueError:
+        return False
 
 
 def parse_sha256(text):
@@ -41,7 +79,7 @@ def parse_sha256(text):
 
 
 def parse_ips(text):
-    return sorted({l.strip() for l in text.splitlines() if re.fullmatch(r"\d{1,3}(\.\d{1,3}){3}", l.strip())})
+    return sorted({l.strip() for l in text.splitlines() if _is_ip(l.strip())})
 
 
 def parse_hosts(text):
@@ -51,6 +89,52 @@ def parse_hosts(text):
         if m and m.group(1).lower() not in ("localhost",):
             out.add(m.group(1).lower())
     return sorted(out)
+
+
+def _api(text):
+    d = json.loads(text or "{}")
+    st = d.get("query_status")
+    if st in ("unknown_auth_key", "invalid_auth_key"):
+        raise NeedsKey("abuse.ch refused the Auth-Key")
+    if st not in ("ok", "no_results", None):
+        raise ValueError(f"abuse.ch said {st}")
+    return d
+
+
+def parse_bazaar(text):
+    """-> {"hashes": [(sha256, signature)]}"""
+    d = _api(text)
+    rows = d.get("data") or []
+    return {"hashes": [(r["sha256_hash"].lower(), r.get("signature")) for r in rows if isinstance(r, dict) and r.get("sha256_hash")]}
+
+
+def parse_urlhaus(text):
+    """-> {"hosts": [...], "ips": [...]} for URLs still online."""
+    d = _api(text)
+    hosts, ips = set(), set()
+    for u in d.get("urls") or []:
+        if u.get("url_status") not in ("online", None):
+            continue
+        h = (u.get("host") or urllib.parse.urlparse(u.get("url", "")).hostname or "").lower()
+        if h:
+            (ips if _is_ip(h) else hosts).add(h)
+    return {"hosts": sorted(hosts), "ips": sorted(ips)}
+
+
+def parse_threatfox(text):
+    d = _api(text)
+    hosts, ips = set(), set()
+    for r in d.get("data") or []:
+        ioc, typ = str(r.get("ioc", "")), r.get("ioc_type", "")
+        if typ == "ip:port":
+            ips.add(ioc.rsplit(":", 1)[0])
+        elif typ == "domain":
+            hosts.add(ioc.lower())
+        elif typ == "url":
+            h = (urllib.parse.urlparse(ioc).hostname or "").lower()
+            if h:
+                (ips if _is_ip(h) else hosts).add(h)
+    return {"hosts": sorted(hosts), "ips": sorted(ips)}
 
 
 class Feeds:
@@ -63,36 +147,71 @@ class Feeds:
         return self.root / f"{name}.json"
 
     def cached(self, name):
+        """{"t": last refresh, "items": [...]} - the union of what's been seen in the last KEEP_DAYS."""
         try:
-            return json.loads(self._file(name).read_text(encoding="utf-8"))
+            d = json.loads(self._file(name).read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return {"t": 0, "items": []}
+        items = d.get("items", [])
+        if isinstance(items, dict):
+            items = sorted(items)
+        return {"t": d.get("t", 0), "items": items}
 
-    def update(self, reputation=None):
-        """Returns {feed: count or error}. Never raises."""
-        report = {}
-        for name, url in FEEDS.items():
+    def _merge(self, name, new_items, now):
+        try:
+            d = json.loads(self._file(name).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            d = {}
+        seen = d.get("items", {})
+        if isinstance(seen, list):                         # older cache format
+            seen = {i: d.get("t", now) for i in seen}
+        for i in new_items:
+            seen[i] = now
+        cut = now - KEEP_DAYS * 86400
+        seen = {i: t for i, t in seen.items() if t >= cut}
+        self._file(name).write_text(json.dumps({"t": now, "items": seen}), encoding="utf-8")
+        return len(seen)
+
+    def update(self, reputation=None, key=""):
+        """Returns {feed: count | "needs key" | "error: ..."}. Never raises."""
+        key = (key or "").strip()
+        report, now = {}, time.time()
+        for name, src in SOURCES.items():
+            if src["key"] and not key:
+                report[name] = "needs key"
+                continue
             try:
-                text = self.fetcher(url)
-                items = {"malwarebazaar": parse_sha256, "feodo": parse_ips, "urlhaus": parse_hosts}[name](text)
-                if not items:
-                    raise ValueError("empty feed")
-                self._file(name).write_text(json.dumps({"t": time.time(), "items": items}), encoding="utf-8")
-                report[name] = len(items)
-                if name == "malwarebazaar" and reputation:
-                    reputation.add_bad([(h, "MalwareBazaar", None) for h in items])
+                text = self.fetcher(src["url"], form=src.get("form"), json_body=src.get("json"), key=key if src["key"] else None)
+                if name == "feodo":
+                    ips = parse_ips(text)
+                    if not ips:
+                        raise ValueError("empty feed")
+                    report[name] = self._merge("feodo", ips, now)
+                elif name == "malwarebazaar":
+                    rows = parse_bazaar(text)["hashes"]
+                    if reputation and rows:
+                        reputation.add_bad([(h, "MalwareBazaar", sig) for h, sig in rows])
+                    report[name] = self._merge("malwarebazaar", [h for h, _ in rows], now)
+                else:
+                    got = (parse_urlhaus if name == "urlhaus" else parse_threatfox)(text)
+                    self._merge(f"{name}_hosts", got["hosts"], now)
+                    self._merge(f"{name}_ips", got["ips"], now)
+                    report[name] = len(got["hosts"]) + len(got["ips"])
+            except NeedsKey as e:
+                report[name] = str(e)
             except Exception as e:
                 report[name] = f"error: {e.__class__.__name__}"
         return report
 
     def bad_ips(self):
-        return set(self.cached("feodo")["items"])
+        return set(self.cached("feodo")["items"]) | set(self.cached("urlhaus_ips")["items"]) | set(self.cached("threatfox_ips")["items"])
 
     def bad_hosts(self):
-        return self.cached("urlhaus")["items"]
+        return sorted(set(self.cached("urlhaus_hosts")["items"]) | set(self.cached("threatfox_hosts")["items"]))
 
     def age_hours(self, name):
-        t = self.cached(name)["t"]
+        t = max(self.cached(n)["t"] for n in ([f"{name}_hosts", f"{name}_ips"] if name in ("urlhaus", "threatfox") else [name]))
+
         return None if not t else (time.time() - t) / 3600
 
 
