@@ -54,7 +54,7 @@
   function accept(data) { if(!Array.isArray(data)) return false;const list=data.filter(validRelease).slice(0,10);if(!list.length)return false;releases=list.sort((a,b)=>Date.parse(b.published_at)-Date.parse(a.published_at));return true; }
   async function refresh() {
     if(pending)return;pending=true;$('#refresh-updates').disabled=true;lastCheck=Date.now();
-    try { const data=await fetchJSON(API); if(!accept(data))throw Error('No published release'); safeStorage.set('aureon-releases',JSON.stringify(data));renderReleases('live'); }
+    try { let data,source='live';try{const payload=await fetchJSON('./api/releases');data=payload.releases;source=payload.source==='github'?'live':'saved';if(!Array.isArray(data))throw Error('No server feed');}catch{data=await fetchJSON(API);}if(!accept(data))throw Error('No published release');safeStorage.set('aureon-releases',JSON.stringify(data));renderReleases(source); }
     catch { if(!releases.length) { try { if(!accept(JSON.parse(safeStorage.get('aureon-releases')||'null')))accept(await fetchJSON('./releases.json')); } catch {} } if(releases.length)renderReleases('saved');else {$('#release-name').textContent='Release details unavailable';$('#release-status').textContent='Offline or release service unavailable. Retry or open GitHub releases.';renderRecommendation();} }
     finally {pending=false;$('#refresh-updates').disabled=false;}
   }
