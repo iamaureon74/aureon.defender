@@ -21,6 +21,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .core import VERSION, Journal, Settings, atomic_write, data_dir, user_dir
+from aureon.capability_plan import plan as capability_plan
 from .integrations import availability
 from .quarantine import Vault
 from .studio import PRESET_GROUPS, PRESETS, Studio, WIDGET_DEFAULT
@@ -212,7 +213,7 @@ class Api:
         for cid, (status, how, src) in WINMAP.items():
             caps.setdefault(status, []).append({"id": cid, "how": how, "from": src})
         events = sorted(self.j.recent(80) + self.uj.recent(40), key=lambda e: e["t"], reverse=True)[:100]
-        return {"version": VERSION, "scan_job": self.scan_jobs().snapshot(), "integrations": availability(), "telemetry": self.telemetry_state(), "engine": {"alive": alive, **st}, "events": events,
+        return {"version": VERSION, "scan_job": self.scan_jobs().snapshot(), "integrations": availability(), "capability_plan": capability_plan(), "telemetry": self.telemetry_state(), "engine": {"alive": alive, **st}, "events": events,
                 "radar": load_json(data_dir() / "radar.json"), "phones": load_json(user_dir() / "phones.json"),
                 "devices": load_json(data_dir() / "devices.json") or load_json(user_dir() / "devices.json"),
                 "leaks": self.leaks_state(), "browsers": self.browsers_state(), "theme": self.theme(),
@@ -238,7 +239,8 @@ class Api:
     def telemetry_state(self):
         try:
             from .telemetry import collect
-            return collect()
+            from .sensors import collect as sensors
+            return {**collect(), "sensors":sensors()}
         except Exception as ex:
             return {"error":str(ex)}
 

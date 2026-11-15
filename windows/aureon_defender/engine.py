@@ -94,17 +94,18 @@ class Engine:
         self.j.add(**e)
 
     def on_file(self, path):
-        if self.s.get("auto_clean_downloads") and path.parent.name.lower() == "downloads":
+        r = self.scanner.scan(path)
+        self.state["counts"]["scanned"] += 1
+        # Only create metadata copies after the original's scan. Never auto-clean a flagged file.
+        if r["verdict"] == "clean" and self.s.get("auto_clean_downloads") and any(p.name.lower()=="downloads" for p in path.parents):
             from .clean import SUPPORTED, clean_file
             if path.suffix.lower() in SUPPORTED and ".clean" not in path.stem:
                 try:
-                    res = clean_file(path, in_place=False)
-                    if res["removed"]:
-                        self.j.add("info", "clean", f"Cleaned {path.name}", "Removed: " + ", ".join(res["removed"]))
-                except Exception:
-                    pass
-        r = self.scanner.scan(path)
-        self.state["counts"]["scanned"] += 1
+                    res=clean_file(path,in_place=False)
+                    self.j.add("info","clean",f"Metadata copy created: {path.name}","Original retained; selected fields only. Output: "+res["written"]+". Removed: "+(", ".join(res["removed"]) or "no targeted fields found"))
+                except Exception as ex:
+                    self.j.add("low","clean",f"Metadata copy unavailable: {path.name}",str(ex))
+
         if r["verdict"] == "malicious":
             if self.s["auto_quarantine"]:
                 try:

@@ -84,3 +84,24 @@ class NewWorkflows(unittest.TestCase):
             status,result=api.post('/api/leaks/fix-all',{})
             self.assertEqual(status,200);self.assertTrue(result['preview']);fix.assert_not_called();self.assertEqual(len(result['unresolved']),1)
             status,result=api.post('/api/leaks/fix-all',{'confirm':True});fix.assert_called_once_with(key);self.assertEqual(status,200)
+
+    def test_auto_cleanup_follows_scan_and_skips_flagged_original(self):
+        from aureon_defender.engine import Engine
+        from unittest.mock import Mock
+        engine=object.__new__(Engine);engine.s={'auto_clean_downloads':True,'auto_quarantine':False};engine.state={'counts':{'scanned':0}};engine.j=Mock()
+        engine.scanner=Mock();engine.scanner.scan.return_value={'verdict':'clean'}
+        p=Path('C:/Users/fixture/Downloads/nested/image.png')
+        with patch('aureon_defender.clean.clean_file',return_value={'written':'copy.png','removed':['text']}) as clean_file:
+            engine.on_file(p);clean_file.assert_called_once_with(p,in_place=False)
+        engine.scanner.scan.return_value={'verdict':'suspicious','score':70,'reasons':['fixture']}
+        with patch('aureon_defender.clean.clean_file') as clean_file:
+            engine.on_file(p);clean_file.assert_not_called()
+
+    @unittest.skipUnless(os.name=='nt','Windows Zone.Identifier streams')
+    def test_clean_copy_retains_trust_zone_without_referrer(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'image.png';Image.new('RGB',(2,2)).save(p)
+            Path(str(p)+':Zone.Identifier').write_text('[ZoneTransfer]\nZoneId=3\nHostUrl=https://private-source.invalid/user-id\n')
+            result=clean.clean_file(p);zone=Path(result['written']+':Zone.Identifier').read_text()
+            self.assertIn('ZoneId=3',zone);self.assertNotIn('private-source',zone)

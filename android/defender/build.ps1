@@ -19,7 +19,7 @@ function Check {if($LASTEXITCODE){throw "Build failed: $LASTEXITCODE"}}
 & $aapt compile --dir "$PSScriptRoot/res" -o "$build/resources.zip";Check
 & $aapt link -o "$build/unsigned.apk" --manifest "$PSScriptRoot/AndroidManifest.xml" -I $android --min-sdk-version 31 --target-sdk-version 36 --java "$build/generated" "$build/resources.zip";Check
 $sources=@(Get-ChildItem "$PSScriptRoot/src","$build/generated" -Recurse -Filter '*.java' | ForEach-Object FullName)
-& $javac -source 8 -target 8 -classpath $android -d "$build/classes" @sources;Check
+& $javac -encoding UTF-8 -source 8 -target 8 -classpath $android -d "$build/classes" @sources;Check
 $classes=@(Get-ChildItem "$build/classes" -Recurse -Filter '*.class' | ForEach-Object FullName)
 & $java -cp "$tools/lib/d8.jar" com.android.tools.r8.D8 --lib $android --min-api 31 --output "$build/dex" @classes;Check
 Add-Type -AssemblyName System.IO.Compression.FileSystem

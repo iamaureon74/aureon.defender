@@ -22,7 +22,7 @@ public final class Audit {
         return false;
     }
     public static synchronized JSONObject run(Context c) throws Exception {
-        JSONObject report=new JSONObject(); JSONArray findings=new JSONArray(), apps=new JSONArray(), added=new JSONArray(), removed=new JSONArray(), updated=new JSONArray();
+        JSONObject report=new JSONObject(); JSONArray installed=new JSONArray(), findings=new JSONArray(), apps=new JSONArray(), added=new JSONArray(), removed=new JSONArray(), updated=new JSONArray();
         SharedPreferences prefs=c.getSharedPreferences("guard",0);
         String previous=prefs.getString("packages",null);
         JSONObject oldVersions=new JSONObject(prefs.getString("package_versions","{}")), versions=new JSONObject();
@@ -32,6 +32,7 @@ public final class Audit {
         PackageManager pm=c.getPackageManager();
         for(PackageInfo p:pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)) {
             current.add(p.packageName);
+            installed.put(new JSONObject().put("package",p.packageName).put("name",p.applicationInfo==null?p.packageName:String.valueOf(pm.getApplicationLabel(p.applicationInfo))).put("version",p.versionName==null?"Unreported":p.versionName).put("system",p.applicationInfo!=null&&(p.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)!=0));
             String version=String.valueOf(p.getLongVersionCode());
             versions.put(p.packageName,version);
             if(previous!=null&&!before.contains(p.packageName))added.put(p.packageName);
@@ -61,9 +62,10 @@ public final class Audit {
         if(um!=null)for(UsbDevice d:um.getDeviceList().values())usb.put(new JSONObject().put("vendor",d.getVendorId()).put("product",d.getProductId()).put("device_class",d.getDeviceClass()));
         BatteryManager bm=(BatteryManager)c.getSystemService(Context.BATTERY_SERVICE);
         int battery=bm==null?-1:bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        report.put("version",1).put("app_version","0.4.2").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
+        try{report.put("hardware",HardwareInfo.collect(c));}catch(Exception ex){report.put("hardware_error",ex.getClass().getSimpleName());}
+        report.put("version",1).put("app_version","0.4.3").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
           .put("device",Build.MODEL).put("android_api",Build.VERSION.SDK_INT).put("secure_lock",secure)
-          .put("validated_network",internet).put("visible_package_count",current.size()).put("permission_reviews",apps)
+          .put("validated_network",internet).put("visible_package_count",current.size()).put("installed_apps",installed).put("permission_reviews",apps)
           .put("added_packages",added).put("removed_packages",removed).put("baseline_initialized",previous!=null)
           .put("updated_packages",updated).put("event_history",boundedHistory)
           .put("findings",findings).put("scope",Rules.scope()).put("data_destination","Local app-private storage only; this app has no INTERNET permission.");

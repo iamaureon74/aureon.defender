@@ -1,11 +1,11 @@
 {
   "files": {
-    "ui/icon-180.png": "9a38f6f37af8c42a7e45aa180df0a313ae25de5aea772d702706a16a76c3d913",
-    "ui/icon-192.png": "db84b7b2dfa9584e014b82706b65e3e1fb444df36401599f2e6da662fa24cdea",
-    "ui/icon-512.png": "a4d178128539ec7ce70bc0c06a7a1641d6c95cd44f5f48785fcb1f748891f2b9",
-    "ui/icon-maskable-512.png": "2410b922cc7a23a16fe7df1488d239d63e407b35e5dcbc282b2ecfeaa5575aa4",
-    "ui/icon.png": "2e7eb4af9d331a29a6616c06ac66d10b3d269bed6020a7a864605e4718e679b3",
-    "ui/index.html": "c43fb73ae03f61b470df66935f786cf018b421c59576f4aa16ec53f682c80b7c",
+    "ui/icon-180.png": "df8ae47f6fce99a69b016bcbb75b1729dac33c97984720d49899a34e09e0429d",
+    "ui/icon-192.png": "b6793ab29467db7885e453a89f46bc8dfb3da62bf245277720d79ff01339b998",
+    "ui/icon-512.png": "b4f6fcaea258f385c1f11f4c82654edde35c7a75aea308cc63061e4b1ce49198",
+    "ui/icon-maskable-512.png": "a25bd340494403d7406d21d5cc94d52350d7176b939bb6da92ae91055e6d4f82",
+    "ui/icon.png": "c6d8c7c216b130abc30755e11d73c044011d51168c94aad70dc95a55203ac34f",
+    "ui/index.html": "49602a0d28953decdc1b174e1f788a430316df1c56cadb506d3577614b0fc0ba",
     "ui/signal.css": "d80493e32d6bb80b98437a85b71feab8450af458a3f0f75b4425e416f98b4854",
     "rules/aureon_core.yar": "1bb650041d7559426940f7d3c7e805619e3132ecbfb22e10ca6254a8f235632c"
   }

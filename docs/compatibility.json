@@ -1,0 +1,1892 @@
+{
+  "generated_on": "2026-11-14",
+  "kind": "compatibility planning map, not a global installed-device inventory",
+  "country_dataset": {
+    "source": "pycountry / Debian iso-codes",
+    "version": "24.6.1",
+    "url": "https://pypi.org/project/pycountry/",
+    "meaning": "ISO 3166-1 countries and territories, not a claim that all entries are sovereign states; omissions/disputed statuses are not an app access restriction."
+  },
+  "countries": [
+    {
+      "code": "AF",
+      "alpha3": "AFG",
+      "name": "Afghanistan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AL",
+      "alpha3": "ALB",
+      "name": "Albania",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "DZ",
+      "alpha3": "DZA",
+      "name": "Algeria",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AS",
+      "alpha3": "ASM",
+      "name": "American Samoa",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AD",
+      "alpha3": "AND",
+      "name": "Andorra",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AO",
+      "alpha3": "AGO",
+      "name": "Angola",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AI",
+      "alpha3": "AIA",
+      "name": "Anguilla",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AQ",
+      "alpha3": "ATA",
+      "name": "Antarctica",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AG",
+      "alpha3": "ATG",
+      "name": "Antigua and Barbuda",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AR",
+      "alpha3": "ARG",
+      "name": "Argentina",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AM",
+      "alpha3": "ARM",
+      "name": "Armenia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AW",
+      "alpha3": "ABW",
+      "name": "Aruba",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AU",
+      "alpha3": "AUS",
+      "name": "Australia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AT",
+      "alpha3": "AUT",
+      "name": "Austria",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AZ",
+      "alpha3": "AZE",
+      "name": "Azerbaijan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BS",
+      "alpha3": "BHS",
+      "name": "Bahamas",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BH",
+      "alpha3": "BHR",
+      "name": "Bahrain",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BD",
+      "alpha3": "BGD",
+      "name": "Bangladesh",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BB",
+      "alpha3": "BRB",
+      "name": "Barbados",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BY",
+      "alpha3": "BLR",
+      "name": "Belarus",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BE",
+      "alpha3": "BEL",
+      "name": "Belgium",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BZ",
+      "alpha3": "BLZ",
+      "name": "Belize",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BJ",
+      "alpha3": "BEN",
+      "name": "Benin",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BM",
+      "alpha3": "BMU",
+      "name": "Bermuda",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BT",
+      "alpha3": "BTN",
+      "name": "Bhutan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BO",
+      "alpha3": "BOL",
+      "name": "Bolivia, Plurinational State of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BQ",
+      "alpha3": "BES",
+      "name": "Bonaire, Sint Eustatius and Saba",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BA",
+      "alpha3": "BIH",
+      "name": "Bosnia and Herzegovina",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BW",
+      "alpha3": "BWA",
+      "name": "Botswana",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BV",
+      "alpha3": "BVT",
+      "name": "Bouvet Island",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BR",
+      "alpha3": "BRA",
+      "name": "Brazil",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IO",
+      "alpha3": "IOT",
+      "name": "British Indian Ocean Territory",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BN",
+      "alpha3": "BRN",
+      "name": "Brunei Darussalam",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BG",
+      "alpha3": "BGR",
+      "name": "Bulgaria",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BF",
+      "alpha3": "BFA",
+      "name": "Burkina Faso",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BI",
+      "alpha3": "BDI",
+      "name": "Burundi",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CV",
+      "alpha3": "CPV",
+      "name": "Cabo Verde",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KH",
+      "alpha3": "KHM",
+      "name": "Cambodia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CM",
+      "alpha3": "CMR",
+      "name": "Cameroon",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CA",
+      "alpha3": "CAN",
+      "name": "Canada",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KY",
+      "alpha3": "CYM",
+      "name": "Cayman Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CF",
+      "alpha3": "CAF",
+      "name": "Central African Republic",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TD",
+      "alpha3": "TCD",
+      "name": "Chad",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CL",
+      "alpha3": "CHL",
+      "name": "Chile",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CN",
+      "alpha3": "CHN",
+      "name": "China",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CX",
+      "alpha3": "CXR",
+      "name": "Christmas Island",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CC",
+      "alpha3": "CCK",
+      "name": "Cocos (Keeling) Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CO",
+      "alpha3": "COL",
+      "name": "Colombia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KM",
+      "alpha3": "COM",
+      "name": "Comoros",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CG",
+      "alpha3": "COG",
+      "name": "Congo",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CD",
+      "alpha3": "COD",
+      "name": "Congo, The Democratic Republic of the",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CK",
+      "alpha3": "COK",
+      "name": "Cook Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CR",
+      "alpha3": "CRI",
+      "name": "Costa Rica",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "HR",
+      "alpha3": "HRV",
+      "name": "Croatia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CU",
+      "alpha3": "CUB",
+      "name": "Cuba",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CW",
+      "alpha3": "CUW",
+      "name": "Curaçao",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CY",
+      "alpha3": "CYP",
+      "name": "Cyprus",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CZ",
+      "alpha3": "CZE",
+      "name": "Czechia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CI",
+      "alpha3": "CIV",
+      "name": "Côte d'Ivoire",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "DK",
+      "alpha3": "DNK",
+      "name": "Denmark",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "DJ",
+      "alpha3": "DJI",
+      "name": "Djibouti",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "DM",
+      "alpha3": "DMA",
+      "name": "Dominica",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "DO",
+      "alpha3": "DOM",
+      "name": "Dominican Republic",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "EC",
+      "alpha3": "ECU",
+      "name": "Ecuador",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "EG",
+      "alpha3": "EGY",
+      "name": "Egypt",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SV",
+      "alpha3": "SLV",
+      "name": "El Salvador",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GQ",
+      "alpha3": "GNQ",
+      "name": "Equatorial Guinea",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ER",
+      "alpha3": "ERI",
+      "name": "Eritrea",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "EE",
+      "alpha3": "EST",
+      "name": "Estonia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SZ",
+      "alpha3": "SWZ",
+      "name": "Eswatini",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ET",
+      "alpha3": "ETH",
+      "name": "Ethiopia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "FK",
+      "alpha3": "FLK",
+      "name": "Falkland Islands (Malvinas)",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "FO",
+      "alpha3": "FRO",
+      "name": "Faroe Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "FJ",
+      "alpha3": "FJI",
+      "name": "Fiji",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "FI",
+      "alpha3": "FIN",
+      "name": "Finland",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "FR",
+      "alpha3": "FRA",
+      "name": "France",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GF",
+      "alpha3": "GUF",
+      "name": "French Guiana",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PF",
+      "alpha3": "PYF",
+      "name": "French Polynesia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TF",
+      "alpha3": "ATF",
+      "name": "French Southern Territories",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GA",
+      "alpha3": "GAB",
+      "name": "Gabon",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GM",
+      "alpha3": "GMB",
+      "name": "Gambia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GE",
+      "alpha3": "GEO",
+      "name": "Georgia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "DE",
+      "alpha3": "DEU",
+      "name": "Germany",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GH",
+      "alpha3": "GHA",
+      "name": "Ghana",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GI",
+      "alpha3": "GIB",
+      "name": "Gibraltar",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GR",
+      "alpha3": "GRC",
+      "name": "Greece",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GL",
+      "alpha3": "GRL",
+      "name": "Greenland",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GD",
+      "alpha3": "GRD",
+      "name": "Grenada",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GP",
+      "alpha3": "GLP",
+      "name": "Guadeloupe",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GU",
+      "alpha3": "GUM",
+      "name": "Guam",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GT",
+      "alpha3": "GTM",
+      "name": "Guatemala",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GG",
+      "alpha3": "GGY",
+      "name": "Guernsey",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GN",
+      "alpha3": "GIN",
+      "name": "Guinea",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GW",
+      "alpha3": "GNB",
+      "name": "Guinea-Bissau",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GY",
+      "alpha3": "GUY",
+      "name": "Guyana",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "HT",
+      "alpha3": "HTI",
+      "name": "Haiti",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "HM",
+      "alpha3": "HMD",
+      "name": "Heard Island and McDonald Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VA",
+      "alpha3": "VAT",
+      "name": "Holy See (Vatican City State)",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "HN",
+      "alpha3": "HND",
+      "name": "Honduras",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "HK",
+      "alpha3": "HKG",
+      "name": "Hong Kong",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "HU",
+      "alpha3": "HUN",
+      "name": "Hungary",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IS",
+      "alpha3": "ISL",
+      "name": "Iceland",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IN",
+      "alpha3": "IND",
+      "name": "India",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ID",
+      "alpha3": "IDN",
+      "name": "Indonesia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IR",
+      "alpha3": "IRN",
+      "name": "Iran, Islamic Republic of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IQ",
+      "alpha3": "IRQ",
+      "name": "Iraq",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IE",
+      "alpha3": "IRL",
+      "name": "Ireland",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IM",
+      "alpha3": "IMN",
+      "name": "Isle of Man",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IL",
+      "alpha3": "ISR",
+      "name": "Israel",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "IT",
+      "alpha3": "ITA",
+      "name": "Italy",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "JM",
+      "alpha3": "JAM",
+      "name": "Jamaica",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "JP",
+      "alpha3": "JPN",
+      "name": "Japan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "JE",
+      "alpha3": "JEY",
+      "name": "Jersey",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "JO",
+      "alpha3": "JOR",
+      "name": "Jordan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KZ",
+      "alpha3": "KAZ",
+      "name": "Kazakhstan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KE",
+      "alpha3": "KEN",
+      "name": "Kenya",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KI",
+      "alpha3": "KIR",
+      "name": "Kiribati",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KP",
+      "alpha3": "PRK",
+      "name": "Korea, Democratic People's Republic of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KR",
+      "alpha3": "KOR",
+      "name": "Korea, Republic of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KW",
+      "alpha3": "KWT",
+      "name": "Kuwait",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KG",
+      "alpha3": "KGZ",
+      "name": "Kyrgyzstan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LA",
+      "alpha3": "LAO",
+      "name": "Lao People's Democratic Republic",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LV",
+      "alpha3": "LVA",
+      "name": "Latvia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LB",
+      "alpha3": "LBN",
+      "name": "Lebanon",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LS",
+      "alpha3": "LSO",
+      "name": "Lesotho",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LR",
+      "alpha3": "LBR",
+      "name": "Liberia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LY",
+      "alpha3": "LBY",
+      "name": "Libya",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LI",
+      "alpha3": "LIE",
+      "name": "Liechtenstein",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LT",
+      "alpha3": "LTU",
+      "name": "Lithuania",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LU",
+      "alpha3": "LUX",
+      "name": "Luxembourg",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MO",
+      "alpha3": "MAC",
+      "name": "Macao",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MG",
+      "alpha3": "MDG",
+      "name": "Madagascar",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MW",
+      "alpha3": "MWI",
+      "name": "Malawi",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MY",
+      "alpha3": "MYS",
+      "name": "Malaysia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MV",
+      "alpha3": "MDV",
+      "name": "Maldives",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ML",
+      "alpha3": "MLI",
+      "name": "Mali",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MT",
+      "alpha3": "MLT",
+      "name": "Malta",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MH",
+      "alpha3": "MHL",
+      "name": "Marshall Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MQ",
+      "alpha3": "MTQ",
+      "name": "Martinique",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MR",
+      "alpha3": "MRT",
+      "name": "Mauritania",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MU",
+      "alpha3": "MUS",
+      "name": "Mauritius",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "YT",
+      "alpha3": "MYT",
+      "name": "Mayotte",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MX",
+      "alpha3": "MEX",
+      "name": "Mexico",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "FM",
+      "alpha3": "FSM",
+      "name": "Micronesia, Federated States of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MD",
+      "alpha3": "MDA",
+      "name": "Moldova, Republic of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MC",
+      "alpha3": "MCO",
+      "name": "Monaco",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MN",
+      "alpha3": "MNG",
+      "name": "Mongolia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ME",
+      "alpha3": "MNE",
+      "name": "Montenegro",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MS",
+      "alpha3": "MSR",
+      "name": "Montserrat",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MA",
+      "alpha3": "MAR",
+      "name": "Morocco",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MZ",
+      "alpha3": "MOZ",
+      "name": "Mozambique",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MM",
+      "alpha3": "MMR",
+      "name": "Myanmar",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NA",
+      "alpha3": "NAM",
+      "name": "Namibia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NR",
+      "alpha3": "NRU",
+      "name": "Nauru",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NP",
+      "alpha3": "NPL",
+      "name": "Nepal",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NL",
+      "alpha3": "NLD",
+      "name": "Netherlands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NC",
+      "alpha3": "NCL",
+      "name": "New Caledonia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NZ",
+      "alpha3": "NZL",
+      "name": "New Zealand",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NI",
+      "alpha3": "NIC",
+      "name": "Nicaragua",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NE",
+      "alpha3": "NER",
+      "name": "Niger",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NG",
+      "alpha3": "NGA",
+      "name": "Nigeria",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NU",
+      "alpha3": "NIU",
+      "name": "Niue",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NF",
+      "alpha3": "NFK",
+      "name": "Norfolk Island",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MK",
+      "alpha3": "MKD",
+      "name": "North Macedonia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MP",
+      "alpha3": "MNP",
+      "name": "Northern Mariana Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "NO",
+      "alpha3": "NOR",
+      "name": "Norway",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "OM",
+      "alpha3": "OMN",
+      "name": "Oman",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PK",
+      "alpha3": "PAK",
+      "name": "Pakistan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PW",
+      "alpha3": "PLW",
+      "name": "Palau",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PS",
+      "alpha3": "PSE",
+      "name": "Palestine, State of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PA",
+      "alpha3": "PAN",
+      "name": "Panama",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PG",
+      "alpha3": "PNG",
+      "name": "Papua New Guinea",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PY",
+      "alpha3": "PRY",
+      "name": "Paraguay",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PE",
+      "alpha3": "PER",
+      "name": "Peru",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PH",
+      "alpha3": "PHL",
+      "name": "Philippines",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PN",
+      "alpha3": "PCN",
+      "name": "Pitcairn",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PL",
+      "alpha3": "POL",
+      "name": "Poland",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PT",
+      "alpha3": "PRT",
+      "name": "Portugal",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PR",
+      "alpha3": "PRI",
+      "name": "Puerto Rico",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "QA",
+      "alpha3": "QAT",
+      "name": "Qatar",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "RO",
+      "alpha3": "ROU",
+      "name": "Romania",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "RU",
+      "alpha3": "RUS",
+      "name": "Russian Federation",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "RW",
+      "alpha3": "RWA",
+      "name": "Rwanda",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "RE",
+      "alpha3": "REU",
+      "name": "Réunion",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "BL",
+      "alpha3": "BLM",
+      "name": "Saint Barthélemy",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SH",
+      "alpha3": "SHN",
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "KN",
+      "alpha3": "KNA",
+      "name": "Saint Kitts and Nevis",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LC",
+      "alpha3": "LCA",
+      "name": "Saint Lucia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "MF",
+      "alpha3": "MAF",
+      "name": "Saint Martin (French part)",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "PM",
+      "alpha3": "SPM",
+      "name": "Saint Pierre and Miquelon",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VC",
+      "alpha3": "VCT",
+      "name": "Saint Vincent and the Grenadines",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "WS",
+      "alpha3": "WSM",
+      "name": "Samoa",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SM",
+      "alpha3": "SMR",
+      "name": "San Marino",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ST",
+      "alpha3": "STP",
+      "name": "Sao Tome and Principe",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SA",
+      "alpha3": "SAU",
+      "name": "Saudi Arabia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SN",
+      "alpha3": "SEN",
+      "name": "Senegal",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "RS",
+      "alpha3": "SRB",
+      "name": "Serbia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SC",
+      "alpha3": "SYC",
+      "name": "Seychelles",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SL",
+      "alpha3": "SLE",
+      "name": "Sierra Leone",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SG",
+      "alpha3": "SGP",
+      "name": "Singapore",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SX",
+      "alpha3": "SXM",
+      "name": "Sint Maarten (Dutch part)",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SK",
+      "alpha3": "SVK",
+      "name": "Slovakia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SI",
+      "alpha3": "SVN",
+      "name": "Slovenia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SB",
+      "alpha3": "SLB",
+      "name": "Solomon Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SO",
+      "alpha3": "SOM",
+      "name": "Somalia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ZA",
+      "alpha3": "ZAF",
+      "name": "South Africa",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GS",
+      "alpha3": "SGS",
+      "name": "South Georgia and the South Sandwich Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SS",
+      "alpha3": "SSD",
+      "name": "South Sudan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ES",
+      "alpha3": "ESP",
+      "name": "Spain",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "LK",
+      "alpha3": "LKA",
+      "name": "Sri Lanka",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SD",
+      "alpha3": "SDN",
+      "name": "Sudan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SR",
+      "alpha3": "SUR",
+      "name": "Suriname",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SJ",
+      "alpha3": "SJM",
+      "name": "Svalbard and Jan Mayen",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SE",
+      "alpha3": "SWE",
+      "name": "Sweden",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "CH",
+      "alpha3": "CHE",
+      "name": "Switzerland",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "SY",
+      "alpha3": "SYR",
+      "name": "Syrian Arab Republic",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TW",
+      "alpha3": "TWN",
+      "name": "Taiwan, Province of China",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TJ",
+      "alpha3": "TJK",
+      "name": "Tajikistan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TZ",
+      "alpha3": "TZA",
+      "name": "Tanzania, United Republic of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TH",
+      "alpha3": "THA",
+      "name": "Thailand",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TL",
+      "alpha3": "TLS",
+      "name": "Timor-Leste",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TG",
+      "alpha3": "TGO",
+      "name": "Togo",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TK",
+      "alpha3": "TKL",
+      "name": "Tokelau",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TO",
+      "alpha3": "TON",
+      "name": "Tonga",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TT",
+      "alpha3": "TTO",
+      "name": "Trinidad and Tobago",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TN",
+      "alpha3": "TUN",
+      "name": "Tunisia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TM",
+      "alpha3": "TKM",
+      "name": "Turkmenistan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TC",
+      "alpha3": "TCA",
+      "name": "Turks and Caicos Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TV",
+      "alpha3": "TUV",
+      "name": "Tuvalu",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "TR",
+      "alpha3": "TUR",
+      "name": "Türkiye",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "UG",
+      "alpha3": "UGA",
+      "name": "Uganda",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "UA",
+      "alpha3": "UKR",
+      "name": "Ukraine",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AE",
+      "alpha3": "ARE",
+      "name": "United Arab Emirates",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "GB",
+      "alpha3": "GBR",
+      "name": "United Kingdom",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "US",
+      "alpha3": "USA",
+      "name": "United States",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "UM",
+      "alpha3": "UMI",
+      "name": "United States Minor Outlying Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "UY",
+      "alpha3": "URY",
+      "name": "Uruguay",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "UZ",
+      "alpha3": "UZB",
+      "name": "Uzbekistan",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VU",
+      "alpha3": "VUT",
+      "name": "Vanuatu",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VE",
+      "alpha3": "VEN",
+      "name": "Venezuela, Bolivarian Republic of",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VN",
+      "alpha3": "VNM",
+      "name": "Viet Nam",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VG",
+      "alpha3": "VGB",
+      "name": "Virgin Islands, British",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "VI",
+      "alpha3": "VIR",
+      "name": "Virgin Islands, U.S.",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "WF",
+      "alpha3": "WLF",
+      "name": "Wallis and Futuna",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "EH",
+      "alpha3": "ESH",
+      "name": "Western Sahara",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "YE",
+      "alpha3": "YEM",
+      "name": "Yemen",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ZM",
+      "alpha3": "ZMB",
+      "name": "Zambia",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "ZW",
+      "alpha3": "ZWE",
+      "name": "Zimbabwe",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    },
+    {
+      "code": "AX",
+      "alpha3": "ALA",
+      "name": "Åland Islands",
+      "country_specific_availability": "not independently verified",
+      "geofenced_by_app": false
+    }
+  ],
+  "device_families": [
+    {
+      "id": "windows-pc",
+      "name": "Windows laptops / desktops / gaming PCs",
+      "requirement": "Windows 10/11 x64",
+      "edition": "windows",
+      "status": "native",
+      "spec_scope": "CPU/GPU identity, RAM, disks, battery where present, software inventory, peripherals, supported driver sensors"
+    },
+    {
+      "id": "windows-convertible",
+      "name": "Windows tablets / convertibles",
+      "requirement": "Windows 10/11 x64",
+      "edition": "windows",
+      "status": "native; touch layout tested in browser",
+      "spec_scope": "Same Windows APIs; sensor and touch support depends on hardware"
+    },
+    {
+      "id": "windows-arm",
+      "name": "Windows ARM laptops / tablets",
+      "requirement": "Windows ARM64",
+      "edition": "web",
+      "status": "no native ARM build; x64 compatibility not independently tested",
+      "spec_scope": "Web tools only by default; x64 app requires compatible OS emulation"
+    },
+    {
+      "id": "android-phone",
+      "name": "Android phones / rugged handhelds",
+      "requirement": "Android 12+",
+      "edition": "android",
+      "status": "native; Pixel 9 tested",
+      "spec_scope": "Reported SoC, GPU driver renderer, RAM, data-volume storage, display, battery, OS thermal severity, visible apps and USB host devices"
+    },
+    {
+      "id": "android-tablet",
+      "name": "Android tablets / foldables",
+      "requirement": "Android 12+",
+      "edition": "android",
+      "status": "same APK; tablet/side-dock paths implemented, physical tablet untested",
+      "spec_scope": "Reported Android APIs; app window controls layout, not nationality"
+    },
+    {
+      "id": "iphone",
+      "name": "iPhone",
+      "requirement": "Modern Safari / HTTPS",
+      "edition": "web",
+      "status": "limited web; physical iPhone untested",
+      "spec_scope": "Selected-file hashes and reports; no system hardware scan or background antivirus"
+    },
+    {
+      "id": "ipad",
+      "name": "iPad",
+      "requirement": "Modern Safari / HTTPS",
+      "edition": "web",
+      "status": "limited web; physical iPad untested",
+      "spec_scope": "Selected-file hashes and reports, responsive layout; not native OS inventory"
+    },
+    {
+      "id": "mac-apple-silicon",
+      "name": "Apple silicon MacBook / iMac / Mac mini / Mac Studio",
+      "requirement": "macOS with Python 3.12",
+      "edition": "source",
+      "status": "limited source preview; native packaging blocked",
+      "spec_scope": "OS/resource observations where APIs support them; no Windows engine parity"
+    },
+    {
+      "id": "mac-intel",
+      "name": "Intel MacBook / iMac / Mac mini / Mac Pro",
+      "requirement": "macOS with Python 3.12",
+      "edition": "source",
+      "status": "limited source preview; native packaging blocked",
+      "spec_scope": "Python/OS observations; host generation and OS version matter"
+    },
+    {
+      "id": "linux-pc",
+      "name": "Linux laptops / desktops / workstations",
+      "requirement": "Compatible Linux + Python 3.12",
+      "edition": "source",
+      "status": "limited source preview; no native release binary",
+      "spec_scope": "CPU/RAM/storage, available Linux thermal sensors and USB inventory; optional tools are not all installed"
+    },
+    {
+      "id": "raspberry-pi",
+      "name": "Raspberry Pi / ARM single-board computers",
+      "requirement": "Compatible Linux + Python 3.12",
+      "edition": "source",
+      "status": "source preview; no Pi hardware test",
+      "spec_scope": "Linux/sysfs USB and service/tool discovery; GPIO/sensors require actual attached hardware and adapters"
+    },
+    {
+      "id": "chromebook",
+      "name": "Chromebooks",
+      "requirement": "Modern browser; optional compatible Linux environment",
+      "edition": "web",
+      "status": "web tools; Linux source optional/untested",
+      "spec_scope": "Browser-selected files only; Linux environment is not the whole ChromeOS host"
+    },
+    {
+      "id": "server",
+      "name": "Linux / Windows servers and VMs",
+      "requirement": "Supported guest OS / architecture",
+      "edition": "source",
+      "status": "source/read-only scope; server enforcement not certified",
+      "spec_scope": "Hypervisor-exposed virtual hardware differs from physical host; no inference of underlying components"
+    },
+    {
+      "id": "android-tv",
+      "name": "Android TV / Google TV / set-top boxes",
+      "requirement": "Device/browser-specific",
+      "edition": "web",
+      "status": "not a tested native TV product",
+      "spec_scope": "No remote-control-optimized native interface or universal file picker guarantee"
+    },
+    {
+      "id": "wearable",
+      "name": "Wearables / smartwatches",
+      "requirement": "Device-specific Wear OS / watchOS",
+      "edition": "none",
+      "status": "not supported in this release",
+      "spec_scope": "Separate small-screen native app, permissions and sensor adapter required"
+    },
+    {
+      "id": "embedded-iot",
+      "name": "Routers / NAS / cameras / printers / IoT / OT",
+      "requirement": "Vendor-specific firmware",
+      "edition": "none",
+      "status": "agentless research/report target; not installable everywhere",
+      "spec_scope": "Authorized inventory only; device-specific agents/protocols needed; no firmware enforcement claimed"
+    }
+  ],
+  "limits": [
+    "No IP geolocation or citizenship inference.",
+    "No country geofence in application code; network/legal/distribution availability not verified per country.",
+    "English interface, Unicode report text; not fully localized.",
+    "Compatibility depends on OS, architecture, permissions, browser and exposed hardware APIs, not a national hardware assumption.",
+    "No exhaustive model/vendor catalog or every-device test is claimed."
+  ]
+}

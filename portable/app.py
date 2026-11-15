@@ -25,7 +25,12 @@ def snapshot():
                     battery=battery.percent if battery else None)
     except (ImportError, OSError, AttributeError):
         vitals={}
-    return dict(platform=platform.system(),architecture=platform.machine(),version='0.4.1-preview',
+    specs=dict(cpu_model=platform.processor() or None,logical_processors=__import__('os').cpu_count(),gpu_status='No universal GPU API configured; unavailable, not inferred')
+    try:
+        memory=psutil.virtual_memory();storage=psutil.disk_usage(str(Path.home()));specs.update(ram_total_bytes=memory.total,ram_available_bytes=memory.available,home_volume_total_bytes=storage.total,home_volume_free_bytes=storage.free)
+        fn=getattr(psutil,'sensors_temperatures',None);specs['temperature_c']={group:[{'label':v.label,'value':v.current} for v in values] for group,values in (fn() if fn else {}).items()}
+    except (NameError,AttributeError,OSError):pass
+    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.4.3-preview',
                 observed_at=time.time(),vitals=vitals,
                 usb=usb_inventory() if platform.system()=='Linux' else None,
                 scope='Read-only posture, local USB descriptors on Linux, and browser-local file hashes. No quarantine, process blocking, VPN, or Windows Defender.')

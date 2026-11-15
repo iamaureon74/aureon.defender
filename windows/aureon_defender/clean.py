@@ -18,7 +18,7 @@ import struct
 import zipfile
 from pathlib import Path
 
-PHOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff", ".heic"}
+PHOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff"}
 AUDIO = {".mp3", ".flac", ".wav"}
 DOCS = {".docx", ".xlsx", ".pptx", ".docm", ".xlsm", ".pptm", ".odt", ".ods", ".odp", ".pdf"}
 VIDEO = {".mp4", ".mov", ".m4a", ".m4v", ".3gp"}
@@ -289,6 +289,14 @@ def clean_file(path, in_place=False, out=None):
             dst = dst.with_name(dst.stem + '-' + uuid.uuid4().hex[:8] + dst.suffix)
         with dst.open('xb') as f:
             f.write(new)
+    if os.name == 'nt' and not in_place:
+        # Retain the OS trust zone but omit identifying source/referrer URLs from the new copy.
+        try:
+            zone=Path(str(p)+':Zone.Identifier').read_text(encoding='utf-8',errors='replace')
+            match=re.search(r'(?m)^ZoneId=([0-4])\s*$',zone)
+            if match:Path(str(dst)+':Zone.Identifier').write_text('[ZoneTransfer]\nZoneId='+match.group(1)+'\n',encoding='utf-8')
+        except OSError:
+            pass
     return {"file": str(p), "written": str(dst), "removed": removed, "saved_bytes": before - len(new),
             "scope": "Selected known metadata fields only; embedded content, watermarks, filesystem records and all fingerprints are not removed.",
             "limitations": "PDF compressed/object-stream metadata and embedded attachments may remain. Video track identifiers/timestamps may remain. Review documents for visible names, comments and embedded content."}

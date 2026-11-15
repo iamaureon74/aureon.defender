@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter
 
 HERE = Path(__file__).parent
-VOID, EMBER, GLOW, RIM = (13, 12, 14), (201, 128, 63), (255, 217, 176), (42, 36, 33)
+VOID, EMBER, GLOW, RIM = (13, 16, 18), (143, 185, 70), (217, 255, 112), (41, 49, 54)
 
 
 def shield_points(cx, top, w, h):

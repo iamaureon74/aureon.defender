@@ -6,18 +6,28 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 | Device | Direct distribution | Scope |
 |---|---|---|
-| Windows 10/11 x64 | [Windows ZIP · 0.4.2](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-windows-x64-0.4.2.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
-| Android 12+ | [Android APK · 0.4.2](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-android-0.4.2.apk) | Native local monitor; floating navigation; Android limits apply |
+| Windows 10/11 x64 | [Windows ZIP · 0.4.3](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-windows-x64-0.4.3.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
+| Android 12+ | [Android APK · 0.4.3](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-android-0.4.3.apk) | Native local monitor; floating navigation; Android limits apply |
 | iPhone / iPad | [Installable web edition](https://aureon-defender.vercel.app/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
-| macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-portable-source-0.4.2-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
-| Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/aureon-defender-portable-source-0.4.2-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
-| Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.2.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
+| macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
+| Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
+| Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.3.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
 
-[Release notes and all downloads](https://github.com/shep95/aureon.defender/releases/tag/v0.4.2) · [SHA-256 checksums](https://github.com/shep95/aureon.defender/releases/download/v0.4.2/SHA256SUMS.txt)
+[Release notes and all downloads](https://github.com/shep95/aureon.defender/releases/tag/v0.4.3) · [SHA-256 checksums](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/SHA256SUMS.txt)
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
 
-## What is new in 0.4.2
+## What is new in 0.4.3
+
+The borderless landing header, themed scrollbars, original Signal footer and full ink/lime app artwork now share the same identity. Site-local download endpoints start the actual file transfer without opening a GitHub release page; GitHub still hosts the binary bytes. The header uses the full **aureon.defender** name at narrow widths.
+
+[Devices & regions explorer](https://aureon-defender.vercel.app/compatibility.html) maps 249 ISO country/territory references × 16 device families. This is compatibility planning, not per-country certification, a count of sovereign states, or a global installed-device inventory. Country is not inferred from the hardware.
+
+Android inventory adapts to exposed APIs: SoC, GPU driver strings, RAM/storage, display, thermal severity, battery, security patch and visible app names/versions. Windows provides existing CPU/GPU/device inventory plus available OS/driver thermal/fan/NVIDIA readings. Unsupported sensors remain unavailable.
+
+[Hardware-layer integration plan](docs/HARDWARE-INTEGRATION-PLAN.md) labels OS-owned, planned, unsupported and existing functions. No firmware flashing, disk-encryption enrollment, kernel driver or key wipe is silently introduced. A universal all-fingerprint-removal claim would be false.
+
+## Earlier 0.4.2 workflow additions
 
 - Device-aware landing page, three visual directions, live GitHub release notes and offline fallback.
 - Windows read-only full scan, cancellation/findings, reviewed quarantine and a previewed Fix all for reversible per-user settings.
@@ -60,8 +70,8 @@ Open the [web edition](https://aureon-defender.vercel.app/) in Safari and choose
 
 ## Verification
 
-- Windows: 108 tests passed on the expanded release, plus the final eight focused workflow tests (including one added after the full run). A packaged inert-file scan returned the expected review exit code 3. All 15 installed tabs were checked with live local state and no JavaScript errors. Isolated responsive checks covered 45 tab/width combinations.
-- Android: 10 rule/file-check assertions and 30 Pixel 9 instrumentation assertions passed, including navigation, safe insets, dock choices, file/report flows and oriented metadata-clean image output.
+- Windows: 111 tests passed on the expanded release, plus the final eight focused workflow tests (including one added after the full run). A packaged inert-file scan returned the expected review exit code 3. All 15 installed tabs were checked with live local state and no JavaScript errors. Isolated responsive checks covered 45 tab/width combinations.
+- Android: 10 rule/file-check assertions and 35 Pixel 9 instrumentation assertions passed, including navigation, safe insets, dock choices, file/report flows and oriented metadata-clean image output.
 - Portable preview: two local tests passed. Native CI and packaged-executable checks have not run because GitHub blocked hosted jobs before execution. No native Mac/Linux binary is claimed as tested or released.
 - Web edition: local hash, import validation, report rendering and offline-cache tests are recorded in CI/local release checks.
 
