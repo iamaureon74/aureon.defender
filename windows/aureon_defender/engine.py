@@ -93,11 +93,22 @@ class Engine:
             self.state["counts"]["alerts"] += 1
         self.j.add(**e)
 
+    def download_cleanup_enabled(self, path):
+        from .core import load_json
+        # A user preference can only request clean copies of that user's downloads.
+        # It grants no machine-wide access and never supplies a command or output path.
+        for folder in Path(path).parents:
+            if folder.name.lower() == "downloads":
+                policy = load_json(folder.parent / "AppData/Roaming/Aureon/cleanup-policy.json", {}) or {}
+                if type(policy.get("enabled")) is bool:
+                    return policy["enabled"]
+        return bool(self.s.get("auto_clean_downloads"))
+
     def on_file(self, path):
         r = self.scanner.scan(path)
         self.state["counts"]["scanned"] += 1
         # Only create metadata copies after the original's scan. Never auto-clean a flagged file.
-        if r["verdict"] == "clean" and self.s.get("auto_clean_downloads") and any(p.name.lower()=="downloads" for p in path.parents):
+        if r["verdict"] == "clean" and self.download_cleanup_enabled(path) and any(p.name.lower()=="downloads" for p in path.parents):
             from .clean import SUPPORTED, clean_file
             if path.suffix.lower() in SUPPORTED and ".clean" not in path.stem:
                 try:

@@ -278,7 +278,7 @@ class Scanner:
             with open(path, "rb") as f:
                 head = f.read(min(MAX_READ, st.st_size))
         except OSError as e:
-            res.update(verdict="error", reasons=[str(e)])
+            res.update(verdict="skipped" if isinstance(e, (PermissionError, FileNotFoundError)) or getattr(e,"winerror",None) in (2,3,5,32,33) else "error", reasons=[str(e)], skip_reason="File unavailable, access denied or locked" if isinstance(e,(PermissionError,FileNotFoundError)) or getattr(e,"winerror",None) in (2,3,5,32,33) else "")
             return res
 
         state, row = self.rep.lookup(h)

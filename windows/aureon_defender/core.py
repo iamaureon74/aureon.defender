@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.4.3"
+VERSION = "0.4.4"
 APP = "aureon.defender"
 
 
@@ -101,6 +101,14 @@ class Settings:
                     cur[k] = v
             self.path.write_text(json.dumps(cur, indent=1), encoding="utf-8")
             return cur
+
+
+def load_json(path, default=None):
+    try:
+        value = json.loads(Path(path).read_text(encoding="utf-8"))
+        return value if isinstance(value, dict) else default
+    except (OSError, ValueError):
+        return default
 
 
 def atomic_write(path: Path, text: str, tries=20):

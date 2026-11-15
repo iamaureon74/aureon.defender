@@ -25,14 +25,14 @@ class ScanJobs:
         with self.lock:
             return copy.deepcopy(self.state)
 
-    def start(self, scanner, roots=None, exclusions=(), limit=200000):
+    def start(self, scanner, roots=None, exclusions=(), limit=200000, vault=None, automatic=False, journal=None):
         with self.lock:
             if self.state['status'] in ('running','cancelling'):
                 raise ValueError('A full scan is already running')
             roots = list(local_roots() if roots is None else roots)
             self.cancel.clear()
-            self.state = {'id':uuid.uuid4().hex, 'status':'running','started':time.time(),'scanned':0,'skipped':0,'errors':0,'findings':[],'finding_count':0,'roots':[str(p) for p in roots],'current':'','limit':limit,'scope':'Accessible files on local fixed drives; no network drives, links or junctions. Read-only; no automatic cleanup.'}
-            threading.Thread(target=self._run,args=(scanner,roots,exclusions,limit),daemon=True).start()
+            self.state = {'id':uuid.uuid4().hex, 'status':'running','started':time.time(),'scanned':0,'skipped':0,'errors':0,'findings':[],'finding_count':0,'roots':[str(p) for p in roots],'current':'','limit':limit,'diagnostics':[], 'auto_quarantined':0, 'scope':'Accessible local fixed-drive files. Recycle Bin, protected volume data, links and runtime data excluded. Automatic quarantine only for confirmed threats in current-user folders when enabled.'}
+            threading.Thread(target=self._run,args=(scanner,roots,exclusions,limit,vault,automatic,journal),daemon=True).start()
             return self.snapshot()
 
     def stop(self):
@@ -41,7 +41,7 @@ class ScanJobs:
                 self.cancel.set();self.state['status']='cancelling'
         return self.snapshot()
 
-    def _run(self, scanner, roots, exclusions, limit):
+    def _run(self, scanner, roots, exclusions, limit, vault=None, automatic=False, journal=None):
         excluded=[Path(p).resolve() for p in exclusions]
         count=0
         def blocked(p):
@@ -49,13 +49,25 @@ class ScanJobs:
                 return p.is_symlink() or (hasattr(p,'is_junction') and p.is_junction()) or any(p.resolve().is_relative_to(x) for x in excluded)
             except OSError:
                 return True
-        def error(_):
-            with self.lock:self.state['errors']+=1
+        def record(kind, path, reason):
+            with self.lock:
+                self.state['skipped' if kind=='skipped' else 'errors']+=1
+                if len(self.state['diagnostics'])<100:
+                    self.state['diagnostics'].append({'kind':kind,'path':str(path),'reason':str(reason)})
+        def error(ex):
+            expected=isinstance(ex,(PermissionError,FileNotFoundError)) or getattr(ex,'winerror',None) in (2,3,5,32,33)
+            record('skipped' if expected else 'error',getattr(ex,'filename',''),ex)
         try:
             for root in roots:
                 for folder, dirs, files in os.walk(root, followlinks=False, onerror=error):
                     if self.cancel.is_set() or count>=limit:break
-                    dirs[:]=[d for d in dirs if not blocked(Path(folder)/d)]
+                    keep=[]
+                    for d in dirs:
+                        dp=Path(folder)/d
+                        if d.lower() in ('$recycle.bin','system volume information') or blocked(dp):
+                            record('skipped',dp,'Folder excluded from this scan: protected storage, link or configured exclusion')
+                        else:keep.append(d)
+                    dirs[:]=keep
                     for name in files:
                         if self.cancel.is_set() or count>=limit:break
                         p=Path(folder)/name
@@ -64,7 +76,7 @@ class ScanJobs:
                             continue
                         with self.lock:self.state['current']=str(p)
                         try:
-                            # Scanner has no remediation; unlike Engine.on_file this never auto-cleans/quarantines.
+                            # Detect first; only confirmed, unchanged user files may be automatically isolated.
                             result=scanner.scan(p)
                         except Exception as ex:
                             result={'verdict':'error','reasons':[str(ex)]}
@@ -73,11 +85,27 @@ class ScanJobs:
                             self.state['scanned']=count
                             verdict=result.get('verdict')
                             if verdict in ('error','skipped'):
-                                self.state['errors' if verdict=='error' else 'skipped']+=1
+                                record(verdict,p,'; '.join(result.get('reasons',[])) or result.get('skip_reason') or 'File could not be scanned')
                             if verdict in ('malicious','suspicious'):
                                 self.state['finding_count']+=1
                                 if len(self.state['findings'])<1000:
-                                    self.state['findings'].append({**result,'id':uuid.uuid4().hex,'recommendation':'Review evidence, then quarantine if unwanted. Heuristic matches may be false positives. Never delete system files blindly.','action':'pending'})
+                                    item={**result,'id':uuid.uuid4().hex,'recommendation':'Review evidence; uncertain matches are not deleted. Confirmed threats can be reversibly quarantined.','action':'pending'}
+                                    engines=result.get('engines',{})
+                                    confirmed=engines.get('reputation')=='bad' or engines.get('defender')=='threat' or engines.get('clamav')=='threat'
+                                    user_owned=p.resolve().is_relative_to(Path.home().resolve())
+                                    if automatic and vault is not None and verdict=='malicious' and confirmed and user_owned:
+                                        try:
+                                            from .scanner import sha256
+                                            if not result.get('sha256') or sha256(p)!=result['sha256']:
+                                                raise ValueError('File changed since scanning; rescan required')
+                                            entry=vault.put(p,result)
+                                            item.update(action='quarantined',quarantine_id=entry['id'],recommendation='Automatically isolated. Restore from Quarantine if this was a false positive.')
+                                            self.state['auto_quarantined']+=1
+                                            if journal:journal.add('high','threat','Confirmed threat automatically quarantined',str(p),quarantine_id=entry['id'])
+                                        except (OSError,ValueError) as ex:
+                                            item['remediation_error']=str(ex)
+                                            item['recommendation']='Automatic isolation failed: '+str(ex)+'. No deletion performed.'
+                                    self.state['findings'].append(item)
             with self.lock:
                 self.state.update(status='cancelled' if self.cancel.is_set() else 'limited' if count>=limit else 'completed',finished=time.time(),current='')
         except Exception as ex:

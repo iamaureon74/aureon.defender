@@ -225,7 +225,12 @@ class Api:
                 "ui_appearance": load_json(user_dir() / "interface.json"),
                 "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"], "palette": v["palette"], "font": v["widget"]["font"],
                 "group": next((g for g, names in PRESET_GROUPS.items() if k in names), "")} for k, v in PRESETS.items()},
-                "widget": self.widget_cfg(), "settings": self.settings.load(), "winmap": caps}
+                "widget": self.widget_cfg(), "settings": {**self.settings.load(), "auto_clean_downloads": self.cleanup_enabled()}, "winmap": caps}
+
+    def cleanup_enabled(self):
+        from .core import load_json
+        policy = load_json(user_dir() / "cleanup-policy.json", {}) or {}
+        return policy.get("enabled", self.settings.load().get("auto_clean_downloads", False)) is True
 
     _scan_jobs = None
 
@@ -477,10 +482,10 @@ class Api:
             from .scanner import Scanner
             jobs = self.scan_jobs()
             try:
-                state = jobs.start(Scanner(self.settings.load()), exclusions=[data_dir(), user_dir()])
+                state = jobs.start(Scanner(self.settings.load()), exclusions=[data_dir(), user_dir()], vault=self.vault, automatic=self.settings.load().get("auto_quarantine", True), journal=self.j)
             except ValueError as ex:
                 return 409, {"error":str(ex)}
-            return 200, {"ok":True,"message":"Read-only scan started. Locked, inaccessible and linked files are excluded; findings require review.","scan":state}
+            return 200, {"ok":True,"message":"Scan started. Confirmed threats in your user folders follow your automatic-quarantine setting; uncertain matches need review. Access limits are listed separately.","scan":state}
         if path == "/api/scan/cancel":
             return 200, {"ok":True,"scan":self.scan_jobs().stop(),"message":"Cancellation requested; the current engine call may take up to two minutes."}
         if path == "/api/scan/quarantine":
@@ -556,6 +561,12 @@ class Api:
             return (200 if ok else 400), {"ok": ok}
         if path == "/api/pick":
             return 200, {"paths": pick(body.get("kind", "files"), body.get("filter", ""))}
+        if path == "/api/cleanup-policy":
+            if type(body.get("enabled")) is not bool:
+                return 400, {"error":"enabled must be true or false"}
+            if not atomic_write(user_dir() / "cleanup-policy.json", json.dumps({"enabled":body["enabled"]})):
+                return 500, {"error":"Could not save your cleanup preference"}
+            return 200, {"ok":True,"message":"Download cleanup preference saved for your Windows account. Originals are retained. No machine-wide setting was changed."}
         if path == "/api/clean":
             from .clean import clean_batch
             result=clean_batch(body.get("paths", []))
