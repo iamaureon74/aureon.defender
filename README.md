@@ -6,7 +6,7 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 | Device | Direct distribution | Scope |
 |---|---|---|
-| Windows 10/11 x64 | [Windows ZIP · 0.4.3](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-windows-x64-0.4.3.zip) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
+| Windows 10/11 x64 | [Windows Setup · 0.4.3](https://aureon-defender.vercel.app/api/download?platform=windows) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
 | Android 12+ | [Android APK · 0.4.3](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-android-0.4.3.apk) | Native local monitor; floating navigation; Android limits apply |
 | iPhone / iPad | [Installable web edition](https://aureon-defender.vercel.app/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
 | macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
@@ -41,7 +41,7 @@ Android inventory adapts to exposed APIs: SoC, GPU driver strings, RAM/storage, 
 
 ## Windows
 
-Extract the whole ZIP and retain `_internal` beside `aureon.defender.exe`. Open the executable for a portable session. Run `aureon.defender.exe install` to request the administrator-approved machine installation. Do not disable operating-system protections to install this software.
+Download Setup and open the EXE. It verifies/unpacks the bundled app automatically and starts the existing machine installer with the normal administrator prompt. The browser cannot launch a downloaded EXE or approve OS prompts for you. The portable ZIP remains an alternative: extract it fully and retain `_internal` beside `aureon.defender.exe`. Do not disable operating-system protections to install this software.
 
 Existing functions include Defender/YARA/reputation/heuristic file checks, selected-folder monitoring, quarantine, Windows privacy and configuration observations, device history, explicit controls and an authenticated local dashboard. Some functions need administrator access, extra software, an API key, or hardware. Three abuse.ch feeds require a key; Feodo does not. Check the actual module state and evidence.
 
@@ -82,3 +82,6 @@ There is no guarantee that all code works under every condition or that Windows/
 The original hardware project and pinned upstream references remain in [the legacy overview](docs/legacy-hardware-overview.md). The project catalog is research/selection metadata, not evidence that all listed projects are installed. Third-party code retains its own notices and licenses. This release does not invent a new blanket license grant over third-party components; see [notices](THIRD_PARTY.md).
 
 No signing keys, passwords, runtime history, personal reports or API credentials belong in this repository. Report defects with platform/version and redacted diagnostics. Do not publish secrets in issues.
+
+## noah.shield and optional support
+The landing download card includes an optional Bitcoin support popout with an address-copy control; no wallet connection or payment is initiated. A separate noah.shield section offers the supplied original ZIP and manifest-adapted Chromium ZIP, with browser-specific instructions and limitations in [the installation guide](docs/BROWSER-INSTALLATION.md). The single-file Windows Setup source/build is in `windows/setup/`; its extraction-only verification does not substitute for a real machine installation test.
