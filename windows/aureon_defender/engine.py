@@ -13,8 +13,9 @@ from pathlib import Path
 
 from . import feeds as feedmod
 from .core import VERSION, Journal, Settings, atomic_write, data_dir
+from .governor import Governor, child_flags, lower_own_priority
 from .monitors import NOWIN, Canary, FolderWatch, NetWatch, Persistence, vitals
-from .quarantine import Vault
+from .quarantine import ProtectedPath, Vault
 from .scanner import Reputation, Scanner, mpcmdrun
 
 ROOT = Path(__file__).resolve().parent.parent.parent      # repo root (dev) - holds the `aureon` package
@@ -27,10 +28,33 @@ def defender_status():
         out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command",
                               "Get-MpComputerStatus | Select AMRunningMode,AntivirusEnabled,RealTimeProtectionEnabled,"
                               "AntivirusSignatureAge,AntivirusSignatureVersion,IsTamperProtected,QuickScanAge | ConvertTo-Json"],
-                             capture_output=True, text=True, timeout=30, creationflags=NOWIN).stdout
+                             capture_output=True, text=True, timeout=30, creationflags=child_flags()).stdout
         return json.loads(out) if out.strip() else {}
     except Exception:
         return {}
+
+
+def summarize(events):
+    """Deterministic plain-English digest (no AI): counts by kind, then the most recent high/medium titles."""
+    if not events:
+        return "Nothing needed your attention."
+    from collections import Counter
+    sev = Counter(e.get("severity") for e in events)
+    kinds = Counter(e.get("kind") for e in events if e.get("severity") in ("high", "medium"))
+    lines = []
+    if kinds:
+        lines.append("Alerts by area: " + ", ".join(f"{k} {n}" for k, n in kinds.most_common()))
+    top = [e for e in events if e.get("severity") == "high"][:10] + [e for e in events if e.get("severity") == "medium"][:10]
+    seen = set()
+    for e in top:
+        t = e.get("title", "")
+        if t in seen:
+            continue
+        seen.add(t)
+        lines.append(f"- [{e.get('severity')}] {t}")
+    if not sev.get("high") and not sev.get("medium"):
+        lines.append("Only routine information was recorded.")
+    return "\n".join(lines)
 
 
 class Engine:
@@ -74,16 +98,25 @@ class Engine:
             ("integrity", 300, self.t_integrity, None),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
-        self.errors = {}
+        self.errors = {}                 # module name -> last error text (shown in the dashboard)
+        self.alerted = {}                # alert key -> time last raised (dedupe memory, kept separate from errors)
+        self.gov = Governor()
+        self._removable_lock = threading.Lock()
+        self._scan_queue = []
+        self._scan_lock = threading.Lock()
+        self._scan_thread = None
 
     # ---------------- reactions ----------------
     def alert_once(self, key, e, cool=0):
-        last = self.errors.get(key, 0)
+        last = self.alerted.get(key, 0)
         if cool and time.time() - last < cool:
             return
-        if not cool and key in self.errors:
+        if not cool and key in self.alerted:
             return
-        self.errors[key] = time.time()
+        if len(self.alerted) > 5000:                    # bounded memory for a process that runs for months
+            for k, _ in sorted(self.alerted.items(), key=lambda kv: kv[1])[:1000]:
+                self.alerted.pop(k, None)
+        self.alerted[key] = time.time()
         self.emit(e)
 
     def emit(self, e):
@@ -122,9 +155,14 @@ class Engine:
                 try:
                     m = self.vault.put(path, r)
                     self.state["counts"]["quarantined"] += 1
+                    later = m.get("removal", "removed") != "removed"
                     return {"severity": "high", "kind": "threat", "title": f"Blocked and quarantined {path.name}",
-                            "detail": "; ".join(r["reasons"]), "path": str(path), "quarantine_id": m["id"], "sha256": r.get("sha256")}
-                except OSError as ex:
+                            "detail": "; ".join(r["reasons"]) + (" | The file is in use; it was moved aside and will be"
+                                      " fully removed at the next restart." if later else ""), "path": str(path), "quarantine_id": m["id"], "sha256": r.get("sha256")}
+                except ProtectedPath as ex:
+                    return {"severity": "high", "kind": "threat", "title": f"Threat in a Windows system file: {path.name}",
+                            "detail": f"{'; '.join(r['reasons'])}. Not moved automatically: {ex}", "path": str(path)}
+                except (OSError, ValueError) as ex:
                     return {"severity": "high", "kind": "threat", "title": f"Threat found but could not be moved: {path.name}",
                             "detail": f"{'; '.join(r['reasons'])} ({ex})", "path": str(path)}
             return {"severity": "high", "kind": "threat", "title": f"Threat found: {path.name}", "detail": "; ".join(r["reasons"]),
@@ -190,11 +228,8 @@ class Engine:
             rfwatch._save("wifi_baseline.json", rfwatch.wifi_learn(nets, {}))
             return
         for sev, ssid, detail in rfwatch.wifi_check(nets, base):
-            key = f"wifi:{ssid}:{detail}"
-            if key not in self.errors:
-                self.errors[key] = time.time()
-                self.emit({"severity": "high" if sev == "HIGH" else "medium", "kind": "wifi",
-                           "title": f"WiFi impersonation risk: {ssid}", "detail": detail})
+            self.alert_once(f"wifi:{ssid}:{detail}", {"severity": "high" if sev == "HIGH" else "medium", "kind": "wifi",
+                            "title": f"WiFi impersonation risk: {ssid}", "detail": detail}, cool=24 * 3600)
 
     def t_persistence(self):
         for e in self.persist.tick():
@@ -243,19 +278,34 @@ class Engine:
         """A USB drive or SD card was plugged in: scan what's on it before anything gets opened (CIRCLean idea)."""
         import psutil
         time.sleep(3)                                   # let Windows mount it
-        seen = self.state.setdefault("removable_scanned", [])
-        for part in psutil.disk_partitions(all=False):
-            if "removable" not in part.opts or part.mountpoint in seen:
+        if not self._removable_lock.acquire(blocking=False):
+            return                                      # another plug-in event is already scanning
+        try:
+            self._scan_removable(psutil)
+        finally:
+            self._removable_lock.release()
+
+    def _scan_removable(self, psutil):
+        parts = [p for p in psutil.disk_partitions(all=False) if "removable" in p.opts]
+        present = {p.mountpoint for p in parts}
+        # Forget drives that were unplugged, so the same letter is scanned again next time something is plugged in.
+        seen = [m for m in self.state.get("removable_scanned", []) if m in present]
+        self.state["removable_scanned"] = seen
+        for part in parts:
+            if part.mountpoint in seen:
                 continue
             seen.append(part.mountpoint)
             root = Path(part.mountpoint)
             files = []
-            for dirpath, _dirs, names in os.walk(root):
+            for dirpath, dirs, names in os.walk(root):
+                dirs[:] = [d for d in dirs if d not in ("System Volume Information", "$RECYCLE.BIN")]
                 files += [Path(dirpath) / n for n in names]
-                if len(files) > 5000:
+                if len(files) >= 5000:
                     break
             found = 0
             for f in files[:5000]:
+                if self.stop.is_set():
+                    return
                 ev = self.on_file(f)
                 if ev:
                     found += 1
@@ -280,7 +330,7 @@ class Engine:
         out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command",
                               "Get-MpThreatDetection | Select DetectionID,ThreatID,InitialDetectionTime,ActionSuccess,"
                               "@{n='R';e={$_.Resources -join '; '}},@{n='N';e={(Get-MpThreat -ThreatID $_.ThreatID).ThreatName}} | ConvertTo-Json -Compress"],
-                             capture_output=True, text=True, timeout=60, creationflags=NOWIN).stdout
+                             capture_output=True, text=True, timeout=60, creationflags=child_flags()).stdout
         rows = json.loads(out) if out.strip() else []
         rows = rows if isinstance(rows, list) else [rows]
         seen = set(self.state.get("defender_seen") or [])
@@ -414,7 +464,13 @@ class Engine:
         self.next["hosts"] = 0                    # fresh lists -> refresh the DNS shield
         exe = mpcmdrun()
         if exe:
-            subprocess.run([str(exe), "-SignatureUpdate"], capture_output=True, timeout=600, creationflags=NOWIN)
+            def sig_update():
+                try:
+                    subprocess.run([str(exe), "-SignatureUpdate"], capture_output=True, timeout=600,
+                                   creationflags=child_flags())
+                except (OSError, subprocess.SubprocessError):
+                    pass
+            threading.Thread(target=sig_update, name="aureon-sigupdate", daemon=True).start()
         return {"_module_status": "partial" if any(not isinstance(v, int) for v in rep.values()) else "ok"}
 
     def t_report(self):
@@ -423,13 +479,7 @@ class Engine:
         md = [e for e in evs if e["severity"] == "medium"]
         text = (f"Last 24h: {len(hi)} high, {len(md)} medium alerts, {self.state['counts']['scanned']} files scanned, "
                 f"{self.state['counts']['quarantined']} quarantined.")
-        try:
-            from aureon.analyst import llm
-            digest = "\n".join(f"- [{e['severity']}] {e['title']}: {e['detail']}" for e in (hi + md)[:40]) or "no alerts"
-            if hi or md:
-                text += "\n\n" + llm(digest)
-        except Exception:
-            pass
+        text += "\n\n" + summarize(evs)
         (data_dir() / "report.md").write_text(f"# Aureon daily report\n\n{text}\n", encoding="utf-8")
         self.j.add("info", "report", "Daily security report ready", text[:400])
 
@@ -443,8 +493,8 @@ class Engine:
                 req = {}
             p.unlink(missing_ok=True)
             kind = req.get("type")
-            if kind == "scan" and req.get("path"):
-                self.scan_path(Path(req["path"]))
+            if kind == "scan" and isinstance(req.get("path"), str) and req["path"]:
+                self.queue_scan(Path(req["path"]))
             elif kind == "update_feeds":
                 self.next["feeds"] = 0
             elif kind == "posture":
@@ -463,15 +513,60 @@ class Engine:
                 self.next["hosts"] = 0
             # anything else is ignored: the inbox is writable by normal users, so it only takes harmless requests
 
-    def scan_path(self, root: Path, emit_clean=True):
-        files = [root] if root.is_file() else [p for p in root.rglob("*") if p.is_file()][:20000]
-        found = 0
+    def queue_scan(self, root: Path):
+        """Requested scans run on their own worker thread so real-time sensors never wait behind them."""
+        with self._scan_lock:
+            if len(self._scan_queue) >= 10 or root in self._scan_queue:
+                return False
+            self._scan_queue.append(root)
+            if self._scan_thread is None or not self._scan_thread.is_alive():
+                self._scan_thread = threading.Thread(target=self._scan_worker, name="aureon-scan", daemon=True)
+                self._scan_thread.start()
+        return True
+
+    def _scan_worker(self):
+        while not self.stop.is_set():
+            with self._scan_lock:
+                if not self._scan_queue:
+                    self._scan_thread = None
+                    return
+                root = self._scan_queue.pop(0)
+            try:
+                self.scan_path(root)
+            except Exception as ex:
+                self.j.add("low", "scan", f"Scan could not finish: {root}", f"{ex.__class__.__name__}: {ex}")
+
+    @staticmethod
+    def _iter_files(root: Path, limit):
+        n = 0
+        for dirpath, dirs, names in os.walk(root, followlinks=False):
+            dirs[:] = [d for d in dirs if not os.path.islink(os.path.join(dirpath, d))]
+            for name in names:
+                p = Path(dirpath) / name
+                try:
+                    if not p.is_file() or p.is_symlink():
+                        continue
+                except OSError:
+                    continue
+                yield p
+                n += 1
+                if n >= limit:
+                    return
+
+    def scan_path(self, root: Path, emit_clean=True, limit=20000):
+        files = [root] if root.is_file() else self._iter_files(root, limit)
+        found = n = 0
         for p in files:
+            if self.stop.is_set():
+                break
+            n += 1
             e = self.on_file(p)
             if e:
                 found += 1
                 self.emit(e)
-        self.j.add("info", "scan", f"Scan finished: {root}", f"{len(files)} files, {found} findings")
+            if n % 200 == 0 and not self.gov.power["plugged"]:
+                time.sleep(0.05)                 # yield on battery: a long scan shouldn't pin a core
+        self.j.add("info", "scan", f"Scan finished: {root}", f"{n} files, {found} findings")
         return found
 
     # ---------------- loop ----------------
@@ -479,7 +574,7 @@ class Engine:
         st = dict(self.state, heartbeat=time.time(), settings={**self.s, "abusech_key": "set" if self.s.get("abusech_key") else ""},
                   reputation=self.rep.count(),
                   feeds_age={k: self.feeds.age_hours(k) for k in feedmod.FEEDS}, quarantine=len(self.vault.list()),
-                  pid=os.getpid(), errors={k: v for k, v in self.errors.items() if not k.startswith("wifi:")})
+                  pid=os.getpid(), errors=dict(self.errors), power=self.gov.snapshot())
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
     SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
@@ -487,6 +582,9 @@ class Engine:
 
     def run_once(self, which="all"):
         now = time.time()
+        if not hasattr(self, "gov"):
+            self.gov = Governor()
+        self.gov.sample(now)
         for name, every, fn, setting in self.tasks:
             if which == "fast" and name in self.SLOW or which == "slow" and name not in self.SLOW:
                 continue
@@ -494,7 +592,11 @@ class Engine:
                 self.state["modules"][name] = "off"
                 continue
             if now >= self.next[name]:
-                self.next[name] = now + every
+                if self.next[name] and self.gov.should_defer(name, now):
+                    self.next[name] = now + 60           # machine busy: look again in a minute (bounded, see governor)
+                    self.state["modules"][name] = "deferred"
+                    continue
+                self.next[name] = now + self.gov.interval(name, every)
                 try:
                     result = fn()
                     self.state["modules"][name] = result.get("_module_status", "ok") if isinstance(result, dict) else "ok"
@@ -509,6 +611,7 @@ class Engine:
 
     def run(self):
         """Fast sensors (real-time, canary, USB, network) never wait behind slow checks."""
+        lower_own_priority()
         self.j.add("info", "engine", f"Aureon engine {VERSION} started", f"pid {os.getpid()}, data {data_dir()}")
 
         def slow():

@@ -209,8 +209,16 @@ class Journal:
     def recent(self, n=200, min_sev="info"):
         if not self.path.exists():
             return []
-        with open(self.path, encoding="utf-8", errors="ignore") as f:
-            lines = f.readlines()[-5000:]
+        # Read only the tail (~2 MB covers 5000 events): the dashboard polls this, so a full 5 MB read each time
+        # was wasted disk I/O and CPU.
+        with open(self.path, "rb") as f:
+            f.seek(0, os.SEEK_END)
+            size = f.tell()
+            f.seek(max(0, size - 2_000_000))
+            raw = f.read()
+        if size > 2_000_000:
+            raw = raw.split(b"\n", 1)[-1]               # drop the partial first line
+        lines = raw.decode("utf-8", errors="ignore").splitlines()[-5000:]
         out = []
         for line in reversed(lines):
             try:

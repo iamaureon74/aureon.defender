@@ -18,7 +18,10 @@ import threading
 import zipfile
 from pathlib import Path
 
+from collections import OrderedDict
+
 from .core import data_dir
+from .governor import child_flags
 
 EXEC_EXT = {".exe", ".scr", ".com", ".pif", ".dll", ".cpl", ".msi", ".msix", ".appx"}
 SCRIPT_EXT = {".ps1", ".psm1", ".vbs", ".vbe", ".js", ".jse", ".wsf", ".wsh", ".hta", ".bat", ".cmd", ".lnk", ".url"}
@@ -45,7 +48,8 @@ SCRIPT_IOC = [
     (r"rundll32\s+\S+,\s*\w+", 15, "runs DLL exports"),
 ]
 
-_cache_sig = {}
+_cache_sig = OrderedDict()           # bounded LRU: the engine runs for months
+_CACHE_MAX = 4096
 _lock = threading.Lock()
 
 
@@ -79,17 +83,24 @@ def zone_id(path: Path):
 
 def authenticode(path: Path):
     """'Valid' / 'NotSigned' / 'HashMismatch' / ... via Get-AuthenticodeSignature (cached by path+mtime)."""
-    key = (str(path), path.stat().st_mtime)
-    if key in _cache_sig:
-        return _cache_sig[key]
+    st = path.stat()
+    key = (str(path), st.st_mtime, st.st_size)
+    with _lock:
+        if key in _cache_sig:
+            _cache_sig.move_to_end(key)
+            return _cache_sig[key]
     try:
         out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command",
                               f"(Get-AuthenticodeSignature -LiteralPath '{str(path).replace(chr(39), chr(39) * 2)}').Status"],
-                             capture_output=True, text=True, timeout=20, creationflags=0x08000000).stdout.strip()
+                             capture_output=True, text=True, timeout=20, creationflags=child_flags()).stdout.strip()
     except (OSError, subprocess.TimeoutExpired):
         out = "Unknown"
-    _cache_sig[key] = out or "Unknown"
-    return _cache_sig[key]
+    out = out or "Unknown"
+    with _lock:
+        _cache_sig[key] = out
+        while len(_cache_sig) > _CACHE_MAX:
+            _cache_sig.popitem(last=False)
+    return out
 
 
 # ---------------- reputation DB ----------------
@@ -245,7 +256,7 @@ def defender_scan(path: Path):
         return "unavailable", "MpCmdRun.exe not found"
     try:
         p = subprocess.run([str(exe), "-Scan", "-ScanType", "3", "-File", str(path), "-DisableRemediation"],
-                           capture_output=True, text=True, timeout=120, creationflags=0x08000000)
+                           capture_output=True, text=True, timeout=120, creationflags=child_flags())
     except (OSError, subprocess.TimeoutExpired) as e:
         return "unavailable", str(e)
     out = p.stdout + p.stderr
