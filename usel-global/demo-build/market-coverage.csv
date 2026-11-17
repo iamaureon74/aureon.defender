@@ -1,0 +1,251 @@
+country,code,page_id,status,matched_locales,note
+Andorra,AD,open-discussion,unlocalized,,
+United Arab Emirates,AE,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Afghanistan,AF,open-discussion,unlocalized,,
+Antigua and Barbuda,AG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Anguilla,AI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Albania,AL,open-discussion,unlocalized,,
+Armenia,AM,open-discussion,unlocalized,,
+Angola,AO,open-discussion,unlocalized,,
+Antarctica,AQ,open-discussion,unlocalized,,
+Argentina,AR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+American Samoa,AS,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Austria,AT,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Australia,AU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Aruba,AW,open-discussion,unlocalized,,
+Åland Islands,AX,open-discussion,unlocalized,,
+Azerbaijan,AZ,open-discussion,unlocalized,,
+Bosnia and Herzegovina,BA,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Barbados,BB,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Bangladesh,BD,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Belgium,BE,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Burkina Faso,BF,open-discussion,unlocalized,,
+Bulgaria,BG,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Bahrain,BH,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Burundi,BI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Benin,BJ,open-discussion,unlocalized,,
+Saint Barthélemy,BL,open-discussion,unlocalized,,
+Bermuda,BM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Brunei Darussalam,BN,open-discussion,shared_language_only,zh-CN,shared language alone does not verify local relevance or rankings
+"Bolivia, Plurinational State of",BO,open-discussion,unlocalized,,
+"Bonaire, Sint Eustatius and Saba",BQ,open-discussion,unlocalized,,
+Brazil,BR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Bahamas,BS,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Bhutan,BT,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Bouvet Island,BV,open-discussion,unlocalized,,
+Botswana,BW,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Belarus,BY,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Belize,BZ,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Canada,CA,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Cocos (Keeling) Islands,CC,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Congo, The Democratic Republic of the",CD,open-discussion,unlocalized,,
+Central African Republic,CF,open-discussion,unlocalized,,
+Congo,CG,open-discussion,unlocalized,,
+Switzerland,CH,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Côte d'Ivoire,CI,open-discussion,unlocalized,,
+Cook Islands,CK,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Chile,CL,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Cameroon,CM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+China,CN,open-discussion,country_locale,zh-CN,
+Colombia,CO,open-discussion,unlocalized,,
+Costa Rica,CR,open-discussion,unlocalized,,
+Cuba,CU,open-discussion,unlocalized,,
+Cabo Verde,CV,open-discussion,unlocalized,,
+Curaçao,CW,open-discussion,unlocalized,,
+Christmas Island,CX,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Cyprus,CY,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Czechia,CZ,open-discussion,country_locale,cs-CZ,
+Germany,DE,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Djibouti,DJ,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Denmark,DK,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Dominica,DM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Dominican Republic,DO,open-discussion,unlocalized,,
+Algeria,DZ,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Ecuador,EC,open-discussion,unlocalized,,
+Estonia,EE,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Egypt,EG,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Western Sahara,EH,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Eritrea,ER,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Spain,ES,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Ethiopia,ET,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Finland,FI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Fiji,FJ,open-discussion,shared_language_only,"en-US,hi-IN",shared language alone does not verify local relevance or rankings
+Falkland Islands (Malvinas),FK,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Micronesia, Federated States of",FM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Faroe Islands,FO,open-discussion,unlocalized,,
+France,FR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Gabon,GA,open-discussion,unlocalized,,
+United Kingdom,GB,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Grenada,GD,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Georgia,GE,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+French Guiana,GF,open-discussion,unlocalized,,
+Guernsey,GG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Ghana,GH,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Gibraltar,GI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Greenland,GL,open-discussion,unlocalized,,
+Gambia,GM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Guinea,GN,open-discussion,unlocalized,,
+Guadeloupe,GP,open-discussion,unlocalized,,
+Equatorial Guinea,GQ,open-discussion,unlocalized,,
+Greece,GR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+South Georgia and the South Sandwich Islands,GS,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Guatemala,GT,open-discussion,unlocalized,,
+Guam,GU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Guinea-Bissau,GW,open-discussion,unlocalized,,
+Guyana,GY,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Hong Kong,HK,open-discussion,shared_language_only,"en-US,zh-CN",shared language alone does not verify local relevance or rankings
+Heard Island and McDonald Islands,HM,open-discussion,unlocalized,,
+Honduras,HN,open-discussion,unlocalized,,
+Croatia,HR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Haiti,HT,open-discussion,unlocalized,,
+Hungary,HU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Indonesia,ID,open-discussion,unlocalized,,
+Ireland,IE,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Israel,IL,open-discussion,shared_language_only,"ar-SA,en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Isle of Man,IM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+India,IN,open-discussion,country_locale,hi-IN,
+British Indian Ocean Territory,IO,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Iraq,IQ,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+"Iran, Islamic Republic of",IR,open-discussion,unlocalized,,
+Iceland,IS,open-discussion,unlocalized,,
+Italy,IT,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Jersey,JE,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Jamaica,JM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Jordan,JO,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Japan,JP,open-discussion,unlocalized,,
+Kenya,KE,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Kyrgyzstan,KG,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Cambodia,KH,open-discussion,unlocalized,,
+Kiribati,KI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Comoros,KM,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Saint Kitts and Nevis,KN,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Korea, Democratic People's Republic of",KP,open-discussion,shared_language_only,ko-KR,shared language alone does not verify local relevance or rankings
+"Korea, Republic of",KR,open-discussion,country_locale,ko-KR,
+Kuwait,KW,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Cayman Islands,KY,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Kazakhstan,KZ,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Lao People's Democratic Republic,LA,open-discussion,unlocalized,,
+Lebanon,LB,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Saint Lucia,LC,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Liechtenstein,LI,open-discussion,unlocalized,,
+Sri Lanka,LK,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Liberia,LR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Lesotho,LS,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Lithuania,LT,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Luxembourg,LU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Latvia,LV,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Libya,LY,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Morocco,MA,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Monaco,MC,open-discussion,unlocalized,,
+"Moldova, Republic of",MD,open-discussion,unlocalized,,
+Montenegro,ME,open-discussion,unlocalized,,
+Saint Martin (French part),MF,open-discussion,unlocalized,,
+Madagascar,MG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Marshall Islands,MH,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+North Macedonia,MK,open-discussion,unlocalized,,
+Mali,ML,open-discussion,unlocalized,,
+Myanmar,MM,open-discussion,unlocalized,,
+Mongolia,MN,open-discussion,unlocalized,,
+Macao,MO,open-discussion,shared_language_only,"en-US,zh-CN",shared language alone does not verify local relevance or rankings
+Northern Mariana Islands,MP,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Martinique,MQ,open-discussion,unlocalized,,
+Mauritania,MR,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Montserrat,MS,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Malta,MT,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Mauritius,MU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Maldives,MV,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Malawi,MW,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Mexico,MX,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Malaysia,MY,open-discussion,shared_language_only,"en-US,zh-CN",shared language alone does not verify local relevance or rankings
+Mozambique,MZ,open-discussion,unlocalized,,
+Namibia,NA,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+New Caledonia,NC,open-discussion,unlocalized,,
+Niger,NE,open-discussion,unlocalized,,
+Norfolk Island,NF,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Nigeria,NG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Nicaragua,NI,open-discussion,unlocalized,,
+Netherlands,NL,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Norway,NO,open-discussion,unlocalized,,
+Nepal,NP,open-discussion,unlocalized,,
+Nauru,NR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Niue,NU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+New Zealand,NZ,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Oman,OM,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Panama,PA,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Peru,PE,open-discussion,unlocalized,,
+French Polynesia,PF,open-discussion,shared_language_only,zh-CN,shared language alone does not verify local relevance or rankings
+Papua New Guinea,PG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Philippines,PH,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Pakistan,PK,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Poland,PL,open-discussion,shared_language_only,"en-US,ru-RU",shared language alone does not verify local relevance or rankings
+Saint Pierre and Miquelon,PM,open-discussion,unlocalized,,
+Pitcairn,PN,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Puerto Rico,PR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Palestine, State of",PS,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Portugal,PT,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Palau,PW,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Paraguay,PY,open-discussion,unlocalized,,
+Qatar,QA,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Réunion,RE,open-discussion,unlocalized,,
+Romania,RO,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Serbia,RS,open-discussion,unlocalized,,
+Russian Federation,RU,open-discussion,country_locale,ru-RU,
+Rwanda,RW,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Saudi Arabia,SA,open-discussion,country_locale,ar-SA,
+Solomon Islands,SB,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Seychelles,SC,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Sudan,SD,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Sweden,SE,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Singapore,SG,open-discussion,shared_language_only,"en-US,zh-CN",shared language alone does not verify local relevance or rankings
+"Saint Helena, Ascension and Tristan da Cunha",SH,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Slovenia,SI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Svalbard and Jan Mayen,SJ,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Slovakia,SK,open-discussion,shared_language_only,"cs-CZ,en-US",shared language alone does not verify local relevance or rankings
+Sierra Leone,SL,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+San Marino,SM,open-discussion,unlocalized,,
+Senegal,SN,open-discussion,unlocalized,,
+Somalia,SO,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Suriname,SR,open-discussion,unlocalized,,
+South Sudan,SS,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Sao Tome and Principe,ST,open-discussion,unlocalized,,
+El Salvador,SV,open-discussion,unlocalized,,
+Sint Maarten (Dutch part),SX,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Syrian Arab Republic,SY,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Eswatini,SZ,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Turks and Caicos Islands,TC,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Chad,TD,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+French Southern Territories,TF,open-discussion,unlocalized,,
+Togo,TG,open-discussion,unlocalized,,
+Thailand,TH,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Tajikistan,TJ,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Tokelau,TK,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Timor-Leste,TL,open-discussion,unlocalized,,
+Turkmenistan,TM,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Tunisia,TN,open-discussion,shared_language_only,ar-SA,shared language alone does not verify local relevance or rankings
+Tonga,TO,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Türkiye,TR,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Trinidad and Tobago,TT,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Tuvalu,TV,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Taiwan, Province of China",TW,open-discussion,shared_language_only,zh-CN,shared language alone does not verify local relevance or rankings
+"Tanzania, United Republic of",TZ,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Ukraine,UA,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Uganda,UG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+United States Minor Outlying Islands,UM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+United States,US,open-discussion,country_locale,en-US,
+Uruguay,UY,open-discussion,unlocalized,,
+Uzbekistan,UZ,open-discussion,shared_language_only,ru-RU,shared language alone does not verify local relevance or rankings
+Holy See (Vatican City State),VA,open-discussion,unlocalized,,
+Saint Vincent and the Grenadines,VC,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Venezuela, Bolivarian Republic of",VE,open-discussion,unlocalized,,
+"Virgin Islands, British",VG,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+"Virgin Islands, U.S.",VI,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Viet Nam,VN,open-discussion,country_locale,vi-VN,
+Vanuatu,VU,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Wallis and Futuna,WF,open-discussion,unlocalized,,
+Samoa,WS,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Kosovo,XK,open-discussion,unlocalized,,
+Yemen,YE,open-discussion,shared_language_only,"ar-SA,en-US",shared language alone does not verify local relevance or rankings
+Mayotte,YT,open-discussion,unlocalized,,
+South Africa,ZA,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Zambia,ZM,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
+Zimbabwe,ZW,open-discussion,shared_language_only,en-US,shared language alone does not verify local relevance or rankings
