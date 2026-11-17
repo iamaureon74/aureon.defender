@@ -79,7 +79,17 @@ def protected_roots():
              drive + r"\$Recycle.Bin", os.environ.get("PROGRAMFILES", r"C:\Program Files") + r"\Windows Defender",
              os.environ.get("PROGRAMFILES", r"C:\Program Files") + r"\WindowsApps",
              os.environ.get("PROGRAMDATA", r"C:\ProgramData") + r"\Microsoft\Windows Defender"]
+    import sys
+    if getattr(sys, "frozen", False):                       # Aureon's own program folder: never quarantine itself
+        roots.append(str(Path(sys.executable).resolve().parent))
     return [_norm(r) for r in roots]
+
+
+def scannable_exceptions():
+    """Inside protected roots but writable by ordinary programs, so malware drops files there: still quarantined."""
+    sysroot = os.environ.get("SYSTEMROOT", r"C:\Windows")
+    return [_norm(sysroot + r"\Temp"), _norm(sysroot + r"\Downloaded Program Files"),
+            _norm(sysroot + r"\Tasks"), _norm(sysroot + r"\System32\Tasks")]
 
 
 PROTECTED_NAMES = {"bootmgr", "pagefile.sys", "hiberfil.sys", "swapfile.sys", "ntldr", "bootnxt"}
@@ -91,6 +101,8 @@ def is_protected(path) -> bool:
     if Path(str(path)).name.lower() in PROTECTED_NAMES:
         return True
     if os.name != "nt" and not os.environ.get("AUREON_PROTECT_TEST"):
+        return False
+    if any(p.startswith(r) for r in scannable_exceptions()):
         return False
     return any(p.startswith(r) for r in protected_roots())
 
@@ -201,7 +213,11 @@ class Vault:
         dst.parent.mkdir(parents=True, exist_ok=True)
         tmp = dst.with_name(dst.name + ".aureon-restore")
         _xor(binp, tmp)
-        got = hashlib.sha256(tmp.read_bytes()).hexdigest() if tmp.stat().st_size < (512 << 20) else meta.get("sha256")
+        h = hashlib.sha256()
+        with open(tmp, "rb") as f:                             # streamed: no memory spike for large files
+            for chunk in iter(lambda: f.read(_CHUNK), b""):
+                h.update(chunk)
+        got = h.hexdigest()
         if meta.get("sha256") and got != meta["sha256"]:
             tmp.unlink(missing_ok=True)
             raise OSError("Quarantined copy is damaged; restore refused and vault entry kept")

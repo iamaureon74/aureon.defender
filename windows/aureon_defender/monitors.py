@@ -27,8 +27,17 @@ def _load(name, default):
         return default
 
 
+_last_saved = {}
+
+
 def _save(name, obj):
-    (data_dir() / name).write_text(json.dumps(obj, indent=1), encoding="utf-8")
+    """Write only when the content changed: idle disk writes keep SSDs out of low-power states and cost battery."""
+    text = json.dumps(obj, indent=1)
+    path = data_dir() / name
+    if _last_saved.get(str(path)) == text and path.exists():
+        return
+    path.write_text(text, encoding="utf-8")
+    _last_saved[str(path)] = text
 
 
 def ev(severity, kind, title, detail="", **extra):
@@ -257,13 +266,16 @@ class NetWatch:
     def _psutil_conns():
         import psutil
         out = []
+        names = {}
         for c in psutil.net_connections(kind="inet"):
             name = ""
             if c.pid:
-                try:
-                    name = psutil.Process(c.pid).name()
-                except Exception:
-                    pass
+                if c.pid not in names:
+                    try:
+                        names[c.pid] = psutil.Process(c.pid).name()
+                    except Exception:
+                        names[c.pid] = ""
+                name = names[c.pid]
             out.append({"status": c.status, "laddr": tuple(c.laddr) if c.laddr else None,
                         "raddr": tuple(c.raddr) if c.raddr else None, "pid": c.pid, "proc": name})
         return out
@@ -276,6 +288,8 @@ class NetWatch:
             if c["raddr"] and c["raddr"][0] in bad:
                 key = ("c2", c["raddr"][0], c["pid"])
                 if key not in self.alerted:
+                    if len(self.alerted) > 10000:
+                        self.alerted.clear()
                     self.alerted.add(key)
                     out.append(ev("high", "network", f"{c['proc'] or 'A program'} is talking to a known botnet server",
                                   f"{c['raddr'][0]}:{c['raddr'][1]} (Feodo Tracker C2 list), pid {c['pid']}",
@@ -314,6 +328,8 @@ class Canary:
         self.dirs = [x for d in (dirs or CANARY_DIRS) for x in expand_all(d)]
         self.top_writers = top_writers or self._top_writers
         self.on_hit = on_hit
+        self._sig = {}                  # path -> ((size, mtime), sha256): skip re-hashing unchanged tripwires
+        self._locked = {}
 
     def _paths(self):
         return [d / f"~$aureon-canary-{i}{ext}" for d in self.dirs if d.exists()
@@ -356,8 +372,23 @@ class Canary:
         for path, h in state.items():
             p = Path(path)
             try:
-                cur = hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
+                st = p.stat()
+                sig = (st.st_size, st.st_mtime_ns)
+                cached = self._sig.get(path)
+                if cached and cached[0] == sig:
+                    cur = cached[1]
+                else:
+                    cur = hashlib.sha256(p.read_bytes()).hexdigest()
+                    self._sig[path] = (sig, cur)
+                self._locked.pop(path, None)
+            except FileNotFoundError:
+                cur = None
             except OSError:
+                # Briefly locked (sync clients, indexer, backup) is not tampering. Only a lock that persists for a
+                # minute counts, because ransomware that holds the file open while encrypting it would look like this.
+                first = self._locked.setdefault(path, time.time())
+                if time.time() - first < 60:
+                    continue
                 cur = "locked"
             if cur != h:
                 hits.append(f"{p.name} in {p.parent} was {'deleted/renamed' if cur is None else 'modified'}")

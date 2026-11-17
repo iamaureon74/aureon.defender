@@ -36,10 +36,33 @@ build scans clean with Microsoft Defender.
 | Leak audit | 6 h | 17 privacy settings and every security product registered with Windows |
 | Device history | 6 h | Windows' own records: first and last connection of every USB / Bluetooth / phone / display device and every network joined; tracking tags (Tile, AirTag, SmartTag…) flagged |
 | Threat feeds | 6 h (online) | abuse.ch lists, Defender signatures; the DNS shield applies malware and (opt-in) noah.shield tracker domains to every app |
-| Daily report | 24 h | Plain-English summary, written by a local AI model if Ollama is running |
+| Daily report | 24 h | Plain-English summary built from counts and alert titles — no AI model, nothing leaves the PC |
 
 In your session: branded notifications (Aureon's name and icon, Open/Dismiss, bursts merged, quiet hours) and a
 clipboard guard that warns when a key, card number or wallet phrase is copied and clears it after 60 seconds.
+
+## Quiet, battery-aware and safe removal (0.4.5)
+
+**Power governor.** The engine runs below normal CPU and low I/O priority (and asks Windows 11 for EcoQoS), so games
+and apps keep priority. Real-time file watch, ransomware tripwires and the USB keyboard guard keep their cadence on
+battery (1.5× only below 20 %). Heavy sweeps (radar, posture, assets, feeds, leak audit) stretch 2× on battery and 4×
+in saver mode, get ±10 % jitter so they never wake the CPU together, and wait — at most 4 hours — while the machine
+is busy (smoothed CPU above 70 %). State files are only rewritten when they change, so the disk can sleep.
+
+**Removal that can't break Windows.** A quarantined file is copied, flushed and re-verified before the original is
+removed; if the copy fails the original stays. Windows, boot, driver and Defender files are reported, never moved
+(`C:\Windows\Temp` and task folders stay quarantinable). A file a running program holds open is renamed out of the
+way and removed at the next restart instead of failing or killing the program. Restores never overwrite and are
+hash-checked.
+
+**Metadata.** Photos keep only their orientation (so they don't turn sideways). Covered: JPEG, PNG, WebP, GIF, TIFF,
+SVG, HEIC/AVIF (to JPEG, with a HEIF plug-in), MP3 (ID3, APE), FLAC, WAV, AIFF, Ogg Vorbis/Opus, MP4/MOV/M4A
+(tags, XMP, recording dates), MKV/WebM (tags, date, title), Word/Excel/PowerPoint (people, dates, editing time,
+rsid session IDs, account IDs), OpenDocument, PDF (info, dates, hex strings, document ID), ZIP (entry times, owners,
+comment). Every download also loses the site/page URL Windows stores beside it; its security zone stays so
+Windows still warns before running it. Automatic cleaning can add a clean copy (default) or clean the download
+itself while keeping the original privately in your profile for 7 days. No tool can promise every fingerprint is
+gone: watermarks, visible names and content inside files are not changed.
 
 ## noah.shield, imported
 

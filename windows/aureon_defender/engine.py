@@ -130,12 +130,17 @@ class Engine:
         from .core import load_json
         # A user preference can only request clean copies of that user's downloads.
         # It grants no machine-wide access and never supplies a command or output path.
+        policy = self._cleanup_policy(path)
+        if type(policy.get("enabled")) is bool:
+            return policy["enabled"]
+        return bool(self.s.get("auto_clean_downloads"))
+
+    def _cleanup_policy(self, path):
+        from .core import load_json
         for folder in Path(path).parents:
             if folder.name.lower() == "downloads":
-                policy = load_json(folder.parent / "AppData/Roaming/Aureon/cleanup-policy.json", {}) or {}
-                if type(policy.get("enabled")) is bool:
-                    return policy["enabled"]
-        return bool(self.s.get("auto_clean_downloads"))
+                return load_json(folder.parent / "AppData/Roaming/Aureon/cleanup-policy.json", {}) or {}
+        return {}
 
     def on_file(self, path):
         r = self.scanner.scan(path)
@@ -178,7 +183,9 @@ class Engine:
         ext = path.suffix.lower()
         if ext not in SUPPORTED or ".clean" in path.stem:
             return
-        mode = self.s.get("auto_clean_mode", "copy")
+        mode = self._cleanup_policy(path).get("mode")
+        if mode not in ("copy", "replace"):
+            mode = self.s.get("auto_clean_mode", "copy")
         try:
             if mode == "replace" and ext not in REENCODE:
                 backup = self._backup_original(path)

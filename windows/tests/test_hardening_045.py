@@ -63,6 +63,12 @@ class QuarantineSafety(unittest.TestCase):
             with self.assertRaises(q.ProtectedPath):
                 self.v.put(sysf, {})
             self.assertTrue(sysf.exists())
+            tmpf = self.d / "Windows" / "Temp" / "dropper.exe"
+            tmpf.parent.mkdir(parents=True)
+            tmpf.write_bytes(b"MZ")
+            self.assertFalse(q.is_protected(tmpf))              # malware drop zone stays quarantinable
+            self.v.put(tmpf, {})
+            self.assertFalse(tmpf.exists())
         self.assertTrue(q.is_protected("C:/pagefile.sys"))
 
     def test_locked_file_falls_back_to_rename(self):
@@ -180,6 +186,42 @@ class EngineBehaviour(unittest.TestCase):
              mock.patch.object(self.e.vault, "put", side_effect=q.ProtectedPath("system")):
             ev = self.e.on_file(Path("/x/kernel32.dll"))
         self.assertIn("system file", ev["title"])
+
+
+class AuditLoopFixes(unittest.TestCase):
+    def test_canary_ignores_brief_lock_but_catches_change(self):
+        os.environ["AUREON_DATA"] = tempfile.mkdtemp()
+        from aureon_defender.monitors import Canary
+        d = Path(tempfile.mkdtemp())
+        c = Canary(dirs=[str(d)], top_writers=lambda: [])
+        c.plant()
+        self.assertEqual(c.tick(), [])
+        target = next(d.glob("~$aureon-canary-0*"))
+        real = Path.stat
+
+        def locked(self_, *a, **k):
+            if self_ == target:
+                raise PermissionError("sync client")
+            return real(self_, *a, **k)
+        with mock.patch.object(Path, "stat", locked):
+            self.assertEqual(c.tick(), [])                     # brief lock: no false ransomware alarm
+        target.write_bytes(b"encrypted!")
+        self.assertEqual(len(c.tick()), 1)
+
+    def test_unchanged_state_is_not_rewritten(self):
+        os.environ["AUREON_DATA"] = tempfile.mkdtemp()
+        from aureon_defender import monitors
+        monitors._save("x.json", {"a": 1})
+        f = Path(os.environ["AUREON_DATA"]) / "x.json"
+        os.utime(f, (1, 1))
+        monitors._save("x.json", {"a": 1})
+        self.assertEqual(f.stat().st_mtime, 1)
+        monitors._save("x.json", {"a": 2})
+        self.assertNotEqual(f.stat().st_mtime, 1)
+
+    def test_integrity_baseline_matches_shipped_files(self):
+        from aureon_defender.integrity import check
+        self.assertEqual(check()["status"], "matches_baseline")
 
 
 if __name__ == "__main__":

@@ -225,12 +225,18 @@ class Api:
                 "ui_appearance": load_json(user_dir() / "interface.json"),
                 "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"], "palette": v["palette"], "font": v["widget"]["font"],
                 "group": next((g for g, names in PRESET_GROUPS.items() if k in names), "")} for k, v in PRESETS.items()},
-                "widget": self.widget_cfg(), "settings": {**self.settings.load(), "auto_clean_downloads": self.cleanup_enabled()}, "winmap": caps}
+                "widget": self.widget_cfg(), "settings": {**self.settings.load(), "auto_clean_downloads": self.cleanup_enabled(), "auto_clean_mode": self.cleanup_mode()}, "winmap": caps}
 
     def cleanup_enabled(self):
         from .core import load_json
         policy = load_json(user_dir() / "cleanup-policy.json", {}) or {}
         return policy.get("enabled", self.settings.load().get("auto_clean_downloads", False)) is True
+
+    def cleanup_mode(self):
+        from .core import load_json
+        policy = load_json(user_dir() / "cleanup-policy.json", {}) or {}
+        mode = policy.get("mode")
+        return mode if mode in ("copy", "replace") else self.settings.load().get("auto_clean_mode", "copy")
 
     _scan_jobs = None
 
@@ -564,9 +570,14 @@ class Api:
         if path == "/api/cleanup-policy":
             if type(body.get("enabled")) is not bool:
                 return 400, {"error":"enabled must be true or false"}
-            if not atomic_write(user_dir() / "cleanup-policy.json", json.dumps({"enabled":body["enabled"]})):
+            mode = body.get("mode", self.cleanup_mode())
+            if mode not in ("copy", "replace"):
+                return 400, {"error":"mode must be copy or replace"}
+            if not atomic_write(user_dir() / "cleanup-policy.json", json.dumps({"enabled":body["enabled"],"mode":mode})):
                 return 500, {"error":"Could not save your cleanup preference"}
-            return 200, {"ok":True,"message":"Download cleanup preference saved for your Windows account. Originals are retained. No machine-wide setting was changed."}
+            kept = ("Originals are kept as separate files." if mode == "copy" else
+                    "Downloads are cleaned in place; each untouched original is kept privately in your profile for a limited time.")
+            return 200, {"ok":True,"message":"Download cleanup preference saved for your Windows account. "+kept+" No machine-wide setting was changed."}
         if path == "/api/clean":
             from .clean import clean_batch
             result=clean_batch(body.get("paths", []))
