@@ -99,6 +99,7 @@ class Engine:
             ("backups", 6 * 3600, self.purge_clean_backups, None),
             ("trash", 6 * 3600, self.t_trash, None),
             ("device_traces", 12 * 3600, self.t_device_traces, None),
+            ("drain", 60, self.t_drain, None),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}                 # module name -> last error text (shown in the dashboard)
@@ -268,6 +269,15 @@ class Engine:
             self.j.add("info", "cleanup", f"Emptied {n} old item{'s' if n != 1 else ''} from the trash",
                        f"Deleted more than {days} days ago. Restore points and File History are kept.")
         return None
+
+    def t_drain(self):
+        """Per-program CPU/disk use over 24 h (battery proxy). Window and voice checks run in the user's session
+        (the dashboard), because this SYSTEM engine can't see the user's windows or settings."""
+        from . import drain
+        if not hasattr(self, "drain_meter"):
+            self.drain_meter = drain.DrainMeter()
+        self.drain_meter.tick()
+        self.state["drain"] = {"top": self.drain_meter.top()[:15]}
 
     def t_device_traces(self):
         """Forget USB devices (chargers, cables, drives, phones) unplugged more than N days ago."""
@@ -689,7 +699,7 @@ class Engine:
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
     SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
-            "leaks", "hosts", "backups", "trash", "device_traces"}
+            "leaks", "hosts", "backups", "trash", "device_traces", "drain"}
 
     def run_once(self, which="all"):
         now = time.time()

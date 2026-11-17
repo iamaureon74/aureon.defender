@@ -744,6 +744,18 @@ class Api:
         if path == "/api/phones/scan":
             threading.Thread(target=self.scan_phones, daemon=True).start()
             return 200, {"ok": True, "message": "Scanning connected phones. Results appear in about 20 seconds."}
+        if path == "/api/drain":
+            from . import drain
+            st = load_json(data_dir() / "status.json", {}) or {}
+            top = (st.get("drain") or {}).get("top")
+            if not top:                                   # engine not running: a short local sample instead
+                m = drain.DrainMeter()
+                m.tick()
+                time.sleep(2)
+                m.tick()
+                top = m.top()
+            return 200, {"ok": True, "drain_24h": top, "silent": drain.silent(), "listening": drain.listeners(),
+                         "method": "CPU time per program (battery proxy); screen, radios and GPU are not attributed."}
         if path == "/api/radar":
             alive, _ = engine_alive()
             if alive:

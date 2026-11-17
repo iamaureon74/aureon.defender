@@ -133,3 +133,40 @@ class DeviceTraces(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Drain(unittest.TestCase):
+    def test_meter_attributes_cpu_and_handles_pid_reuse(self):
+        from aureon_defender.drain import DrainMeter
+        samples = iter([
+            {1: (100, 10.0, 0, "game.exe"), 2: (100, 1.0, 0, "updater.exe")},
+            {1: (100, 40.0, 5 << 20, "game.exe"), 2: (100, 2.0, 0, "updater.exe")},
+            {1: (100, 50.0, 5 << 20, "game.exe"), 2: (999, 500.0, 0, "other.exe")},   # pid 2 reused
+        ])
+        m = DrainMeter(sampler=lambda: next(samples))
+        for t in (0, 60, 120):
+            m.tick(now=t)
+        top = m.top(now=120)
+        self.assertEqual(top[0]["name"], "game.exe")
+        self.assertEqual(top[0]["cpu_seconds"], 40.0)
+        self.assertEqual(top[0]["disk_mb"], 5.0)
+        self.assertNotIn("other.exe", [r["name"] for r in top])
+        self.assertAlmostEqual(sum(r["share"] for r in top), 100, delta=0.2)
+
+    def test_old_buckets_expire(self):
+        from aureon_defender.drain import DrainMeter
+        m = DrainMeter(sampler=lambda: {}, keep_hours=24)
+        m.buckets[0] = {"x": [1, 0]}
+        m.tick(now=30 * 3600)
+        self.assertNotIn(0, m.buckets)
+
+    def test_silent_grouping_and_listeners(self):
+        from aureon_defender.drain import listeners, silent
+        procs = [{"pid": 1, "name": "svchost.exe", "session": 0}, {"pid": 2, "name": "chrome.exe", "session": 1},
+                 {"pid": 3, "name": "telemetry.exe", "session": 1, "exe": "x"}]
+        r = silent(procs, windowed={2}, company=lambda exe: "Acme" if exe else None)
+        self.assertEqual(r["system"], ["svchost.exe"])
+        self.assertEqual(r["your_account"], {"Acme": ["telemetry.exe"]})
+        lis = listeners(names={"Cortana.exe", "x.exe"}, voice={"AgentActivationEnabled": True})
+        self.assertEqual(len(lis["running"]), 1)
+        self.assertEqual(len(lis["notes"]), 1)

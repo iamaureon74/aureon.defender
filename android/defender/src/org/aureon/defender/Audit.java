@@ -22,7 +22,7 @@ public final class Audit {
         return false;
     }
     public static synchronized JSONObject run(Context c) throws Exception {
-        JSONObject report=new JSONObject(); JSONArray installed=new JSONArray(), findings=new JSONArray(), apps=new JSONArray(), added=new JSONArray(), removed=new JSONArray(), updated=new JSONArray();
+        JSONObject report=new JSONObject(); JSONArray installed=new JSONArray(), findings=new JSONArray(), apps=new JSONArray(), listening=new JSONArray(), added=new JSONArray(), removed=new JSONArray(), updated=new JSONArray();
         SharedPreferences prefs=c.getSharedPreferences("guard",0);
         String previous=prefs.getString("packages",null);
         JSONObject oldVersions=new JSONObject(prefs.getString("package_versions","{}")), versions=new JSONObject();
@@ -42,6 +42,9 @@ public final class Audit {
                 loc=granted(p,"android.permission.ACCESS_FINE_LOCATION"), sms=granted(p,"android.permission.READ_SMS");
             String risk=Rules.classify(cam,mic,loc,sms);
             if(!risk.isEmpty())apps.put(new JSONObject().put("package",p.packageName).put("review",risk));
+            String listen=Rules.listener(p.packageName);
+            if(!listen.isEmpty()&&p.applicationInfo!=null&&p.applicationInfo.enabled)
+                listening.put(new JSONObject().put("package",p.packageName).put("what",listen).put("microphone_allowed",mic));
         }
         for(String pkg:before)if(!current.contains(pkg))removed.put(pkg);
         for(String kind:new String[]{"installed","removed","updated"}){
@@ -49,6 +52,10 @@ public final class Audit {
             for(int i=0;i<changes.length();i++)history.put(new JSONObject().put("time_ms",System.currentTimeMillis()).put("kind",kind).put("package",changes.getString(i)));
         }
         JSONArray boundedHistory=new JSONArray();for(int i=Math.max(0,history.length()-200);i<history.length();i++)boundedHistory.put(history.get(i));
+        String assistant=null;
+        try{assistant=Settings.Secure.getString(c.getContentResolver(),"voice_interaction_service");}catch(Exception ignored){}
+        if(assistant!=null&&!assistant.isEmpty())findings.put("A default voice assistant is set ("+assistant.split("/")[0]+"). It may listen for a wake word; turn that off in Settings → Apps → Default apps → Digital assistant, or in the assistant's own voice settings.");
+        for(int i=0;i<listening.length();i++){JSONObject l=listening.getJSONObject(i);if(l.optBoolean("microphone_allowed"))findings.put(l.getString("what")+" is installed with microphone access. If you don't use it, turn off its wake word or disable the app.");}
         KeyguardManager kg=(KeyguardManager)c.getSystemService(Context.KEYGUARD_SERVICE);
         boolean secure=kg!=null&&kg.isDeviceSecure();
         if(!secure)findings.put("No secure screen lock reported. Set a PIN/password in Android settings.");
@@ -65,7 +72,7 @@ public final class Audit {
         try{report.put("hardware",HardwareInfo.collect(c));}catch(Exception ex){report.put("hardware_error",ex.getClass().getSimpleName());}
         report.put("version",1).put("app_version","0.4.3").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
           .put("device",Build.MODEL).put("android_api",Build.VERSION.SDK_INT).put("secure_lock",secure)
-          .put("validated_network",internet).put("visible_package_count",current.size()).put("installed_apps",installed).put("permission_reviews",apps)
+          .put("validated_network",internet).put("visible_package_count",current.size()).put("installed_apps",installed).put("permission_reviews",apps).put("listening_apps",listening).put("default_assistant",assistant==null?"":assistant)
           .put("added_packages",added).put("removed_packages",removed).put("baseline_initialized",previous!=null)
           .put("updated_packages",updated).put("event_history",boundedHistory)
           .put("findings",findings).put("scope",Rules.scope()).put("data_destination","Local app-private storage only; this app has no INTERNET permission.");

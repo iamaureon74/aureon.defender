@@ -12,6 +12,8 @@ public class RulesTest {
   try{org.aureon.defender.FileChecks.hash(new java.io.ByteArrayInputStream(new byte[4]),3);throw new AssertionError("Size bound ignored");}catch(java.io.IOException ok){}
   try{org.aureon.defender.FileChecks.blocklist(new java.io.ByteArrayInputStream("not-a-hash".getBytes("UTF-8")));throw new AssertionError("Invalid hash accepted");}catch(java.io.IOException ok){}
   try{org.aureon.defender.FileChecks.blocklist(new java.io.ByteArrayInputStream(new byte[1024*1024+1]));throw new AssertionError("Oversized import accepted");}catch(java.io.IOException ok){}
-  System.out.println("10 Android rule/file-check assertions passed");
+  if(!Rules.listener("com.google.android.as").contains("on-device AI"))throw new AssertionError("Ambient AI listener missing");
+  if(!Rules.listener("com.example.notes").isEmpty())throw new AssertionError("Ordinary app flagged as listener");
+  System.out.println("12 Android rule/file-check assertions passed");
  }
 }
