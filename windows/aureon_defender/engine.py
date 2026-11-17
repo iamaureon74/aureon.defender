@@ -96,6 +96,7 @@ class Engine:
             ("sentry", 45, self.t_sentry, "sentry"),
             ("assets", 600, self.t_assets, "asset_registry"),
             ("integrity", 300, self.t_integrity, None),
+            ("backups", 6 * 3600, self.purge_clean_backups, None),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}                 # module name -> last error text (shown in the dashboard)
@@ -534,7 +535,6 @@ class Engine:
         return {"_module_status": "partial" if any(not isinstance(v, int) for v in rep.values()) else "ok"}
 
     def t_report(self):
-        self.purge_clean_backups()
         evs = [e for e in self.j.recent(2000) if e["t"] > time.time() - 86400]
         hi = [e for e in evs if e["severity"] == "high"]
         md = [e for e in evs if e["severity"] == "medium"]
@@ -639,7 +639,7 @@ class Engine:
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
     SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
-            "leaks", "hosts"}
+            "leaks", "hosts", "backups"}
 
     def run_once(self, which="all"):
         now = time.time()

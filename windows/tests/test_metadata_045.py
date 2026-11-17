@@ -208,6 +208,25 @@ class EngineAutoClean(unittest.TestCase):
         self.assertIn("alice", backups[0].read_text())
         self.assertFalse(list(dl.glob("*.clean*")))
 
+    def test_backups_expire_without_daily_report(self):
+        os.environ["AUREON_DATA"] = tempfile.mkdtemp()
+        from aureon_defender.engine import Engine
+        e = Engine()
+        self.assertIn("backups", [t[0] for t in e.tasks])
+        home = Path(tempfile.mkdtemp())
+        b = home / "originals"
+        b.mkdir()
+        old = b / "old.jpg"
+        old.write_text("x")
+        os.utime(old, (0, 0))
+        fresh = b / "new.jpg"
+        fresh.write_text("y")
+        from unittest import mock
+        with mock.patch("aureon_defender.core.expand_all", return_value=[b]):
+            e.purge_clean_backups()
+        self.assertFalse(old.exists())
+        self.assertTrue(fresh.exists())
+
     def test_settings_reject_bad_mode(self):
         from aureon_defender.core import Settings
         s = Settings(Path(tempfile.mkdtemp()) / "s.json")
