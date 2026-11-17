@@ -78,7 +78,8 @@ class DrainMeter:
                     tot[name][0] += c
                     tot[name][1] += io
         all_cpu = sum(v[0] for v in tot.values()) or 1.0
-        rows = sorted(tot.items(), key=lambda kv: kv[1][0], reverse=True)[:n]
+        rows = sorted(((k, v) for k, v in tot.items() if v[0] >= 0.05 or v[1] >= (1 << 20)),
+                      key=lambda kv: kv[1][0], reverse=True)[:n]
         return [{"name": k, "cpu_seconds": round(v[0], 1), "share": round(100 * v[0] / all_cpu, 1),
                  "disk_mb": round(v[1] / (1 << 20), 1)} for k, v in rows]
 

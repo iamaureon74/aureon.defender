@@ -168,13 +168,13 @@ class Engine:
                     self.state["counts"]["quarantined"] += 1
                     later = w["removal"] != "removed"
                     return {"severity": "high", "kind": "threat", "blocked": True,
-                            "title": f"Blocked and deleted {path.name}",
-                            "detail": f"Why: {why}." + (" It was in use, so it was disabled now and will be gone after the"
-                                                        " next restart." if later else " It was permanently deleted."),
+                            "title": f"removed {path.name}",
+                            "detail": f"why: {why}." + (" it was in use, so it was moved aside and should be gone after the"
+                                                        " next restart." if later else " it was permanently deleted."),
                             "path": str(path), "sha256": w["sha256"]}
                 except ProtectedPath as ex:
-                    return {"severity": "high", "kind": "threat", "title": f"Threat in a Windows system file: {path.name}",
-                            "detail": f"{why}. Not deleted automatically: {ex}", "path": str(path)}
+                    return {"severity": "high", "kind": "threat", "title": f"possible threat in a windows system file: {path.name}",
+                            "detail": f"{why}. left in place so windows keeps working: {ex}", "path": str(path)}
                 except (OSError, ValueError):
                     pass                                    # fall back to quarantine below
             if self.s["auto_quarantine"]:
@@ -183,8 +183,8 @@ class Engine:
                     self.state["counts"]["quarantined"] += 1
                     later = m.get("removal", "removed") != "removed"
                     return {"severity": "high", "kind": "threat", "blocked": True,
-                            "title": f"Blocked and quarantined {path.name}",
-                            "detail": "; ".join(r["reasons"]) + (" | The file is in use; it was moved aside and will be"
+                            "title": f"moved {path.name} to the vault (quarantined)",
+                            "detail": "; ".join(r["reasons"]) + (" | it was in use, so it was moved aside and should be"
                                       " fully removed at the next restart." if later else ""), "path": str(path), "quarantine_id": m["id"], "sha256": r.get("sha256")}
                 except ProtectedPath as ex:
                     return {"severity": "high", "kind": "threat", "title": f"Threat in a Windows system file: {path.name}",
@@ -219,16 +219,16 @@ class Engine:
                     self.watch.seen[str(path)] = (st.st_size, st.st_mtime)
                 except (OSError, AttributeError):
                     pass
-                self.j.add("info", "clean", f"Metadata removed: {path.name}",
-                           "Removed: " + (", ".join(res["removed"]) or "no targeted fields found") +
-                           f". Untouched original kept privately for {self.s.get('clean_backup_days', 7)} days: {backup}")
+                self.j.add("info", "clean", f"hidden details removed: {path.name}",
+                           "removed: " + (", ".join(res["removed"]) or "nothing we know to look for") +
+                           f". the untouched original is kept privately for {self.s.get('clean_backup_days', 7)} days: {backup}")
             else:
                 res = clean_file(path, in_place=False)
                 self.j.add("info", "clean", f"Metadata copy created: {path.name}",
                            "Original retained; selected fields only. Output: " + res["written"] + ". Removed: " +
                            (", ".join(res["removed"]) or "no targeted fields found"))
         except Exception as ex:
-            self.j.add("low", "clean", f"Metadata cleanup unavailable: {path.name}", str(ex))
+            self.j.add("low", "clean", f"couldn't clean {path.name}", str(ex).lower())
 
     def _backup_original(self, path):
         """Copy the original into the owner's own profile (never machine-wide data), expiring after N days."""
@@ -266,8 +266,8 @@ class Engine:
         self.vault.purge_older(days)
         n = sum(res.values())
         if n:
-            self.j.add("info", "cleanup", f"Emptied {n} old item{'s' if n != 1 else ''} from the trash",
-                       f"Deleted more than {days} days ago. Restore points and File History are kept.")
+            self.j.add("info", "cleanup", f"emptied {n} old item{'s' if n != 1 else ''} from the trash",
+                       f"they were deleted more than {days} days ago. restore points and file history are kept.")
         return None
 
     def t_drain(self):
@@ -289,8 +289,8 @@ class Engine:
         res = wipe_traces(days)
         prune(days=min(days, self.s.get("device_history_days", 365)))     # Aureon's own log follows the same rule
         if res["removed"]:
-            self.j.add("info", "cleanup", f"Forgot {res['removed']} unplugged USB device{'s' if res['removed'] != 1 else ''}",
-                       f"Windows' record of chargers, cables, drives and phones not connected for {days} days was removed.")
+            self.j.add("info", "cleanup", f"forgot {res['removed']} unplugged usb device{'s' if res['removed'] != 1 else ''}",
+                       f"windows' record of chargers, cables, drives and phones not connected for {days} days was removed.")
         return {"_module_status": "partial"} if res["failed"] else None
 
     def on_canary(self, e):
@@ -655,7 +655,7 @@ class Engine:
             try:
                 self.scan_path(root)
             except Exception as ex:
-                self.j.add("low", "scan", f"Scan could not finish: {root}", f"{ex.__class__.__name__}: {ex}")
+                self.j.add("low", "scan", f"a scan couldn't finish: {root}", f"{ex.__class__.__name__}: {ex}")
 
     @staticmethod
     def _iter_files(root: Path, limit):

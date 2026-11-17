@@ -30,3 +30,6 @@ body[data-direction="editorial"]{--bg:#eeeede;--text:#202c22;--muted:#53644f;--l
 
 /* A small elastic response at the page edges; never traps scrolling. */
 body>main,body>.site-footer{translate:0 var(--edge-offset,0px);transition:translate 380ms cubic-bezier(.18,.8,.25,1)}html.edge-pulling body>main,html.edge-pulling body>.site-footer{transition:translate 85ms ease-out}@media(prefers-reduced-motion:reduce){body>main,body>.site-footer{translate:none!important;transition:none!important}}
+/* house style: lower-case throughout; user data (file names, hashes, notes) keeps its own case */
+body{text-transform:lowercase}pre,code,kbd,input,textarea,.keep-case{text-transform:none}
+button,select,option,::placeholder{text-transform:lowercase}

@@ -46,9 +46,9 @@ class Wipe(unittest.TestCase):
         conf = {"verdict": "malicious", "reasons": ["known malware"], "engines": {"reputation": "bad"}, "score": 100}
         with mock.patch.object(e.scanner, "scan", return_value=conf):
             ev = e.on_file(f)
-        self.assertIn("deleted", ev["title"])
+        self.assertIn("removed", ev["title"])
         self.assertTrue(ev["blocked"])
-        self.assertIn("Why:", ev["detail"])
+        self.assertIn("why:", ev["detail"])
         self.assertFalse(f.exists())
         self.assertEqual(e.vault.list(), [])
         g = d / "odd.pdf.exe"

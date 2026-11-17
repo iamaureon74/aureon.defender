@@ -1,2 +1,5 @@
 .page-style-0{font-size:clamp(38px,6vw,75px);line-height:1.1;letter-spacing:-2px}
 .page-style-1{white-space:pre-wrap;overflow-wrap:anywhere}
+/* house style: lower-case throughout; user data (file names, hashes, notes) keeps its own case */
+body{text-transform:lowercase}pre,code,kbd,input,textarea,.keep-case{text-transform:none}
+button,select,option,::placeholder{text-transform:lowercase}

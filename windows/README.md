@@ -41,28 +41,33 @@ build scans clean with Microsoft Defender.
 In your session: branded notifications (Aureon's name and icon, Open/Dismiss, bursts merged, quiet hours) and a
 clipboard guard that warns when a key, card number or wallet phrase is copied and clears it after 60 seconds.
 
-## Quiet, battery-aware and safe removal (0.4.5)
+## quieter, lighter, more careful (0.4.5)
 
-**Power governor.** The engine runs below normal CPU and low I/O priority (and asks Windows 11 for EcoQoS), so games
-and apps keep priority. Real-time file watch, ransomware tripwires and the USB keyboard guard keep their cadence on
-battery (1.5× only below 20 %). Heavy sweeps (radar, posture, assets, feeds, leak audit) stretch 2× on battery and 4×
-in saver mode, get ±10 % jitter so they never wake the CPU together, and wait — at most 4 hours — while the machine
-is busy (smoothed CPU above 70 %). State files are only rewritten when they change, so the disk can sleep.
+**easier on the battery.** the engine runs at low priority and asks windows 11 for efficiency mode, so other apps
+should keep priority. real-time checks keep their pace on battery (a little slower below 20 %). heavier sweeps stretch
+out on battery and wait — up to 4 hours — while the machine is busy. state files are only rewritten when something
+changed.
 
-**Removal that can't break Windows.** A quarantined file is copied, flushed and re-verified before the original is
-removed; if the copy fails the original stays. Windows, boot, driver and Defender files are reported, never moved
-(`C:\Windows\Temp` and task folders stay quarantinable). A file a running program holds open is renamed out of the
-way and removed at the next restart instead of failing or killing the program. Restores never overwrite and are
-hash-checked.
+**quiet mode (on by default).** you're notified when something is blocked or deleted, with the reason, and when a
+ransomware tripwire is touched. everything else waits in activity.
 
-**Metadata.** Photos keep only their orientation (so they don't turn sideways). Covered: JPEG, PNG, WebP, GIF, TIFF,
-SVG, HEIC/AVIF (to JPEG, with a HEIF plug-in), MP3 (ID3, APE), FLAC, WAV, AIFF, Ogg Vorbis/Opus, MP4/MOV/M4A
-(tags, XMP, recording dates), MKV/WebM (tags, date, title), Word/Excel/PowerPoint (people, dates, editing time,
-rsid session IDs, account IDs), OpenDocument, PDF (info, dates, hex strings, document ID), ZIP (entry times, owners,
-comment). Every download also loses the site/page URL Windows stores beside it; its security zone stays so
-Windows still warns before running it. Automatic cleaning can add a clean copy (default) or clean the download
-itself while keeping the original privately in your profile for 7 days. No tool can promise every fingerprint is
-gone: watermarks, visible names and content inside files are not changed.
+**removing threats carefully.** files matching known malware or microsoft defender are deleted when found (no
+undo; you can turn this off). uncertain matches go to the vault, which is copied and checked before the original is
+removed. windows, boot, driver and defender files are reported rather than touched. a file that's in use is moved
+aside and removed at the next restart. none of this catches everything.
+
+**clearing old traces.** trash older than 30 days is emptied by its recorded deletion date. windows' record of usb
+chargers, cables, drives and phones unplugged for 30 days is removed with pnputil; bluetooth pairings stay. restore
+points and file history are kept on purpose — they're how you recover from ransomware. a charger's own chip can't be
+read or erased by a computer, so nothing is sent to it.
+
+**seeing what drains and listens.** a rough per-program battery estimate from cpu time over 24 hours, programs
+running with no window grouped by maker, and voice assistants that may listen for a wake word (windows and android).
+
+**metadata.** photos keep only their orientation. covered: jpeg, png, webp, gif, tiff, svg, heic/avif (to jpeg, with
+a heif plug-in), mp3, flac, wav, aiff, ogg/opus, mp4/mov/m4a, mkv/webm, office, opendocument, pdf and zip. downloads
+also lose the site address windows saves beside them; the safety zone stays. some details can remain, and anything
+visible in a file — faces, watermarks, names in the text — isn't changed.
 
 ## noah.shield, imported
 
