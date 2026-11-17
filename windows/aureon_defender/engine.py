@@ -97,6 +97,8 @@ class Engine:
             ("assets", 600, self.t_assets, "asset_registry"),
             ("integrity", 300, self.t_integrity, None),
             ("backups", 6 * 3600, self.purge_clean_backups, None),
+            ("trash", 6 * 3600, self.t_trash, None),
+            ("device_traces", 12 * 3600, self.t_device_traces, None),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}                 # module name -> last error text (shown in the dashboard)
@@ -155,12 +157,32 @@ class Engine:
             self.auto_clean(path)
 
         if r["verdict"] == "malicious":
+            eng = r.get("engines", {})
+            confirmed = eng.get("reputation") == "bad" or eng.get("defender") == "threat" or eng.get("clamav") == "threat"
+            why = "; ".join(r["reasons"])
+            if confirmed and self.s.get("auto_wipe_confirmed", True):
+                from .quarantine import wipe
+                try:
+                    w = wipe(path, r)
+                    self.state["counts"]["quarantined"] += 1
+                    later = w["removal"] != "removed"
+                    return {"severity": "high", "kind": "threat", "blocked": True,
+                            "title": f"Blocked and deleted {path.name}",
+                            "detail": f"Why: {why}." + (" It was in use, so it was disabled now and will be gone after the"
+                                                        " next restart." if later else " It was permanently deleted."),
+                            "path": str(path), "sha256": w["sha256"]}
+                except ProtectedPath as ex:
+                    return {"severity": "high", "kind": "threat", "title": f"Threat in a Windows system file: {path.name}",
+                            "detail": f"{why}. Not deleted automatically: {ex}", "path": str(path)}
+                except (OSError, ValueError):
+                    pass                                    # fall back to quarantine below
             if self.s["auto_quarantine"]:
                 try:
                     m = self.vault.put(path, r)
                     self.state["counts"]["quarantined"] += 1
                     later = m.get("removal", "removed") != "removed"
-                    return {"severity": "high", "kind": "threat", "title": f"Blocked and quarantined {path.name}",
+                    return {"severity": "high", "kind": "threat", "blocked": True,
+                            "title": f"Blocked and quarantined {path.name}",
                             "detail": "; ".join(r["reasons"]) + (" | The file is in use; it was moved aside and will be"
                                       " fully removed at the next restart." if later else ""), "path": str(path), "quarantine_id": m["id"], "sha256": r.get("sha256")}
                 except ProtectedPath as ex:
@@ -232,6 +254,34 @@ class Engine:
                         continue
             except OSError:
                 continue
+
+    def t_trash(self):
+        """Empty trash items older than trash_days, and Aureon's own quarantine copies past that age."""
+        from .trash import purge_all
+        days = self.s.get("trash_days", 30)
+        if not days:
+            return {"_module_status": "off"}
+        res = purge_all(days)
+        self.vault.purge_older(days)
+        n = sum(res.values())
+        if n:
+            self.j.add("info", "cleanup", f"Emptied {n} old item{'s' if n != 1 else ''} from the trash",
+                       f"Deleted more than {days} days ago. Restore points and File History are kept.")
+        return None
+
+    def t_device_traces(self):
+        """Forget USB devices (chargers, cables, drives, phones) unplugged more than N days ago."""
+        days = self.s.get("wipe_device_traces_days", 30)
+        if not days or os.name != "nt":
+            return {"_module_status": "off"}
+        from .devices import prune
+        from .devwipe import wipe_traces
+        res = wipe_traces(days)
+        prune(days=min(days, self.s.get("device_history_days", 365)))     # Aureon's own log follows the same rule
+        if res["removed"]:
+            self.j.add("info", "cleanup", f"Forgot {res['removed']} unplugged USB device{'s' if res['removed'] != 1 else ''}",
+                       f"Windows' record of chargers, cables, drives and phones not connected for {days} days was removed.")
+        return {"_module_status": "partial"} if res["failed"] else None
 
     def on_canary(self, e):
         if not self.s["canary_suspend_writer"]:
@@ -639,7 +689,7 @@ class Engine:
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
     SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
-            "leaks", "hosts", "backups"}
+            "leaks", "hosts", "backups", "trash", "device_traces"}
 
     def run_once(self, which="all"):
         now = time.time()

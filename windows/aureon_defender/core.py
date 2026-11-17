@@ -46,6 +46,10 @@ def user_dir() -> Path:
 DEFAULTS = {
     "realtime": True,
     "auto_quarantine": True,            # malicious verdicts only; suspicious = alert
+    "auto_wipe_confirmed": True,        # confirmed malware (known hash / Defender / ClamAV) is deleted at once, no undo
+    "silent_mode": True,                # notify only when something was blocked or deleted, with the reason
+    "trash_days": 30,
+    "wipe_device_traces_days": 30,      # forget unplugged USB chargers/cables/drives/phones after this; 0 = keep                   # empty Recycle Bin / trash items older than this; 0 = never
     "use_defender_engine": True,
     "use_yara": True,
     "use_clamav": False,
@@ -86,7 +90,7 @@ DEFAULTS = {
 
 
 CHOICES = {"auto_clean_mode": ("copy", "replace")}
-RANGES = {"clean_backup_days": (1, 90), "clipboard_clear_seconds": (5, 3600), "device_history_days": (1, 3650),
+RANGES = {"wipe_device_traces_days": (0, 3650), "trash_days": (0, 3650), "clean_backup_days": (1, 90), "clipboard_clear_seconds": (5, 3600), "device_history_days": (1, 3650),
           "bt_limit": (0, 64)}
 
 

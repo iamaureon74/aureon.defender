@@ -112,7 +112,8 @@ class Follower:
             self.notifier = None
             self.notify = notify
         else:
-            self.notifier = notifier or Notifier()
+            from .notify import silent_setting
+            self.notifier = notifier or Notifier(silent=silent_setting)
         self.seen = {e["id"] for e in journal.recent(500)}
 
     def poll(self):

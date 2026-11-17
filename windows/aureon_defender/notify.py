@@ -100,10 +100,23 @@ def show(title, body, severity="medium", kind="", tag="", attribution=None):
         return False
 
 
+def _call(f):
+    try:
+        return bool(f())
+    except Exception:
+        return False
+
+
+def silent_setting():
+    from .core import Settings
+    return Settings().load().get("silent_mode", True)
+
+
 class Notifier:
     """Decides what deserves a toast. Bursts within `window` seconds become one summary."""
-    def __init__(self, send=show, window=8.0, burst=3, quiet=None):
+    def __init__(self, send=show, window=8.0, burst=3, quiet=None, silent=None):
         self.send = send
+        self.silent = silent               # callable -> bool: only blocked/deleted threats notify
         self.window = window
         self.burst = burst
         self.quiet = quiet                 # (start_hour, end_hour) or None
@@ -121,6 +134,8 @@ class Notifier:
         sev = e.get("severity", "info")
         if sev not in ("medium", "high"):
             return None
+        if self.silent and _call(self.silent) and not (e.get("blocked") or e.get("kind") == "ransomware"):
+            return None                     # silent mode: everything else waits quietly in the dashboard
         if self.in_quiet(now) and sev != "high":
             return None
         self.recent = [t for t in self.recent if now - t < self.window]

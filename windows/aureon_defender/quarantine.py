@@ -149,6 +149,52 @@ def _remove_original(path: Path):
         raise first
 
 
+def wipe(path, result=None):
+    """Permanently remove a confirmed threat: overwrite its bytes, rename it to a random name, then delete it.
+
+    Overwriting stops the content being trivially undeleted from the file system. On SSDs, wear-levelling means the
+    old blocks can still physically exist until TRIM; no software can promise otherwise. Protected OS files are
+    refused (ProtectedPath). A file held open by a running program is renamed and removed at the next restart.
+    Returns {"path", "sha256", "removal"}.
+    """
+    path = Path(path)
+    if is_protected(path):
+        raise ProtectedPath(f"{path} is an operating-system file; it was reported but not deleted "
+                            "(deleting it could stop Windows from starting). Use Microsoft Defender offline scan.")
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("Only regular files can be wiped")
+    expected = str((result or {}).get("sha256") or "")
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(_CHUNK), b""):
+            h.update(chunk)
+    if re.fullmatch(r"[0-9a-f]{64}", expected) and h.hexdigest() != expected:
+        raise ValueError("File changed since scanning; rescan required")
+    try:
+        os.chmod(path, 0o666)
+    except OSError:
+        pass
+    try:
+        size = path.stat().st_size
+        with open(path, "r+b") as f:
+            zero = b"\0" * _CHUNK
+            left = size
+            while left > 0:
+                n = min(left, _CHUNK)
+                f.write(zero[:n])
+                left -= n
+            f.flush()
+            os.fsync(f.fileno())
+            f.truncate(0)
+        target = path.with_name(uuid.uuid4().hex)
+        os.replace(path, target)
+        path = target
+    except OSError:
+        pass                                   # locked: fall through to rename/delete-at-restart
+    removal = _remove_original(path)
+    return {"path": str(path), "sha256": h.hexdigest(), "removal": removal}
+
+
 class Vault:
     def __init__(self, root: Path = None):
         self.root = root or (data_dir() / "quarantine")
