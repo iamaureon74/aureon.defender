@@ -140,15 +140,13 @@ class Engine:
     def on_file(self, path):
         r = self.scanner.scan(path)
         self.state["counts"]["scanned"] += 1
-        # Only create metadata copies after the original's scan. Never auto-clean a flagged file.
-        if r["verdict"] == "clean" and self.download_cleanup_enabled(path) and any(p.name.lower()=="downloads" for p in path.parents):
-            from .clean import SUPPORTED, clean_file
-            if path.suffix.lower() in SUPPORTED and ".clean" not in path.stem:
-                try:
-                    res=clean_file(path,in_place=False)
-                    self.j.add("info","clean",f"Metadata copy created: {path.name}","Original retained; selected fields only. Output: "+res["written"]+". Removed: "+(", ".join(res["removed"]) or "no targeted fields found"))
-                except Exception as ex:
-                    self.j.add("low","clean",f"Metadata copy unavailable: {path.name}",str(ex))
+        in_downloads = any(p.name.lower() == "downloads" for p in path.parents)
+        if in_downloads and r["verdict"] != "skipped" and self.s.get("scrub_download_source", True):
+            from .media_strip import scrub_zone_identifier
+            scrub_zone_identifier(path)
+        # Only clean after the original's scan. Never auto-clean a flagged file.
+        if r["verdict"] == "clean" and in_downloads and self.download_cleanup_enabled(path):
+            self.auto_clean(path)
 
         if r["verdict"] == "malicious":
             if self.s["auto_quarantine"]:
@@ -171,6 +169,61 @@ class Engine:
             return {"severity": "medium", "kind": "suspicious", "title": f"Suspicious file: {path.name}",
                     "detail": "; ".join(r["reasons"]), "path": str(path), "sha256": r.get("sha256"), "score": r["score"]}
         return None
+
+    def _downloads_root(self, path):
+        return next((p for p in path.parents if p.name.lower() == "downloads"), None)
+
+    def auto_clean(self, path):
+        from .clean import REENCODE, SUPPORTED, clean_file
+        ext = path.suffix.lower()
+        if ext not in SUPPORTED or ".clean" in path.stem:
+            return
+        mode = self.s.get("auto_clean_mode", "copy")
+        try:
+            if mode == "replace" and ext not in REENCODE:
+                backup = self._backup_original(path)
+                res = clean_file(path, in_place=True)
+                try:                               # the cleaned file is new content: don't rescan/clean it again
+                    st = path.stat()
+                    self.watch.seen[str(path)] = (st.st_size, st.st_mtime)
+                except (OSError, AttributeError):
+                    pass
+                self.j.add("info", "clean", f"Metadata removed: {path.name}",
+                           "Removed: " + (", ".join(res["removed"]) or "no targeted fields found") +
+                           f". Untouched original kept privately for {self.s.get('clean_backup_days', 7)} days: {backup}")
+            else:
+                res = clean_file(path, in_place=False)
+                self.j.add("info", "clean", f"Metadata copy created: {path.name}",
+                           "Original retained; selected fields only. Output: " + res["written"] + ". Removed: " +
+                           (", ".join(res["removed"]) or "no targeted fields found"))
+        except Exception as ex:
+            self.j.add("low", "clean", f"Metadata cleanup unavailable: {path.name}", str(ex))
+
+    def _backup_original(self, path):
+        """Copy the original into the owner's own profile (never machine-wide data), expiring after N days."""
+        import shutil
+        root = self._downloads_root(path)
+        base = (root.parent if root else Path.home()) / "AppData" / "Local" / "Aureon" / "originals"
+        base.mkdir(parents=True, exist_ok=True)
+        dst = base / f"{time.strftime('%Y%m%d-%H%M%S')}-{os.urandom(3).hex()}-{path.name}"
+        shutil.copy2(path, dst)
+        os.utime(dst)                       # expiry counts from now, not the server's file date
+        return dst
+
+    def purge_clean_backups(self):
+        days = self.s.get("clean_backup_days", 7)
+        cut = time.time() - days * 86400
+        from .core import expand_all
+        for base in expand_all("%LOCALAPPDATA%/Aureon/originals"):
+            try:
+                for f in base.iterdir():
+                    try:
+                        if f.is_file() and f.stat().st_mtime < cut:
+                            f.unlink()
+                    except OSError:
+                        continue
+            except OSError:
+                continue
 
     def on_canary(self, e):
         if not self.s["canary_suspend_writer"]:
@@ -474,6 +527,7 @@ class Engine:
         return {"_module_status": "partial" if any(not isinstance(v, int) for v in rep.values()) else "ok"}
 
     def t_report(self):
+        self.purge_clean_backups()
         evs = [e for e in self.j.recent(2000) if e["t"] > time.time() - 86400]
         hi = [e for e in evs if e["severity"] == "high"]
         md = [e for e in evs if e["severity"] == "medium"]

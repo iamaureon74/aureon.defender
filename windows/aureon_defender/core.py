@@ -73,12 +73,30 @@ DEFAULTS = {
     "abusech_key": "",                  # free Auth-Key from https://auth.abuse.ch/ (MalwareBazaar, URLhaus, ThreatFox)
     "scan_removable": True,
     "auto_clean_downloads": False,      # strip metadata from photos, audio, documents and videos as they download
+    "auto_clean_mode": "copy",          # "copy": add name.clean.ext beside it; "replace": clean the download itself
+                                        #   and keep the untouched original privately for clean_backup_days
+    "clean_backup_days": 7,
+    "scrub_download_source": True,      # drop the site/page URL Windows records on every download (keeps ZoneId)
     "bt_limit": 4,
     "bt_allowed": ["audio", "input", "phone", "wearable"],             # scan USB drives / SD cards when they're plugged in
     "phone_watch": True,                # scan Android/iPhone automatically when plugged in (agent)
     "watch_folders": ["~/Downloads", "~/Desktop", "%TEMP%",
                       "%APPDATA%/Microsoft/Windows/Start Menu/Programs/Startup"],
 }
+
+
+CHOICES = {"auto_clean_mode": ("copy", "replace")}
+RANGES = {"clean_backup_days": (1, 90), "clipboard_clear_seconds": (5, 3600), "device_history_days": (1, 3650),
+          "bt_limit": (0, 64)}
+
+
+def _valid(k, v):
+    if k in CHOICES:
+        return v in CHOICES[k]
+    if k in RANGES:
+        lo, hi = RANGES[k]
+        return lo <= v <= hi
+    return True
 
 
 class Settings:
@@ -97,7 +115,7 @@ class Settings:
         with self._lock:
             cur = self.load()
             for k, v in changes.items():
-                if k in DEFAULTS and type(v) is type(DEFAULTS[k]):
+                if k in DEFAULTS and type(v) is type(DEFAULTS[k]) and _valid(k, v):
                     cur[k] = v
             self.path.write_text(json.dumps(cur, indent=1), encoding="utf-8")
             return cur

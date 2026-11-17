@@ -18,17 +18,24 @@ import struct
 import zipfile
 from pathlib import Path
 
-PHOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff"}
-AUDIO = {".mp3", ".flac", ".wav"}
+PHOTO = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff", ".heic", ".heif", ".avif", ".svg"}
+AUDIO = {".mp3", ".flac", ".wav", ".aif", ".aiff", ".ogg", ".oga", ".opus"}
 DOCS = {".docx", ".xlsx", ".pptx", ".docm", ".xlsm", ".pptm", ".odt", ".ods", ".odp", ".pdf"}
-VIDEO = {".mp4", ".mov", ".m4a", ".m4v", ".3gp"}
-SUPPORTED = PHOTO | AUDIO | DOCS | VIDEO
+VIDEO = {".mp4", ".mov", ".m4a", ".m4v", ".3gp", ".mkv", ".webm", ".mka"}
+ARCHIVES = {".zip"}
+SUPPORTED = PHOTO | AUDIO | DOCS | VIDEO | ARCHIVES
+REENCODE = {".heic", ".heif", ".avif"}           # no lossless path: re-encoded to a new .jpg copy, never in place
+OFFICE = {".docx", ".xlsx", ".pptx", ".docm", ".xlsm", ".pptm", ".odt", ".ods", ".odp"}
 
 
 # ---------------- photos ----------------
 def _jpeg(data):
+    """Drop EXIF/XMP/IPTC/comments but keep Orientation, otherwise portrait photos display sideways."""
+    from .media_strip import jpeg_orientation, reinsert_orientation
     from .noah import strip_jpeg
-    return strip_jpeg(data)
+    orient = jpeg_orientation(data)
+    new, removed = strip_jpeg(data)
+    return reinsert_orientation(new, orient), removed
 
 
 def _png(data):
@@ -95,9 +102,20 @@ def _gif(data):
 
 
 def _resave(path):
-    """TIFF/HEIC: re-encode without metadata (lossy for HEIC only)."""
-    from PIL import Image
-    with Image.open(path) as im:
+    """TIFF/HEIC/AVIF: re-encode without metadata (lossy for HEIC/AVIF, which become JPEG copies)."""
+    from PIL import Image, ImageOps
+    if Path(path).suffix.lower() in REENCODE:
+        try:
+            import pillow_heif                     # optional plug-in; without it Pillow can't read HEIC
+            pillow_heif.register_heif_opener()
+        except ImportError:
+            pass
+    try:
+        im0 = Image.open(path)
+    except Exception as ex:
+        raise ValueError(f"{Path(path).suffix} needs an image plug-in that isn't installed; original retained") from ex
+    with im0 as im:
+        im = ImageOps.exif_transpose(im)            # bake orientation into pixels before EXIF is dropped
         if getattr(im, "n_frames", 1) > 1:
             raise ValueError("Multi-page images require a format-aware tool; original retained")
         buf = io.BytesIO()
@@ -109,6 +127,9 @@ def _resave(path):
 # ---------------- audio ----------------
 def _mp3(data):
     removed, start, end = [], 0, len(data)
+    from .media_strip import strip_apev2
+    data, ape = strip_apev2(data)
+    removed += ape
     while data[start:start + 3] == b"ID3":
         size = 0
         for b in data[start + 6:start + 10]:
@@ -168,6 +189,7 @@ AUTHOR_ATTR = re.compile(rb'(w:author|w:initials|author)="[^"]*"')
 
 
 def _ooxml(path):
+    from .media_strip import office_part
     removed = set()
     buf = io.BytesIO()
     with zipfile.ZipFile(path) as zin, zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zout:
@@ -196,6 +218,8 @@ def _ooxml(path):
                 data, n = re.subn(rb"(<(meta:initial-creator|dc:creator|meta:generator|meta:editing-cycles)[^>]*>)(.*?)(</\2>)", rb"\1\4", data, flags=re.S)
                 if n:
                     removed.add("creator / generator")
+            data, extra = office_part(name, data)
+            removed |= extra
             zi = zipfile.ZipInfo(item.filename, date_time=(1980, 1, 1, 0, 0, 0))   # zip timestamps are metadata too
             zi.compress_type = zipfile.ZIP_STORED if item.filename == "mimetype" else zipfile.ZIP_DEFLATED
             zout.writestr(zi, data)
@@ -209,9 +233,12 @@ def _pdf(data):
 
     def blank(m):
         return m.group(1) + b"(" + b" " * (len(m.group(2))) + b")"
-    new, n = re.subn(rb"(/(?:Author|Creator|Producer|Title|Subject|Keywords|Company|SourceModified)\s*)\(((?:[^()\\]|\\.)*)\)", blank, data)
+    new, n = re.subn(rb"(/(?:Author|Creator|Producer|Title|Subject|Keywords|Company|SourceModified|CreationDate|ModDate)\s*)\(((?:[^()\\]|\\.)*)\)", blank, data)
     if n:
-        removed.append("document info (author, creator, producer)")
+        removed.append("document info (author, creator, producer, dates)")
+    from .media_strip import pdf_extras
+    new, more = pdf_extras(new)
+    removed += more
     m = re.search(rb"<\?xpacket begin.*?<\?xpacket end=['\"]w['\"]\?>", new, re.S)
     if m:
         packet = m.group(0)
@@ -250,10 +277,21 @@ def _mp4(data):
                 walk(i + hdr, i + size, depth + 1)
             i += size
     walk(0, len(data), 0)
-    return bytes(data), sorted(set(removed))
+    from .media_strip import mp4_extras
+    out, more = mp4_extras(bytes(data))
+    return out, sorted(set(removed) | set(more))
 
 
-HANDLERS = {".jpg": _jpeg, ".jpeg": _jpeg, ".png": _png, ".webp": _webp, ".gif": _gif, ".mp3": _mp3, ".flac": _flac,
+def _lazy(name):
+    def f(data):
+        from . import media_strip
+        return getattr(media_strip, name)(data)
+    return f
+
+
+HANDLERS = {".svg": _lazy("svg"), ".aif": _lazy("aiff"), ".aiff": _lazy("aiff"), ".ogg": _lazy("ogg"), ".oga": _lazy("ogg"),
+            ".opus": _lazy("ogg"), ".mkv": _lazy("matroska"), ".webm": _lazy("matroska"), ".mka": _lazy("matroska"),
+            ".jpg": _jpeg, ".jpeg": _jpeg, ".png": _png, ".webp": _webp, ".gif": _gif, ".mp3": _mp3, ".flac": _flac,
             ".wav": _wav, ".pdf": _pdf, ".mp4": _mp4, ".mov": _mp4, ".m4a": _mp4, ".m4v": _mp4, ".3gp": _mp4}
 
 
@@ -268,13 +306,19 @@ def clean_file(path, in_place=False, out=None):
     before = p.stat().st_size
     if before > 128 * 1024 * 1024:
         raise ValueError("File exceeds the 128 MiB cleanup limit; original retained")
-    if ext in (".docx", ".xlsx", ".pptx", ".docm", ".xlsm", ".pptm", ".odt", ".ods", ".odp"):
+    if ext in REENCODE and in_place:
+        raise ValueError(f"{ext} files are re-encoded to a JPEG copy; in-place cleaning would change the format")
+    if ext in OFFICE:
         new, removed = _ooxml(p)
-    elif ext in (".tif", ".tiff", ".heic"):
+    elif ext in ARCHIVES:
+        from .media_strip import zip_archive
+        new, removed = zip_archive(p)
+    elif ext in (".tif", ".tiff") or ext in REENCODE:
         new, removed = _resave(p)
     else:
         new, removed = HANDLERS[ext](p.read_bytes())
-    dst = p if in_place else Path(out) if out else p.with_name(p.stem + ".clean" + p.suffix)
+    out_suffix = ".jpg" if ext in REENCODE else p.suffix
+    dst = p if in_place else Path(out) if out else p.with_name(p.stem + ".clean" + out_suffix)
     if in_place:
         tmp = p.with_name(p.name + ".aureon-tmp")
         tmp.write_bytes(new)
@@ -321,7 +365,7 @@ def clean_batch(paths, limit=2000):
             for f in files(Path(target).expanduser()):
                 if count>=limit:break
                 count+=1
-                if f.suffix.lower() not in SUPPORTED or '.clean' in f.stem or f.suffix.lower()=='.heic':
+                if f.suffix.lower() not in SUPPORTED or '.clean' in f.stem:
                     skipped+=1;continue
                 try:results.append(clean_file(f,in_place=False))
                 except (ValueError,OSError,zipfile.BadZipFile,struct.error,IndexError,RuntimeError) as ex:
