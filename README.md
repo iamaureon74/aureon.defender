@@ -6,9 +6,9 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 | Device | Direct distribution | Scope |
 |---|---|---|
-| Windows 10/11 x64 | [Windows Setup · 0.4.3](https://aureon-defender.vercel.app/api/download?platform=windows) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
-| Android 12+ | [Android APK · 0.4.3](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-android-0.4.3.apk) | Native local monitor; floating navigation; Android limits apply |
-| iPhone / iPad | [Installable web edition](https://aureon-defender.vercel.app/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
+| Windows 10/11 x64 | [Windows Setup · 0.4.6](https://github.com/shep95/aureon.defender/releases/download/v0.4.6/aureon-defender-windows-x64-setup-0.4.6.exe) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
+| Android 12+ | [Android APK · 0.4.6](https://github.com/shep95/aureon.defender/releases/download/v0.4.6/aureon-defender-android-0.4.6.apk) | Native local monitor; floating navigation; Android limits apply |
+| iPhone / iPad | [Installable web edition](https://defender.asherin.com/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
 | macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
 | Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
 | Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.3.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
@@ -21,7 +21,7 @@ Only assets actually attached to the release are downloadable builds. Mac/Linux 
 
 The borderless landing header, themed scrollbars, original Signal footer and full ink/lime app artwork now share the same identity. Site-local download endpoints start the actual file transfer without opening a GitHub release page; GitHub still hosts the binary bytes. The header uses the full **aureon.defender** name at narrow widths.
 
-[Devices & regions explorer](https://aureon-defender.vercel.app/compatibility.html) maps 249 ISO country/territory references × 16 device families. This is compatibility planning, not per-country certification, a count of sovereign states, or a global installed-device inventory. Country is not inferred from the hardware.
+[Devices & regions explorer](https://defender.asherin.com/compatibility.html) maps 249 ISO country/territory references × 16 device families. This is compatibility planning, not per-country certification, a count of sovereign states, or a global installed-device inventory. Country is not inferred from the hardware.
 
 Android inventory adapts to exposed APIs: SoC, GPU driver strings, RAM/storage, display, thermal severity, battery, security patch and visible app names/versions. Windows provides existing CPU/GPU/device inventory plus available OS/driver thermal/fan/NVIDIA readings. Unsupported sensors remain unavailable.
 
@@ -66,7 +66,7 @@ Close the process when finished. A Mac `.app` preview is not Apple Developer ID 
 
 ## iPhone / iPad web edition
 
-Open the [web edition](https://aureon-defender.vercel.app/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Use Web tools; the landing page recommends downloads and checks public GitHub release notes while open. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
+Open the [web edition](https://defender.asherin.com/) in Safari and choose **Add to Home Screen**. Once its offline cache is installed, the browser-local tools can operate offline. Use Web tools; the landing page recommends downloads and checks public GitHub release notes while open. Downloads still need connectivity. Selected files/reports are processed locally, not uploaded. The app does not inspect other apps or run an unrestricted background monitor. [Web source](docs/index.html).
 
 ## Verification
 
