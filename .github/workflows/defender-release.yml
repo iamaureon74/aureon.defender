@@ -1,0 +1,118 @@
+name: Windows and Android release
+on:
+  push:
+    tags: ['v[0-9]*']
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Version tag to build (must match both application versions)
+        required: true
+        default: v0.4.6
+permissions:
+  contents: read
+concurrency:
+  group: defender-release-${{ inputs.release_tag || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag || github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check version
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+        run: python -c "import os,sys;sys.path.insert(0,'windows');from aureon_defender.core import VERSION;assert os.environ['RELEASE_TAG']=='v'+VERSION"
+      - name: Test and build Windows
+        run: ./windows/build.ps1
+      - name: Package and verify setup
+        shell: pwsh
+        run: |
+          $version = (windows/.venv/Scripts/python.exe -c "import sys;sys.path.insert(0,'windows');from aureon_defender.core import VERSION;print(VERSION)").Trim()
+          New-Item -ItemType Directory -Force release | Out-Null
+          $zip = "release/aureon-defender-windows-x64-$version.zip"
+          Copy-Item "windows/release/aureon.defender-$version-win64.zip" $zip
+          $setup = "release/aureon-defender-windows-x64-setup-$version.exe"
+          ./windows/setup/build.ps1 -PayloadZip $zip -OutputFile $setup
+          $verify = Join-Path $env:RUNNER_TEMP 'setup-verify'
+          $process = Start-Process -FilePath (Resolve-Path $setup) -ArgumentList "/verify=$verify" -WindowStyle Hidden -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Setup verification failed' }
+          if (!(Get-Content "$verify/verification.json" | ConvertFrom-Json).payload_verified) { throw 'Payload verification missing' }
+          $process = Start-Process -FilePath "$verify/aureon.defender/aureon.defender.exe" -ArgumentList '--help' -WindowStyle Hidden -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Packaged application failed to start' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-downloads
+          path: release/*
+          if-no-files-found: error
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag || github.ref_name }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Restore existing release signing identity
+        shell: bash
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE" && test -n "$PASSWORD" || { echo 'Configure the existing Android release signing key secrets first.'; exit 1; }
+          umask 077
+          printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/defender-signing.p12"
+          printf '%s' "$PASSWORD" > "$RUNNER_TEMP/defender-signing-password.txt"
+      - name: Check version, test and build Android
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+        run: |
+          [xml]$manifest = Get-Content android/defender/AndroidManifest.xml
+          $version = $manifest.manifest.GetAttribute('versionName','http://schemas.android.com/apk/res/android')
+          if ($env:RELEASE_TAG -ne "v$version") { throw 'Release tag must match Android version' }
+          ./android/defender/build.ps1 -KeyStore "$env:RUNNER_TEMP/defender-signing.p12" -PasswordFile "$env:RUNNER_TEMP/defender-signing-password.txt"
+          New-Item -ItemType Directory -Force release | Out-Null
+          Copy-Item android/defender/build/aureon-defender.apk "release/aureon-defender-android-$version.apk"
+      - name: Remove signing material
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/defender-signing.p12" "$RUNNER_TEMP/defender-signing-password.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-downloads
+          path: release/*.apk
+          if-no-files-found: error
+  publish:
+    needs: [windows, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*-downloads'
+          path: release
+          merge-multiple: true
+      - name: Publish verified downloads with checksums
+        shell: bash
+        run: |
+          cd release
+          sha256sum *.zip *.exe *.apk > SHA256SUMS.txt
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "aureon.defender ${RELEASE_TAG#v}" --notes 'Windows and Android builds. See SHA256SUMS.txt for download integrity. Windows publisher is unsigned.'
+          fi
+          gh release upload "$RELEASE_TAG" ./* --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --latest

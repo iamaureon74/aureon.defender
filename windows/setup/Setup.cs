@@ -8,8 +8,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 [assembly: AssemblyTitle("aureon.defender Setup")]
-[assembly: AssemblyVersion("0.4.3.0")]
-[assembly: AssemblyFileVersion("0.4.3.0")]
+[assembly: AssemblyVersion("0.4.6.0")]
+[assembly: AssemblyFileVersion("0.4.6.0")]
 internal static class Setup {
     // Filled by the build from the exact published ZIP.
     const string PayloadDigest="__PAYLOAD_SHA256__";
@@ -29,7 +29,7 @@ internal static class Setup {
                 total+=entry.Length;if(total>600L*1024*1024)throw new InvalidDataException("Unexpected payload size.");
                 string dest=Path.GetFullPath(Path.Combine(root,entry.FullName.Replace('/',Path.DirectorySeparatorChar)));
                 if(!dest.StartsWith(root,StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Invalid archive path.");
-                if(entry.FullName.EndsWith("/")){Directory.CreateDirectory(dest);continue;}
+                if(entry.FullName.EndsWith("/")||entry.FullName.EndsWith("\\")){Directory.CreateDirectory(dest);continue;}
                 Directory.CreateDirectory(Path.GetDirectoryName(dest));
                 using(var source=entry.Open())using(var output=new FileStream(dest,FileMode.CreateNew,FileAccess.Write))source.CopyTo(output);
             }

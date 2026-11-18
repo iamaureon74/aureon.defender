@@ -205,7 +205,11 @@ class AuditLoopFixes(unittest.TestCase):
             return real(self_, *a, **k)
         with mock.patch.object(Path, "stat", locked):
             self.assertEqual(c.tick(), [])                     # brief lock: no false ransomware alarm
-        target.write_bytes(b"encrypted!")
+        # Windows rejects CREATE_ALWAYS on an existing hidden file. Open the
+        # planted tripwire in place so this exercises tampering on both OSes.
+        with target.open("r+b") as stream:
+            stream.write(b"encrypted!")
+            stream.truncate()
         self.assertEqual(len(c.tick()), 1)
 
     def test_unchanged_state_is_not_rewritten(self):

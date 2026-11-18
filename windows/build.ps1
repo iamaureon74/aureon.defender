@@ -8,7 +8,9 @@ $repo = Split-Path $PSScriptRoot -Parent
 if (-not (Test-Path "$Venv\Scripts\python.exe")) { python -m venv $Venv }
 $py = "$Venv\Scripts\python.exe"
 & $py -m pip install --quiet --upgrade pip
+if ($LASTEXITCODE) { throw 'pip upgrade failed' }
 & $py -m pip install --quiet -r "$PSScriptRoot\requirements.txt" pyinstaller==6.22.3
+if ($LASTEXITCODE) { throw 'Build dependency installation failed' }
 
 # app icon from a photo: -Logo path, or Downloads\aureon-logo.jpg/.png if present
 
@@ -36,7 +38,9 @@ if ($LASTEXITCODE) { Pop-Location; throw "tests failed" }
     --hidden-import aureon.keyagent `
     --distpath "$PSScriptRoot\dist" --workpath "$env:TEMP\aureon-build" --specpath "$env:TEMP\aureon-build" `
     "$PSScriptRoot\launcher.py"
+$packageExit = $LASTEXITCODE
 Pop-Location
+if ($packageExit) { throw 'PyInstaller packaging failed' }
 $ver = (& $py -c "import sys; sys.path.insert(0, r'$PSScriptRoot'); from aureon_defender.core import VERSION; print(VERSION)").Trim()
 New-Item -ItemType Directory -Force "$PSScriptRoot\release" | Out-Null
 $zip = "$PSScriptRoot\release\aureon.defender-$ver-win64.zip"

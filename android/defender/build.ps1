@@ -20,6 +20,10 @@ function Check {if($LASTEXITCODE){throw "Build failed: $LASTEXITCODE"}}
 & $aapt link -o "$build/unsigned.apk" --manifest "$PSScriptRoot/AndroidManifest.xml" -I $android --min-sdk-version 31 --target-sdk-version 36 --java "$build/generated" "$build/resources.zip";Check
 $sources=@(Get-ChildItem "$PSScriptRoot/src","$build/generated" -Recurse -Filter '*.java' | ForEach-Object FullName)
 & $javac -encoding UTF-8 -source 8 -target 8 -classpath $android -d "$build/classes" @sources;Check
+New-Item -ItemType Directory -Force "$build/tests" | Out-Null
+& $javac -encoding UTF-8 -source 8 -target 8 -classpath "$build/classes" -d "$build/tests" "$PSScriptRoot/tests/RulesTest.java";Check
+$separator=[IO.Path]::PathSeparator
+& $java -cp "$build/classes$separator$build/tests" RulesTest;Check
 $classes=@(Get-ChildItem "$build/classes" -Recurse -Filter '*.class' | ForEach-Object FullName)
 & $java -cp "$tools/lib/d8.jar" com.android.tools.r8.D8 --lib $android --min-api 31 --output "$build/dex" @classes;Check
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -33,6 +37,7 @@ if(!$KeyStore){
  }
 }
 if(!$PasswordFile){throw 'Provide the password file for your signing key. Never commit the key/password.'}
-& $java -jar "$tools/lib/apksigner.jar" sign --ks $KeyStore --ks-pass "file:$PasswordFile" --out "$build/aureon-defender.apk" "$build/unsigned.apk";Check
+& (Join-Path $tools "zipalign$suffix") -f -p 4 "$build/unsigned.apk" "$build/aligned.apk";Check
+& $java -jar "$tools/lib/apksigner.jar" sign --ks $KeyStore --ks-pass "file:$PasswordFile" --out "$build/aureon-defender.apk" "$build/aligned.apk";Check
 & $java -jar "$tools/lib/apksigner.jar" verify --verbose "$build/aureon-defender.apk";Check
 Write-Output "APK: $build/aureon-defender.apk"

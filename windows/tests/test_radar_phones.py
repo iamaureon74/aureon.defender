@@ -197,6 +197,9 @@ class PhoneLinkAndResilience(unittest.TestCase):
                         f.read()
                 except OSError:
                     pass
+                # Let the writer acquire the file between reader iterations.
+                # An uninterrupted Windows reader can exhaust every retry.
+                stop.wait(0.002)
         t = threading.Thread(target=reader, daemon=True)
         t.start()
         try:

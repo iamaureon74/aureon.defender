@@ -1,2 +1,4 @@
 .venv/
 dist/
+release/*.zip
+release/*.sha256
