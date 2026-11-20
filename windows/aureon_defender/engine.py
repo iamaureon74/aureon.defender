@@ -100,6 +100,7 @@ class Engine:
             ("trash", 6 * 3600, self.t_trash, None),
             ("device_traces", 12 * 3600, self.t_device_traces, None),
             ("drain", 60, self.t_drain, None),
+            ("drivers", 12 * 3600, self.t_drivers, "driver_audit"),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}                 # module name -> last error text (shown in the dashboard)
@@ -294,6 +295,34 @@ class Engine:
         if n:
             self.j.add("info", "cleanup", f"emptied {n} old item{'s' if n != 1 else ''} from the trash",
                        f"they were deleted more than {days} days ago. restore points and file history are kept.")
+        return None
+
+    def t_drivers(self, drivers=None):
+        """Hash every driver the OS registered; one in a known-vulnerable or malicious list is reported, not removed.
+
+        A registered driver is in use by hardware, so deleting it could stop a device or the machine booting. The
+        safe fix is the vendor's update, plus Windows' own vulnerable-driver blocklist (Protect this PC)."""
+        from .hwguard import registered_drivers
+        from .scanner import sha256
+        found = 0
+        for norm in sorted(drivers if drivers is not None else registered_drivers()):
+            p = Path(norm)
+            try:
+                if not p.is_file():
+                    continue
+                state, row = self.rep.lookup(sha256(p))
+            except OSError:
+                continue
+            if state == "bad":
+                found += 1
+                label = (row[1] if row and len(row) > 1 else "") or "known-bad driver"
+                self.alert_once(f"driver:{norm}", {"severity": "high", "kind": "driver",
+                                "title": f"{p.name} is a {'vulnerable' if 'vulnerable' in label.lower() else 'known-malicious'} driver in use",
+                                "detail": f"{label} ({row[0] if row else 'reputation'}). kept because a device or windows loads it: removing it could "
+                                          "stop that hardware. update it from the device maker, keep the vulnerable-driver blocklist on"
+                                          + ("." if "vulnerable" in label.lower() else ", and run a microsoft defender offline scan."),
+                                "path": str(p)}, cool=7 * 86400)
+        self.state["drivers_flagged"] = found
         return None
 
     def t_drain(self):
@@ -773,7 +802,7 @@ class Engine:
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
     SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
-            "leaks", "hosts", "backups", "trash", "device_traces", "drain"}
+            "leaks", "hosts", "backups", "trash", "device_traces", "drain", "drivers"}
 
     def run_once(self, which="all"):
         now = time.time()

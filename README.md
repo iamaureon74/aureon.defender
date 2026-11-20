@@ -17,7 +17,14 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
 
-## What is new in 0.4.7 (source; installers still 0.4.6 until rebuilt)
+## What is new in 0.4.8 (source; installers on the release page are still 0.4.6 until rebuilt)
+
+- **Vulnerable-driver protection**: the LOLDrivers list (loldrivers.io, public, no key) now feeds the same reputation database as MalwareBazaar. A known-vulnerable driver dropped anywhere is removed like any other threat. One the OS has registered for a device is checked twice a day and reported with the fix (vendor update, Windows' blocklist), never deleted, because the hardware needs it.
+- **Mac / Linux autostart guard**: user autostart entries (`~/.config/autostart`, systemd user units, macOS LaunchAgents) are read every minute. A new or changed entry that launches a flagged program, or pipes a download into a shell, is removed together with that program. System programs are never touched.
+- **Android impostor installers**: an APK on shared storage that claims an installed app's package name but carries a different signing certificate (tampered or fake copy) is deleted.
+- **Fixes**: the Windows leaks section could crash the dashboard when its data was missing; it is now guarded. The Windows-only autopilot paths (autostart removal, ransomware stop, driver audit) now have tests.
+
+## 0.4.7 autopilot
 
 Every edition now runs on autopilot: it finds something, removes it, and says why in one line. Nothing to approve.
 
@@ -60,11 +67,11 @@ Existing functions include Defender/YARA/reputation/heuristic file checks, selec
 
 Download the APK directly, verify its hash, and choose whether to permit installation from your download source in Android settings. The package is `org.aureon.defender`. Tap **Start monitoring**. Android displays a quiet foreground-service notification and can defer/stop work. Force-stop requires reopening; uninterrupted 24/7 execution is not guaranteed.
 
-The app reviews selected granted-permission combinations, visible-package installs/removals/updates and history, screen-lock status, exposed USB host devices, and selected-file SHA-256 matches against operator-imported lists. It does not have Windows Defender, arbitrary process visibility, system-wide quarantine or building-wiring discovery. Permissions and unfamiliar devices are review prompts, not malware verdicts.
+Turn on **all files access** once (the overview offers the switch) and the app checks shared storage every 15 minutes, after app installs and at start-up. Disguised apps, double extensions, programs posing as documents, impostor installers and blocklisted hashes are deleted with one quiet notification; `Android/`, hidden and firmware folders are never touched. Without that switch it guards folders you pick. It also reviews granted-permission combinations, package installs/removals/updates, screen lock and USB host devices. Android does not let an ordinary app uninstall other apps silently, see arbitrary processes or quarantine other apps' private files, so those stay review prompts.
 
 ## macOS / Linux portable preview
 
-The [portable companion](portable/) offers a loopback-only, token-protected browser dashboard, read-only supported OS posture checks, local resource observations and browser-local file/hash tools. It does not block processes or change firewall settings.
+The [portable companion](portable/) offers a loopback-only, token-protected browser dashboard. While it is open it scans Downloads and Desktop (plus one sweep of what is already there) and your login autostart entries, and removes what it finds unless the hardware needs it: disguised ELF/Mach-O programs, rogue launchers, shell droppers, reverse shells, miners and keychain theft. It also runs read-only OS posture checks and browser-local file/hash tools. It runs as you, not root, so it does not block processes, change firewall settings or touch system folders.
 
 Run from source:
 
@@ -81,10 +88,9 @@ Open the [web edition](https://defender.asherin.com/) in Safari and choose **Add
 
 ## Verification
 
-- Windows: 111 tests passed on the expanded release, plus the final eight focused workflow tests (including one added after the full run). A packaged inert-file scan returned the expected review exit code 3. All 15 installed tabs were checked with live local state and no JavaScript errors. Isolated responsive checks covered 45 tab/width combinations.
-- Android: 10 rule/file-check assertions and 35 Pixel 9 instrumentation assertions passed, including navigation, safe insets, dock choices, file/report flows and oriented metadata-clean image output.
-- Portable preview: two local tests passed. Native CI and packaged-executable checks have not run because GitHub blocked hosted jobs before execution. No native Mac/Linux binary is claimed as tested or released.
-- Web edition: local hash, import validation, report rendering and offline-cache tests are recorded in CI/local release checks.
+- 0.4.8 source (Linux container): 28 new autopilot tests (hardware budget, hardware guard, removal policy, engine reactions, autostart removal, ransomware stop, driver audit) and the extended feed test (LOLDrivers parsing) pass; the remaining Windows suite failures on Linux are Windows-only tests that also failed before these changes. Portable: 5 tests pass, including live removal of planted threats and bad autostart entries. Android: sources compile against the Android 14 framework and 22 rule/file-check assertions pass. The Windows and portable dashboards and the web tools page were screenshot-checked at desktop and phone widths.
+- Not yet run for 0.4.8: Windows installer build and install, Android APK build and device instrumentation, a live LOLDrivers download (the build container's proxy blocks loldrivers.io; the parser follows its documented `KnownVulnerableSamples` format).
+- 0.4.6 release: Windows 111 tests plus eight workflow tests, 15 installed tabs checked with no JavaScript errors; Android 10 rule assertions and 35 Pixel 9 instrumentation assertions.
 
 There is no guarantee that all code works under every condition or that Windows/mobile features are identical. This code contains no country geofence. Network availability, OS rules, local requirements and hardware compatibility vary. The current interface is English with Unicode text support; it is not fully localized worldwide.
 

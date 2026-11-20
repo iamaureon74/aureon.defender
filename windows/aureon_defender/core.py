@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.4.7"
+VERSION = "0.4.8"
 APP = "aureon.defender"
 
 
@@ -48,7 +48,8 @@ DEFAULTS = {
     "auto_quarantine": True,            # anything removed goes through the vault when it can't be wiped outright
     "auto_quarantine_suspicious": True, # suspicious + unsigned + not needed by hardware: removed silently (vault, then deleted)
     "auto_remove_autostart": True,      # a new autostart entry whose program is flagged is removed along with the program
-    "hardware_adaptive": True,          # cadence and sweep size follow this machine's measured capacity
+    "hardware_adaptive": True,
+    "driver_audit": True,               # flag registered drivers that match LOLDrivers / known-bad hashes (reported, never removed)          # cadence and sweep size follow this machine's measured capacity
     "auto_wipe_confirmed": True,        # confirmed malware (known hash / Defender / ClamAV) is deleted at once, no undo
     "silent_mode": True,                # notify only when something was blocked or deleted, with the reason
     "trash_days": 30,

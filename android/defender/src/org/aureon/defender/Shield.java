@@ -43,6 +43,7 @@ public final class Shield {
                     n[0]++;
                     try (InputStream in = new FileInputStream(f)) {
                         String why = check(f.getName(), f.length(), in, () -> new FileInputStream(f), blocklist, b[2]);
+                        if (why.isEmpty() && f.getName().toLowerCase(Locale.ROOT).endsWith(".apk")) why = impostor(c, f);
                         if (!why.isEmpty() && f.delete()) { n[1]++; removed(c, log, f.getName(), why); }
                     } catch (Exception ignored) {}
                 }
@@ -109,6 +110,27 @@ public final class Shield {
                 }
             }
         }
+    }
+
+    /** An installer that claims an installed app's package name but carries a different signing certificate. */
+    static String impostor(Context c, File apk) {
+        try {
+            android.content.pm.PackageManager pm = c.getPackageManager();
+            int flags = android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES;
+            android.content.pm.PackageInfo file = pm.getPackageArchiveInfo(apk.getAbsolutePath(), flags);
+            if (file == null || file.packageName == null || file.signingInfo == null) return "";
+            android.content.pm.PackageInfo have;
+            try { have = pm.getPackageInfo(file.packageName, flags); } catch (android.content.pm.PackageManager.NameNotFoundException e) { return ""; }
+            if (have.signingInfo == null) return "";
+            Set<String> mine = new HashSet<>(), theirs = new HashSet<>();
+            for (android.content.pm.Signature sg : have.signingInfo.getApkContentsSigners()) mine.add(sg.toCharsString());
+            for (android.content.pm.Signature sg : file.signingInfo.getApkContentsSigners()) theirs.add(sg.toCharsString());
+            if (have.signingInfo.hasPastSigningCertificates())
+                for (android.content.pm.Signature sg : have.signingInfo.getSigningCertificateHistory()) mine.add(sg.toCharsString());
+            for (String t : theirs) if (mine.contains(t)) return "";
+            String label = String.valueOf(pm.getApplicationLabel(have.applicationInfo));
+            return "an installer pretending to be " + label + " but signed by someone else (tampered or fake copy)";
+        } catch (Exception e) { return ""; }
     }
 
     static int[] budget(Context c) {

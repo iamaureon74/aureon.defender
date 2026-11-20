@@ -4,6 +4,9 @@
               is already there. found something -> it is removed silently, unless the hardware needs it
               (hwguard.decide): confirmed malware is overwritten and deleted, suspicious files go to an encrypted
               vault that empties itself after trash_days. one line in the activity log says what and why.
+  autostart   user autostart entries (~/.config/autostart, systemd user units, macOS LaunchAgents) are read
+              every minute; a new or changed entry whose program or own command is flagged is removed together
+              with that program. system folders are never touched (the companion runs as you, not root).
   downloads   new files that passed the scan get a metadata-clean copy (name.clean.ext); originals are never
               changed here.
   trash       freedesktop trash items deleted more than N days ago are emptied (linux); 0 turns it off.
@@ -34,6 +37,39 @@ from aureon_defender import drain, hwguard  # noqa: E402
 from aureon_defender.clean import SUPPORTED, clean_file  # noqa: E402
 from aureon_defender.trash import purge_freedesktop_trash  # noqa: E402
 
+def autostart_dirs(home=None):
+    home = Path(home or Path.home())
+    if sys.platform == "darwin":
+        return [home / "Library" / "LaunchAgents"]
+    cfg = Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config")
+    return [cfg / "autostart", cfg / "systemd" / "user"]
+
+
+def autostart_target(entry):
+    """The program an autostart entry launches, or "" when it can't be read."""
+    try:
+        if entry.suffix == ".plist":
+            import plistlib
+            with open(entry, "rb") as f:
+                d = plistlib.load(f)
+            args = d.get("ProgramArguments") or []
+            return str(d.get("Program") or (args[0] if args else ""))
+        text = entry.read_text(encoding="utf-8", errors="ignore")
+        key = "ExecStart=" if entry.suffix == ".service" else "Exec="
+        for line in text.splitlines():
+            if line.strip().startswith(key):
+                cmd = line.split("=", 1)[1].strip().lstrip("-@!+:")
+                import shlex
+                try:
+                    parts = shlex.split(cmd)
+                except ValueError:
+                    parts = cmd.split()
+                return parts[0] if parts else ""
+    except (OSError, ValueError, Exception):
+        return ""
+    return ""
+
+
 PARTIAL = {".crdownload", ".part", ".partial", ".tmp", ".download", ".opdownload"}
 
 
@@ -49,6 +85,8 @@ class Automation:
         self.counts = {"scanned": 0, "removed": 0, "kept": 0}
         self._scanner = self._vault = None
         self.swept = False
+        self.autostart_seen = None
+        self.next_autostart = 0
         self.trash_days = trash_days
         self.now = now
         self.log = log if log is not None else []
@@ -168,6 +206,42 @@ class Automation:
             if path not in snap:
                 self.seen.pop(path)
 
+    def tick_autostart(self, dirs=None):
+        """Remove new or changed autostart entries that launch something flagged (or are flagged themselves)."""
+        if not self.protect or self.now() < self.next_autostart:
+            return
+        self.next_autostart = self.now() + 60 * self.hw.get("interval_scale", 1.0)
+        cur = {}
+        for d in dirs or autostart_dirs():
+            try:
+                for e in d.iterdir():
+                    if e.is_file() and e.suffix in (".desktop", ".service", ".plist"):
+                        st = e.stat()
+                        cur[str(e)] = (st.st_size, st.st_mtime)
+            except OSError:
+                continue
+        first = self.autostart_seen is None
+        old = self.autostart_seen or {}
+        self.autostart_seen = dict(cur)
+        for path, sig in cur.items():
+            if not first and old.get(path) == sig:
+                continue
+            entry = Path(path)
+            target = autostart_target(entry)
+            gone = False
+            if target and Path(target).is_file() and not hwguard.needed_by_hardware(target):
+                gone = self.check(Path(target))
+            r = self.scanner().scan(entry)
+            if gone or r["verdict"] in ("malicious", "suspicious"):
+                why = "; ".join(r.get("reasons", [])) or "it launched a program that was just removed"
+                try:
+                    self.vault().put(entry, {**r, "verdict": r["verdict"] if r["verdict"] != "clean" else "suspicious"})
+                    self.autostart_seen.pop(path, None)
+                    self.counts["removed"] += 1
+                    self.note(f"removed autostart entry {entry.name}", f"why: {why}. it will no longer start when you log in.", blocked=True)
+                except (OSError, ValueError) as ex:
+                    self.note(f"found autostart entry {entry.name} but couldn't remove it", f"{why} ({ex})".lower())
+
     def tick_trash(self):
         if not self.trash_days or self.now() < self.next_trash:
             return
@@ -184,7 +258,7 @@ class Automation:
     def run(self):
         last_drain = 0
         while not self.stop.is_set():
-            for job in (self.tick_protect, self.tick_downloads, self.tick_trash):
+            for job in (self.tick_protect, self.tick_autostart, self.tick_downloads, self.tick_trash):
                 try:
                     job()
                 except Exception as ex:

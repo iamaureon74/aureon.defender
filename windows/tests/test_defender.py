@@ -139,7 +139,8 @@ class Feeds(unittest.TestCase):
         d = Path(tempfile.mkdtemp(dir=TMP))
         good = {"malwarebazaar": json.dumps({"query_status":"ok", "data":[{"sha256_hash":"b" * 64}]}),
                 "feodo": "5.6.7.8", "urlhaus": json.dumps({"query_status":"ok", "urls":[{"host":"evil.example", "url_status":"online"}]}),
-                "threatfox": json.dumps({"query_status":"ok", "data":[]})}
+                "threatfox": json.dumps({"query_status":"ok", "data":[]}),
+                "loldrivers": json.dumps([{"Category": "vulnerable driver", "KnownVulnerableSamples": [{"SHA256": "C" * 64, "Filename": "RTCore64.sys"}, {"SHA256": "bad"}]}])}
 
         def fetcher(url, **kwargs):
             for k, v in good.items():
@@ -147,8 +148,9 @@ class Feeds(unittest.TestCase):
                     return v
         rep = scanner.Reputation(d / "r.db")
         f = feeds.Feeds(d, fetcher)
-        self.assertEqual(f.update(rep, key="test-only-key"), {"malwarebazaar": 1, "feodo": 1, "urlhaus": 1, "threatfox": 0})
+        self.assertEqual(f.update(rep, key="test-only-key"), {"malwarebazaar": 1, "feodo": 1, "urlhaus": 1, "threatfox": 0, "loldrivers": 1})
         self.assertEqual(rep.lookup("b" * 64)[0], "bad")
+        self.assertEqual(rep.lookup("c" * 64)[0], "bad")                # vulnerable driver hash feeds the same reputation
         self.assertEqual(f.bad_ips(), {"5.6.7.8"})
 
         def down(url, **kwargs):

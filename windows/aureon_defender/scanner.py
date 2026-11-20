@@ -239,11 +239,13 @@ def posix_heuristics(path, head, ext, low):
     hits = []
     if head[:4] in POSIX_MAGIC and ext not in POSIX_EXEC_EXT and not low.endswith((".so", ".dylib")) and ".so." not in low:
         hits.append((60, f"Linux/macOS program disguised as {ext or 'no extension'}"))
-    if ext in {".sh", ".command", ".bash", ".zsh", ".desktop", ".py", ".pl"} or head[:2] == b"#!":
+    if ext in {".sh", ".command", ".bash", ".zsh", ".desktop", ".py", ".pl", ".plist", ".service"} or head[:2] == b"#!":
         text = head[:262144].decode("utf-8", errors="ignore").lower()
         for pat, score, why in SHELL_IOC:
             if re.search(pat, text):
                 hits.append((score, why))
+        if ext in {".plist", ".service"} and hits:
+            hits.append((25, "a login launcher runs that command every time you sign in"))
         if ext == ".desktop" and re.search(r"^exec\s*=.*(curl|wget|bash\s+-c|sh\s+-c|python3?\s+-c|base64)", text, re.M):
             hits.append((55, "desktop launcher runs a hidden command instead of an app"))
     return hits

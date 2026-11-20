@@ -5,6 +5,7 @@ abuse.ch retired its public download lists in 2026 (they answer 410 Gone). What'
   MalwareBazaar  newest malware SHA-256 hashes -> reputation DB  API, needs a free Auth-Key
   URLhaus        live malware-distribution hosts -> DNS shield   API, needs a free Auth-Key
   ThreatFox      fresh C2 servers and malicious domains          API, needs a free Auth-Key
+  LOLDrivers     signed drivers known to be abused to kill security tools   public, no key (loldrivers.io)
 Get the key at https://auth.abuse.ch/ (sign in, then "Optional" > Auth-Key) and paste it in Settings > Threat feeds.
 Indicators accumulate across refreshes and expire after 30 days, so short API windows still build a full list.
 """
@@ -26,6 +27,7 @@ SOURCES = {
     "malwarebazaar": {"url": "https://mb-api.abuse.ch/api/v1/", "key": True, "form": {"query": "get_recent", "selector": "time"}},
     "urlhaus":       {"url": "https://urlhaus-api.abuse.ch/v1/urls/recent/", "key": True},
     "threatfox":     {"url": "https://threatfox-api.abuse.ch/api/v1/", "key": True, "json": {"query": "get_iocs", "days": 1}},
+    "loldrivers":    {"url": "https://www.loldrivers.io/api/drivers.json", "key": False},
 }
 FEEDS = {k: v["url"] for k, v in SOURCES.items()}      # kept for callers that list feed names
 UA = "aureon.defender"
@@ -137,6 +139,24 @@ def parse_threatfox(text):
     return {"hosts": sorted(hosts), "ips": sorted(ips)}
 
 
+def parse_loldrivers(text):
+    """loldrivers.io drivers.json -> {"hashes": [(sha256, label)]}. Each entry lists KnownVulnerableSamples."""
+    d = json.loads(text)
+    if not isinstance(d, list):
+        raise ValueError("unexpected LOLDrivers format")
+    out = {}
+    for drv in d:
+        if not isinstance(drv, dict):
+            continue
+        cat = str(drv.get("Category") or "vulnerable driver").lower()
+        for smp in drv.get("KnownVulnerableSamples") or []:
+            h = str((smp or {}).get("SHA256") or "").lower()
+            if re.fullmatch(r"[0-9a-f]{64}", h):
+                name = (smp.get("Filename") or smp.get("OriginalFilename") or "driver").lower()
+                out[h] = f"{'malicious' if 'malicious' in cat else 'vulnerable'} driver {name}"
+    return {"hashes": sorted(out.items())}
+
+
 class Feeds:
     def __init__(self, root: Path = None, fetcher=fetch):
         self.root = root or (data_dir() / "feeds")
@@ -187,6 +207,13 @@ class Feeds:
                     if not ips:
                         raise ValueError("empty feed")
                     report[name] = self._merge("feodo", ips, now)
+                elif name == "loldrivers":
+                    rows = parse_loldrivers(text)["hashes"]
+                    if not rows:
+                        raise ValueError("empty feed")
+                    if reputation:
+                        reputation.add_bad([(h, "LOLDrivers", label) for h, label in rows])
+                    report[name] = self._merge("loldrivers", [h for h, _ in rows], now)
                 elif name == "malwarebazaar":
                     rows = parse_bazaar(text)["hashes"]
                     if reputation and rows:
