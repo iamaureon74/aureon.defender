@@ -19,7 +19,7 @@ import random
 import time
 
 CRITICAL = {"realtime", "canary", "hid", "inbox", "devices_live"}
-DEFERRABLE = {"radar", "posture", "assets", "feeds", "leaks", "devices", "persistence", "integrity", "report", "backups", "trash", "device_traces", "drivers"}
+DEFERRABLE = {"radar", "posture", "assets", "feeds", "leaks", "devices", "persistence", "integrity", "report", "backups", "trash", "device_traces", "drivers", "full_scan"}
 
 BELOW_NORMAL_PRIORITY_CLASS = 0x00004000
 IDLE_PRIORITY_CLASS = 0x00000040

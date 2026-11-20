@@ -202,5 +202,54 @@ def protect_app_window(on=True):
     return protect_window(hwnd, on) if hwnd else False
 
 
+CAM_KEY = r"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore"
+RECALL_KEY = r"SOFTWARE\Policies\Microsoft\Windows\WindowsAI"
+
+
+def enforce_capture_guards(reg=None):
+    """Machine-wide, run by the SYSTEM engine. Returns what it changed (empty when already in place).
+
+    * Windows Recall: policy 'DisableAIDataAnalysis' = 1, so Windows stops saving screen snapshots.
+    * Borderless capture: the graphicsCaptureWithoutBorder consent is set to Deny, so any app that captures the
+      screen must show Windows' yellow capture border. Ordinary screenshots, screen sharing and recorders keep
+      working; they just can't do it invisibly any more.
+    """
+    if os.name != "nt" and reg is None:
+        return []
+    if reg is None:
+        import winreg
+
+        def reg(path, name, value, kind):
+            with winreg.CreateKeyEx(winreg.HKEY_LOCAL_MACHINE, path, 0, winreg.KEY_READ | winreg.KEY_SET_VALUE) as k:
+                try:
+                    if winreg.QueryValueEx(k, name)[0] == value:
+                        return False
+                except OSError:
+                    pass
+                winreg.SetValueEx(k, name, 0, winreg.REG_DWORD if kind == "dword" else winreg.REG_SZ, value)
+                return True
+    changed = []
+    if reg(RECALL_KEY, "DisableAIDataAnalysis", 1, "dword"):
+        changed.append("windows recall snapshots turned off")
+    if reg(CAM_KEY + "\\graphicsCaptureWithoutBorder", "Value", "Deny", "sz"):
+        changed.append("apps can no longer capture the screen without the yellow border")
+    return changed
+
+
+def hidden_capturers(log=None):
+    """Programs capturing the screen right now without the capture border, from Windows' own access records."""
+    if log is None:
+        if os.name != "nt":
+            return []
+        from .radar import privacy_log
+        log = privacy_log()
+    out = []
+    for r in log:
+        if r.get("capability") == "graphicsCaptureWithoutBorder" and r.get("in_use"):
+            app = r.get("app") or ""
+            out.append({"app": app, "exe": app.replace("#", "\\") if "#" in app else "", "user": r.get("user")})
+    return out
+
+
 def collect():
     return {"mic": mic_state(), "camera": camera_state(), "screen": screen_state(), "t": time.time()}

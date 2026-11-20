@@ -230,8 +230,8 @@ class EngineAutoClean(unittest.TestCase):
     def test_settings_reject_bad_mode(self):
         from aureon_defender.core import Settings
         s = Settings(Path(tempfile.mkdtemp()) / "s.json")
-        self.assertEqual(s.save({"auto_clean_mode": "shred"})["auto_clean_mode"], "copy")
-        self.assertEqual(s.save({"auto_clean_mode": "replace"})["auto_clean_mode"], "replace")
+        self.assertEqual(s.save({"auto_clean_mode": "shred"})["auto_clean_mode"], "replace")   # rejected: default stays
+        self.assertEqual(s.save({"auto_clean_mode": "copy"})["auto_clean_mode"], "copy")
         self.assertEqual(s.save({"clean_backup_days": 0})["clean_backup_days"], 7)
 
 

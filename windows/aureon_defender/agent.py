@@ -214,7 +214,9 @@ class Api:
         for cid, (status, how, src) in WINMAP.items():
             caps.setdefault(status, []).append({"id": cid, "how": how, "from": src})
         events = sorted(self.j.recent(80) + self.uj.recent(40), key=lambda e: e["t"], reverse=True)[:100]
-        return {"version": VERSION, "scan_job": self.scan_jobs().snapshot(), "integrations": availability(), "capability_plan": capability_plan(), "telemetry": self.telemetry_state(), "engine": {"alive": alive, **st}, "events": events,
+        local_job = self.scan_jobs().snapshot()
+        engine_job = st.get("scan_job") if alive else None
+        return {"version": VERSION, "scan_job": local_job if local_job.get("status") in ("running", "cancelling") or not engine_job else engine_job, "integrations": availability(), "capability_plan": capability_plan(), "telemetry": self.telemetry_state(), "engine": {"alive": alive, **st}, "events": events,
                 "radar": load_json(data_dir() / "radar.json"), "phones": load_json(user_dir() / "phones.json"),
                 "devices": load_json(data_dir() / "devices.json") or load_json(user_dir() / "devices.json"),
                 "leaks": self.leaks_state(), "browsers": self.browsers_state(), "theme": self.theme(),
@@ -496,6 +498,12 @@ class Api:
             ok = self.elevate(["devices", "clear"])
             return (200 if ok else 403), {"ok": ok, "message": "Approve the administrator prompt to clear Aureon's device log."}
         if path == "/api/scan/all":
+            alive, st = engine_alive()
+            if alive:
+                if (st.get("scan_job") or {}).get("status") in ("running", "cancelling"):
+                    return 409, {"error": "A full scan is already running"}
+                inbox({"type": "full_scan"})
+                return 200, {"ok": True, "message": "full scan started in the protection engine. it keeps going if you switch tabs or close this window; anything found is removed automatically unless the hardware needs it."}
             from .scanner import Scanner
             jobs = self.scan_jobs()
             try:
@@ -504,6 +512,9 @@ class Api:
                 return 409, {"error":str(ex)}
             return 200, {"ok":True,"message":"Scan started. Confirmed threats in your user folders follow your automatic-quarantine setting; uncertain matches need review. Access limits are listed separately.","scan":state}
         if path == "/api/scan/cancel":
+            if engine_alive()[0]:
+                inbox({"type": "scan_cancel"})
+                return 200, {"ok": True, "message": "stopping the scan after the current file."}
             return 200, {"ok":True,"scan":self.scan_jobs().stop(),"message":"Cancellation requested; the current engine call may take up to two minutes."}
         if path == "/api/scan/quarantine":
             if body.get("confirm") is not True:
@@ -792,7 +803,7 @@ class Api:
             alive, _ = engine_alive()
             if alive:
                 inbox({"type": "scan", "path": str(p)})
-                return 200, {"ok": True, "message": "Scan queued with the engine; results appear in Activity."}
+                return 200, {"ok": True, "message": "scanning in the protection engine; progress shows above and keeps going if you leave this page."}
             from .engine import Engine
             threading.Thread(target=lambda: Engine(journal=self.j).scan_path(p), daemon=True).start()
             return 200, {"ok": True, "message": "Engine not running: scanning in this window."}

@@ -317,6 +317,10 @@ def clean_file(path, in_place=False, out=None):
         new, removed = _resave(p)
     else:
         new, removed = HANDLERS[ext](p.read_bytes())
+    from .fingerprint import PASSES
+    if ext in PASSES:
+        new, more = PASSES[ext](new)
+        removed = list(removed) + [m for m in more if m not in removed]
     out_suffix = ".jpg" if ext in REENCODE else p.suffix
     dst = p if in_place else Path(out) if out else p.with_name(p.stem + ".clean" + out_suffix)
     if in_place:
@@ -342,7 +346,7 @@ def clean_file(path, in_place=False, out=None):
         except OSError:
             pass
     return {"file": str(p), "written": str(dst), "removed": removed, "saved_bytes": before - len(new),
-            "scope": "Selected known metadata fields only; embedded content, watermarks, filesystem records and all fingerprints are not removed.",
+            "scope": "Known metadata, embedded branches (motion-photo videos, appended images, multi-picture indexes), content credentials and vendor chunks. Pixels and sound are untouched, so the sensor noise pattern, encoder tables, visible content and watermarks remain.",
             "limitations": "PDF compressed/object-stream metadata and embedded attachments may remain. Video track identifiers/timestamps may remain. Review documents for visible names, comments and embedded content."}
 
 

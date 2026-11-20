@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.5.0"
+VERSION = "0.5.1"
 APP = "aureon.defender"
 
 
@@ -49,6 +49,9 @@ DEFAULTS = {
     "auto_quarantine_suspicious": True, # suspicious + unsigned + not needed by hardware: removed silently (vault, then deleted)
     "auto_remove_autostart": True,      # a new autostart entry whose program is flagged is removed along with the program
     "hardware_adaptive": True,
+    "network_guard": True,              # close risky/discovery ports on public networks, open wi-fi = public, leave fake twins
+    "block_hidden_capture": True,       # require the capture border, turn off recall, stop unsigned invisible capturers
+    "scheduled_scan": True,             # full scan every 3 days in the engine, quietly; findings go through autopilot
     "memory": True,                     # silent memory: deduplicated versions of documents, desktop, pictures (fold-memory)
     "memory_cap_percent": 15,           # never more than this share of the free disk
     "memory_max_gb": 50,
@@ -66,7 +69,7 @@ DEFAULTS = {
     "persistence_monitor": True,
     "wifi_watch": True,
     "hid_guard": True,
-    "hid_lock": False,
+    "hid_lock": True,                   # a new keyboard (usb or bluetooth) locks the screen until you confirm it is yours
     "dns_shield_hosts": False,          # opt-in: write URLhaus malware domains into hosts file
     "feeds_online": True,               # fetch free abuse.ch feeds when online (no user data sent)
     "daily_report": True,
@@ -83,15 +86,16 @@ DEFAULTS = {
     "leak_audit": True,
     "abusech_key": "",                  # free Auth-Key from https://auth.abuse.ch/ (MalwareBazaar, URLhaus, ThreatFox)
     "scan_removable": True,
-    "auto_clean_downloads": False,      # strip metadata from photos, audio, documents and videos as they download
-    "auto_clean_mode": "copy",          # "copy": add name.clean.ext beside it; "replace": clean the download itself
+    "auto_clean_downloads": True,       # strip metadata, hidden branches and content credentials from new media (downloads, pictures, desktop, videos, music)
+    "auto_clean_mode": "replace",       # "replace": clean the file itself, original kept privately for clean_backup_days; "copy": add name.clean.ext
                                         #   and keep the untouched original privately for clean_backup_days
     "clean_backup_days": 7,
     "scrub_download_source": True,      # drop the site/page URL Windows records on every download (keeps ZoneId)
     "bt_limit": 4,
     "bt_allowed": ["audio", "input", "phone", "wearable"],             # scan USB drives / SD cards when they're plugged in
     "phone_watch": True,                # scan Android/iPhone automatically when plugged in (agent)
-    "watch_folders": ["~/Downloads", "~/Desktop", "%TEMP%",
+    "settings_rev": 50,                 # bumped when a default changes meaning; older files get the new defaults once
+    "watch_folders": ["~/Downloads", "~/Desktop", "~/Pictures", "~/Videos", "~/Music", "%TEMP%",
                       "%APPDATA%/Microsoft/Windows/Start Menu/Programs/Startup"],
 }
 
@@ -120,6 +124,9 @@ class Settings:
             cur = json.loads(self.path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             cur = {}
+        if cur.get("settings_rev", 0) < 50:         # 0.5.1: cleaning and wider watch folders became automatic
+            for k in ("auto_clean_downloads", "auto_clean_mode", "watch_folders", "hid_lock", "canary_suspend_writer", "settings_rev"):
+                cur.pop(k, None)
         return {**DEFAULTS, **{k: v for k, v in cur.items() if k in DEFAULTS}}
 
     def save(self, changes: dict) -> dict:

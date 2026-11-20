@@ -70,7 +70,7 @@ public final class Audit {
         BatteryManager bm=(BatteryManager)c.getSystemService(Context.BATTERY_SERVICE);
         int battery=bm==null?-1:bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
         try{report.put("hardware",HardwareInfo.collect(c));}catch(Exception ex){report.put("hardware_error",ex.getClass().getSimpleName());}
-        report.put("version",1).put("app_version","0.5.0").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
+        report.put("version",1).put("app_version","0.5.1").put("generated_at_ms",System.currentTimeMillis()).put("battery_percent",battery).put("usb_host_devices",usb)
           .put("device",Build.MODEL).put("android_api",Build.VERSION.SDK_INT).put("secure_lock",secure)
           .put("validated_network",internet).put("visible_package_count",current.size()).put("installed_apps",installed).put("permission_reviews",apps).put("listening_apps",listening).put("default_assistant",assistant==null?"":assistant)
           .put("added_packages",added).put("removed_packages",removed).put("baseline_initialized",previous!=null)

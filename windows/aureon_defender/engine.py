@@ -57,6 +57,10 @@ def summarize(events):
     return "\n".join(lines)
 
 
+# Folders whose new photos, videos, songs and documents are cleaned of metadata and hidden branches on arrival.
+CLEAN_DIRS = {"downloads", "pictures", "desktop", "camera roll", "screenshots", "videos", "music"}
+
+
 class Engine:
     def __init__(self, journal=None, settings=None):
         self.settings_store = settings or Settings()
@@ -101,6 +105,8 @@ class Engine:
             ("device_traces", 12 * 3600, self.t_device_traces, None),
             ("drain", 60, self.t_drain, None),
             ("drivers", 12 * 3600, self.t_drivers, "driver_audit"),
+            ("full_scan", 600, self.t_full_scan, "scheduled_scan"),
+            ("netguard", 60, self.t_netguard, "network_guard"),
         ]
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}                 # module name -> last error text (shown in the dashboard)
@@ -112,6 +118,9 @@ class Engine:
         self._scan_queue = []
         self._scan_lock = threading.Lock()
         self._scan_thread = None
+        from .scan_jobs import ScanJobs
+        self.jobs = ScanJobs()
+        self._scan_requests = []
 
     @staticmethod
     def _hardware_profile():
@@ -155,7 +164,7 @@ class Engine:
     def _cleanup_policy(self, path):
         from .core import load_json
         for folder in Path(path).parents:
-            if folder.name.lower() == "downloads":
+            if folder.name.lower() in CLEAN_DIRS:
                 return load_json(folder.parent / "AppData/Roaming/Aureon/cleanup-policy.json", {}) or {}
         return {}
 
@@ -167,7 +176,8 @@ class Engine:
             from .media_strip import scrub_zone_identifier
             scrub_zone_identifier(path)
         # Only clean after the original's scan. Never auto-clean a flagged file.
-        if r["verdict"] == "clean" and in_downloads and self.download_cleanup_enabled(path):
+        in_clean = any(p.name.lower() in CLEAN_DIRS for p in path.parents)
+        if r["verdict"] == "clean" and in_clean and self.download_cleanup_enabled(path):
             self.auto_clean(path)
 
         if r["verdict"] in ("malicious", "suspicious"):
@@ -227,7 +237,7 @@ class Engine:
         return {"severity": "high", "kind": "threat", "title": f"threat found: {path.name}", "detail": why, "path": str(path)}
 
     def _downloads_root(self, path):
-        return next((p for p in path.parents if p.name.lower() == "downloads"), None)
+        return next((p for p in path.parents if p.name.lower() in CLEAN_DIRS), None)
 
     def auto_clean(self, path):
         from .clean import REENCODE, SUPPORTED, clean_file
@@ -629,10 +639,59 @@ class Engine:
             self.alert_once("sentry:cap:" + c["process"], {"severity": "high", "kind": "sentry",
                 "title": "Your screen is being captured",
                 "detail": c["what"] + " is recording or streaming your screen right now."}, cool=600)
-        if scr.get("recall_on"):
+        if self.s.get("block_hidden_capture", True):
+            self._guard_capture(sentry)
+        if scr.get("recall_on") and not self.s.get("block_hidden_capture", True):
             self.alert_once("sentry:recall", {"severity": "high", "kind": "sentry",
                 "title": "Windows Recall is taking snapshots of your screen",
                 "detail": "Recall saves a picture of everything you do every few seconds. Turn it off in Protect your PC."}, cool=3600)
+
+    def _guard_capture(self, sentry, kill=None):
+        """Stop invisible screen capture: enforce the border + Recall policy (hourly), and stop an unsigned
+        program caught capturing without the border, then remove it (unless the hardware needs it)."""
+        now = time.time()
+        if now - self.state.get("_capture_guard_t", 0) > 3600:
+            self.state["_capture_guard_t"] = now
+            try:
+                changed = sentry.enforce_capture_guards()
+            except OSError:
+                changed = []
+            if changed:
+                self.emit({"severity": "medium", "kind": "sentry", "blocked": True, "title": "hidden screen capture blocked",
+                           "detail": "; ".join(changed) + "."})
+        from .hwguard import needed_by_hardware
+        from .scanner import authenticode
+        for c in sentry.hidden_capturers():
+            exe = c.get("exe")
+            if not exe or not Path(exe).is_file() or needed_by_hardware(exe):
+                continue
+            try:
+                signed = authenticode(Path(exe)) == "Valid"
+            except Exception:
+                signed = False
+            if signed:
+                self.alert_once("sentry:hidden:" + exe, {"severity": "high", "kind": "sentry",
+                                "title": f"{Path(exe).name} captured your screen without the border",
+                                "detail": "it is signed by its publisher, so it was left running; the border is now required."}, cool=3600)
+                continue
+            (kill or self._kill_exe)(exe)
+            r = self.scanner.scan(exe)
+            r["verdict"] = "malicious" if r["verdict"] == "malicious" else "suspicious"
+            r["reasons"] = ["unsigned program capturing the screen invisibly"] + r["reasons"]
+            ev = self.react(Path(exe), r) or {}
+            self.emit({"severity": "high", "kind": "sentry", "blocked": bool(ev.get("blocked")),
+                       "title": f"stopped hidden screen capture by {Path(exe).name}", "detail": ev.get("detail", "")})
+
+    @staticmethod
+    def _kill_exe(exe):
+        import psutil
+        target = os.path.normcase(os.path.abspath(exe))
+        for p in psutil.process_iter(["exe", "pid"]):
+            try:
+                if p.info["exe"] and os.path.normcase(p.info["exe"]) == target and p.info["pid"] != os.getpid():
+                    p.kill()
+            except Exception:
+                continue
 
     def t_assets(self):
         """Roll-call of devices on your network and paired to this PC; alerts on a stranger."""
@@ -718,7 +777,11 @@ class Engine:
             p.unlink(missing_ok=True)
             kind = req.get("type")
             if kind == "scan" and isinstance(req.get("path"), str) and req["path"]:
-                self.queue_scan(Path(req["path"]))
+                self.start_scan([Path(req["path"])], kind="folder")
+            elif kind == "full_scan":
+                self.start_scan(None, kind="full")
+            elif kind == "scan_cancel":
+                self.jobs.stop()
             elif kind == "update_feeds":
                 self.next["feeds"] = 0
             elif kind == "posture":
@@ -736,6 +799,79 @@ class Engine:
                 self.scanner = Scanner(self.s, self.rep)
                 self.next["hosts"] = 0
             # anything else is ignored: the inbox is writable by normal users, so it only takes harmless requests
+
+    def start_scan(self, roots, kind="full"):
+        """Every scan (button, folder, schedule) runs here in the 24/7 engine, so closing or switching the
+        dashboard can't stop it. Findings go through the same autopilot as real-time protection."""
+        from .scan_jobs import ordered_roots
+        if self.jobs.snapshot()["status"] in ("running", "cancelling"):
+            if roots and len(self._scan_requests) < 10:
+                self._scan_requests.append((roots, kind))         # run after the current one
+            return False
+        settings = {**self.s, "use_defender_engine": kind != "full"}  # defender scans the disk on its own schedule
+        self.jobs.start(Scanner(settings, self.rep), roots=roots if roots else ordered_roots(),
+                        exclusions=[data_dir()], limit=200000 if kind == "full" else 50000, journal=self.emit,
+                        react=self.react, kind=kind, on_done=self._scan_done)
+        return True
+
+    def _scan_done(self, snap):
+        if snap.get("kind") == "full" and snap.get("status") == "completed":
+            self.last_full_scan = time.time()
+            atomic_write(data_dir() / "last-full-scan.json", json.dumps({"t": self.last_full_scan}))
+        n = snap.get("finding_count", 0)
+        removed = snap.get("auto_quarantined", 0)
+        self.j.add("medium" if n else "info", "scan",
+                   f"{'scheduled ' if snap.get('scheduled') else ''}{snap.get('kind', 'full')} scan {snap.get('status')}: {snap.get('scanned', 0):,} files",
+                   f"{n} finding{'s' if n != 1 else ''}, {removed} removed automatically, {snap.get('skipped', 0):,} skipped.")
+        if self._scan_requests:
+            roots, kind = self._scan_requests.pop(0)
+            self.start_scan(roots, kind)
+
+    def t_netguard(self):
+        """Close risky and discovery ports (firewall group 'aureon.defender guard'), treat open wi-fi as public,
+        and leave a fake open copy of a network this PC only knows with a password."""
+        from . import netguard
+        from .core import load_json
+        now = time.time()
+        if now - self.state.get("_netguard_rules_t", 0) > 6 * 3600:
+            self.state["_netguard_rules_t"] = now
+            added = netguard.ensure_rules()
+            if added:
+                self.emit({"severity": "medium", "kind": "network", "blocked": True, "title": f"closed {len(added)} risky network door{'s' if len(added) != 1 else ''}",
+                           "detail": "on public networks: file sharing, remote desktop and the discovery chatter that announces this pc. "
+                                     "on every network: telnet, ftp and vnc. home printers, nas and casting keep working."})
+        from .wifi_shield import interface
+        iface = interface()
+        known_p = data_dir() / "wifi-known.json"
+        actions, known = netguard.decide_wifi(iface, load_json(known_p, {}) or {})
+        atomic_write(known_p, json.dumps(known))
+        ssid = iface.get("ssid", "")
+        if "disconnect" in actions and netguard.disconnect():
+            self.emit({"severity": "high", "kind": "wifi", "blocked": True, "title": f"left a fake copy of {ssid}",
+                       "detail": f"this pc has only ever joined {ssid} with a password; this one was open. windows will reconnect to the real network."})
+        elif "public" in actions and netguard.set_public():
+            self.emit({"severity": "medium", "kind": "wifi", "blocked": True, "title": f"{ssid or 'this wi-fi'} is open, so it's treated as public",
+                       "detail": "file sharing, discovery and remote access are closed while you're on it."})
+        self.state["netguard"] = {"ssid": ssid, "auth": iface.get("auth"), "actions": actions}
+        return None
+
+    def t_full_scan(self):
+        """Every 3 days (scaled by hardware tier, never more than 5): a full scan, quietly, when the PC isn't busy."""
+        if not hasattr(self, "last_full_scan"):
+            from .core import load_json
+            self.last_full_scan = (load_json(data_dir() / "last-full-scan.json", {}) or {}).get("t", 0)
+            if not self.last_full_scan:                      # first run: start the clock instead of scanning at install
+                self.last_full_scan = time.time() - 2 * 86400
+                atomic_write(data_dir() / "last-full-scan.json", json.dumps({"t": self.last_full_scan}))
+        every = min(5, 3 * self.hw.get("interval_scale", 1.0)) * 86400
+        if time.time() - self.last_full_scan < every:
+            return None
+        if not self.gov.power.get("plugged", True) and (self.gov.power.get("percent") or 100) < 50:
+            return {"_module_status": "deferred"}
+        if self.start_scan(None, kind="full"):
+            with self.jobs.lock:
+                self.jobs.state["scheduled"] = True
+        return None
 
     def queue_scan(self, root: Path):
         """Requested scans run on their own worker thread so real-time sensors never wait behind them."""
@@ -798,11 +934,20 @@ class Engine:
         st = dict(self.state, heartbeat=time.time(), settings={**self.s, "abusech_key": "set" if self.s.get("abusech_key") else ""},
                   reputation=self.rep.count(),
                   feeds_age={k: self.feeds.age_hours(k) for k in feedmod.FEEDS}, quarantine=len(self.vault.list()),
-                  pid=os.getpid(), errors=dict(self.errors), power=self.gov.snapshot())
+                  pid=os.getpid(), errors=dict(self.errors), power=self.gov.snapshot(), scan_job=self._scan_snapshot())
         atomic_write(data_dir() / "status.json", json.dumps(st, default=str))
 
+    def _scan_snapshot(self):
+        if not hasattr(self, "jobs"):
+            return None
+        snap = self.jobs.snapshot()
+        snap["findings"] = snap.get("findings", [])[-200:]
+        snap["diagnostics"] = snap.get("diagnostics", [])[-50:]
+        snap["next_full_scan"] = getattr(self, "last_full_scan", 0) + min(5, 3 * self.hw.get("interval_scale", 1.0)) * 86400 if getattr(self, "last_full_scan", 0) else None
+        return snap
+
     SLOW = {"wifi", "persistence", "defender", "posture", "feeds", "report", "vitals", "radar", "devices", "defender_relay", "sentry", "assets",
-            "leaks", "hosts", "backups", "trash", "device_traces", "drain", "drivers"}
+            "leaks", "hosts", "backups", "trash", "device_traces", "drain", "drivers", "full_scan", "netguard"}
 
     def run_once(self, which="all"):
         now = time.time()
