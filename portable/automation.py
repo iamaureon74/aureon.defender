@@ -63,7 +63,8 @@ def autostart_target(entry):
                 cmd = line.split("=", 1)[1].strip().lstrip("-@!+:")
                 import shlex
                 try:
-                    parts = shlex.split(cmd)
+                    parts = shlex.split(cmd, posix=os.name != "nt")   # windows paths keep their backslashes
+                    parts = [x.strip('"') for x in parts]
                 except ValueError:
                     parts = cmd.split()
                 return parts[0] if parts else ""

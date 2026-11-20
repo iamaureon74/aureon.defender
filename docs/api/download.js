@@ -5,7 +5,7 @@ module.exports=async function(req,res){
  if(!Object.hasOwn(patterns,platform))return res.status(400).json({error:'Choose a supported device edition.'});
  const feed=await readReleaseFeed();
  for(const release of feed.releases||[])for(const asset of release.assets||[]){
-  if(patterns[platform].test(asset.name)&&asset.browser_download_url.startsWith('https://github.com/shep95/aureon.defender/releases/download/')){
+  if(patterns[platform].test(asset.name)&&['iamaureon74','shep95'].some(o=>asset.browser_download_url.startsWith('https://github.com/'+o+'/aureon.defender/releases/download/'))){
    res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Location',asset.browser_download_url);return res.status(302).end();
   }
  }

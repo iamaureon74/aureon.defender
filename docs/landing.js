@@ -1,7 +1,8 @@
 'use strict';
 (() => {
-  const $ = s => document.querySelector(s), REPO = 'https://github.com/shep95/aureon.defender';
-  const API = 'https://api.github.com/repos/shep95/aureon.defender/releases?per_page=10';
+  const $ = s => document.querySelector(s), REPOS = ['https://github.com/iamaureon74/aureon.defender', 'https://github.com/shep95/aureon.defender'];
+  const API = 'https://api.github.com/repos/iamaureon74/aureon.defender/releases?per_page=10';
+  const ours = (url, part) => typeof url === 'string' && REPOS.some(r => url.startsWith(r + part));
   let releases = [], selected = 'auto', lastCheck = 0, pending = false;
   const safeStorage = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k,v) => { try { localStorage.setItem(k,v); } catch {} } };
   const seenOnEntry=safeStorage.get('aureon-release-seen');
@@ -14,11 +15,11 @@
     if (/linux|cros/i.test(p + ua)) return 'linux';
     return 'other';
   }
-  function validRelease(r) { return r && !r.draft && !r.prerelease && typeof r.tag_name === 'string' && Array.isArray(r.assets) && typeof r.html_url === 'string' && r.html_url.startsWith(REPO + '/releases/tag/'); }
+  function validRelease(r) { return r && !r.draft && !r.prerelease && typeof r.tag_name === 'string' && Array.isArray(r.assets) && ours(r.html_url, '/releases/tag/'); }
   function assetFor(os) {
     const patterns = { windows:/^aureon-defender-windows-x64-setup-[\d.]+\.exe$/, android:/^aureon-defender-android-[\d.]+\.apk$/, macos:/^aureon-defender-portable-source-[\w.-]+\.zip$/, linux:/^aureon-defender-portable-source-[\w.-]+\.zip$/ };
     for (const r of releases) for (const a of r.assets) {
-      if (patterns[os]?.test(a.name) && typeof a.browser_download_url === 'string' && a.browser_download_url.startsWith(REPO + '/releases/download/')) return { ...a, release:r };
+      if (patterns[os]?.test(a.name) && ours(a.browser_download_url, '/releases/download/')) return { ...a, release:r };
     }
     return null;
   }

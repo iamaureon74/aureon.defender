@@ -15,7 +15,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: '"C:\Program Files\Git\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append'
-      - run: pip install pyyaml
+      - run: pip install pyyaml psutil==7.2.2 pillow
       - run: python -m unittest discover -s tests -v
       - run: python -m unittest portable.test_portable -v
       - name: docker compose config (validates every stack with the real parser)
