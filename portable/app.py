@@ -30,7 +30,7 @@ def snapshot():
         memory=psutil.virtual_memory();storage=psutil.disk_usage(str(Path.home()));specs.update(ram_total_bytes=memory.total,ram_available_bytes=memory.available,home_volume_total_bytes=storage.total,home_volume_free_bytes=storage.free)
         fn=getattr(psutil,'sensors_temperatures',None);specs['temperature_c']={group:[{'label':v.label,'value':v.current} for v in values] for group,values in (fn() if fn else {}).items()}
     except (NameError,AttributeError,OSError):pass
-    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.4.9-preview',
+    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.5.0-preview',
                 observed_at=time.time(),vitals=vitals,
                 usb=usb_inventory() if platform.system()=='Linux' else None,
                 scope='While open: every download and desktop file is scanned, anything found is removed on its own unless the hardware needs it, new downloads get clean copies, old trash is emptied. Read-only posture checks and local USB descriptors on Linux. No process blocking, VPN or Windows Defender.')

@@ -17,7 +17,15 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
 
-## What is new in 0.4.9 (source; installers on the release page are still 0.4.6 until rebuilt)
+## What is new in 0.5.0 (source; installers on the release page are still 0.4.6 until rebuilt)
+
+Memory now works on phones too, with no Python to install. Android cannot install another app without the user's tap, and iOS allows no Python and no background work at all, so instead of installing Python, fold-memory was rebuilt natively for each:
+
+- **Android (native Java, silent)**: DCIM, Pictures and Documents are kept inside the app with every earlier version, bites shared and named by SHA-256, restored only when every fingerprint matches. It runs inside the existing 15-minute check, at most hourly, only when charging or above 40% battery, not when hot or in battery saver, with at least 10% free space, capped at 15% of free space. It needs the same one-time "all files access" switch as the shield.
+- **Android ransomware undo**: five or more plain files turning into encrypted-looking bytes (or vanishing beside an encrypted `name.ext.*` twin) in one pass is treated as an attack. Those files are put back from memory and the encrypted copies deleted, with one quiet notification. A single dense change is treated as a normal edit. The overview's memory card can save the earlier version of a recently changed file next to it.
+- **iPhone / iPad / any browser (web edition, memory tab)**: files you add are kept in the browser's own storage with the same bite sharing, versions and fingerprint-checked restore. iOS does not let a web page watch folders or run in the background, so you choose the files; add the page to your home screen so Safari keeps its storage.
+
+## 0.4.9
 
 - **Silent memory, powered by [aureon.fold-memory](https://github.com/iamaureon74/aureon.fold-memory)**: Documents, Desktop and Pictures are kept on the machine itself with every earlier version, identical bytes stored once and every file checked against its SHA-256 before it comes back. It starts at login (Windows agent, mac/linux companion), runs hourly on the hardware budget, skips its turn on battery below 40% or when under 10% of the disk is free, and stays under 15% of the free disk (50 GB max) by keeping fewer old versions. Nothing leaves the device.
 - **Ransomware undo**: when the tripwire fires, every watched file that was overwritten with encrypted-looking bytes, or renamed and encrypted, since just before the alarm is put back from the last trustworthy version, and the encrypted copy is deleted. Normal edits in that window are left alone. Folding pauses while this happens so encrypted junk is not stored.
@@ -95,6 +103,7 @@ Open the [web edition](https://defender.asherin.com/) in Safari and choose **Add
 
 ## Verification
 
+- 0.5.0 source: 13 Android memory assertions pass on a desktop JVM (sharing, versions, exact restore, refusal of a damaged bite, nothing half-written, five-file ransomware undo including a renamed twin, a single dense edit left alone, the cap); the Android sources compile against the Android 14 framework. The web memory tab was exercised in Chromium: identical files stored once, the earlier version returned byte-exact, and a corrupted bite refused. Not run: an APK build, a real phone, and Safari on iOS.
 - 0.4.9 source (Linux container): 7 memory tests pass, covering folding, unchanged-file skips, duplicates, the size cap, battery and disk skips, and ransomware rollback (in-place encryption, rename-and-encrypt, an encrypted version already folded before the alarm, a normal edit left alone, and the agent hook). Both dashboards were screenshot-checked with the memory panel.
 - 0.4.8 source (Linux container): 28 new autopilot tests (hardware budget, hardware guard, removal policy, engine reactions, autostart removal, ransomware stop, driver audit) and the extended feed test (LOLDrivers parsing) pass; the remaining Windows suite failures on Linux are Windows-only tests that also failed before these changes. Portable: 5 tests pass, including live removal of planted threats and bad autostart entries. Android: sources compile against the Android 14 framework and 22 rule/file-check assertions pass. The Windows and portable dashboards and the web tools page were screenshot-checked at desktop and phone widths.
 - Not yet run for 0.4.8: Windows installer build and install, Android APK build and device instrumentation, a live LOLDrivers download (the build container's proxy blocks loldrivers.io; the parser follows its documented `KnownVulnerableSamples` format).

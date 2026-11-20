@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.4.9"
+VERSION = "0.5.0"
 APP = "aureon.defender"
 
 

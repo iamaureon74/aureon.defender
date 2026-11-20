@@ -111,6 +111,14 @@ public class MainActivity extends Activity {
         if(!active)button(ap,"Start protection",allFiles,()->toggle(true));
         JSONArray log;try{log=new JSONArray(g.getString("shield_log","[]"));}catch(JSONException e){log=new JSONArray();}
         if(log.length()>0){LinearLayout l=card("Removed recently");for(int i=log.length()-1;i>=Math.max(0,log.length()-5);i--){JSONObject x=log.optJSONObject(i);if(x==null)continue;text(l,x.optString("title"),15,TEXT,true);text(l,x.optString("detail")+" · "+date(x.optLong("t")),12,MUTED,false);gap(l,10);}}
+        LinearLayout mem=card("Memory");
+        long memLast=g.getLong("memory_last",0);String memSkip=g.getString("memory_skipped","");
+        text(mem,!allFiles?"waiting for all files access":memSkip.isEmpty()?(memLast==0?"starting on the next pass":"kept"):"waiting: "+memSkip,18,TEXT,true);gap(mem,6);
+        text(mem,"photos, pictures and documents stay on this phone with their earlier versions. identical bytes are stored once. if files start being encrypted, they are put back on their own.",13,MUTED,false);
+        row(mem,"Files held",String.valueOf(g.getInt("memory_files",0)));row(mem,"Earlier versions",String.valueOf(g.getInt("memory_versions",0)));
+        row(mem,"Space used",String.format(Locale.ROOT,"%.1f MB",g.getLong("memory_disk",0)/1048576.0));row(mem,"Last kept",date(memLast));
+        if(g.getInt("memory_undo_count",0)>0)row(mem,"Ransomware undo",g.getInt("memory_undo_count",0)+" files put back · "+date(g.getLong("memory_undo_t",0)));
+        for(String changed:Memory.recentlyChanged(this,3)){final String path=changed;button(mem,"Keep earlier "+new java.io.File(path).getName(),false,()->new Thread(()->{String msg;try{msg="Saved as "+Memory.keepEarlier(this,path).getName()+" next to the file. The current one was not touched.";}catch(Exception e){msg="Could not put it back: "+e.getMessage();}final String m=msg;runOnUiThread(()->{new AlertDialog.Builder(this).setMessage(m).setPositiveButton("OK",null).show();});}).start());}
         LinearLayout status=card("Protection");text(status,active?"Local watch is running":"Local watch is paused",18,TEXT,true);gap(status,6);text(status,"Checks run every 15 minutes, after app installs and at start-up, with or without a connection.",14,MUTED,false);
         button(status,busy?"Checking…":"Check now",!allFiles&&active?false:true,()->audit());if(active)button(status,"Pause protection",false,()->toggle(false));
         LinearLayout health=card("Device posture");row(health,"Screen lock",r.has("secure_lock")?(r.optBoolean("secure_lock")?"Secure lock set":"Needs review"):"Not checked");row(health,"Connection",r.has("validated_network")?(r.optBoolean("validated_network")?"Internet validated":"Offline / unvalidated"):"Not checked");row(health,"Last audit",date(r.optLong("generated_at_ms",0)));
