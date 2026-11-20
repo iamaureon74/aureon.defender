@@ -220,9 +220,9 @@ class Persistence:
             if k not in base:
                 where = k.split(":", 1)[0] if ":" in k else "registry Run key"
                 out.append(ev("medium", "persistence", f"New program set to start automatically ({where})",
-                              f"{k} -> {v}", target=v))
+                              f"{k} -> {v}", target=v, key=k))
             elif base[k] != v:
-                out.append(ev("medium", "persistence", "Autostart entry changed", f"{k}: {base[k]} -> {v}", target=v))
+                out.append(ev("medium", "persistence", "Autostart entry changed", f"{k}: {base[k]} -> {v}", target=v, key=k))
         return out
 
 

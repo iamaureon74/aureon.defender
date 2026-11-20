@@ -46,11 +46,11 @@ jobs:
         shell: bash
         run: |
           if [ "$TARGET_OS" = macos ]; then
-            python -m PyInstaller --noconfirm --clean --onedir --windowed --name Aureon-Defender-Preview --osx-bundle-identifier org.aureon.defender.preview --paths . --add-data 'portable/dashboard.html:portable' portable/launcher.py
+            python -m PyInstaller --noconfirm --clean --onedir --windowed --name Aureon-Defender-Preview --osx-bundle-identifier org.aureon.defender.preview --paths . --paths windows --hidden-import aureon_defender.hwguard --hidden-import aureon_defender.scanner --hidden-import aureon_defender.quarantine --add-data 'windows/aureon_defender/rules:aureon_defender/rules' --add-data 'portable/dashboard.html:portable' portable/launcher.py
             dist/Aureon-Defender-Preview.app/Contents/MacOS/Aureon-Defender-Preview --self-test
             ditto -c -k --keepParent dist/Aureon-Defender-Preview.app "aureon-defender-macos-${TARGET_ARCH}-preview.zip"
           else
-            python -m PyInstaller --noconfirm --clean --onedir --name Aureon-Defender-Preview --paths . --add-data 'portable/dashboard.html:portable' portable/launcher.py
+            python -m PyInstaller --noconfirm --clean --onedir --name Aureon-Defender-Preview --paths . --paths windows --hidden-import aureon_defender.hwguard --hidden-import aureon_defender.scanner --hidden-import aureon_defender.quarantine --add-data 'windows/aureon_defender/rules:aureon_defender/rules' --add-data 'portable/dashboard.html:portable' portable/launcher.py
             dist/Aureon-Defender-Preview/Aureon-Defender-Preview --self-test
             tar -czf "aureon-defender-linux-${TARGET_ARCH}-preview.tar.gz" -C dist Aureon-Defender-Preview
           fi

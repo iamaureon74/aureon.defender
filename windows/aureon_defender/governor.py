@@ -74,8 +74,9 @@ def _eco_qos():
 
 
 class Governor:
-    def __init__(self, probe=None, rng=None, max_defer=4 * 3600, busy=70.0):
+    def __init__(self, probe=None, rng=None, max_defer=4 * 3600, busy=70.0, scale=1.0):
         self.probe = probe or self._probe
+        self.scale = max(0.5, min(2.0, float(scale or 1.0)))     # from hwguard.budget: slower on small machines
         self.rng = rng or random.Random()
         self.max_defer = max_defer
         self.busy = busy
@@ -128,7 +129,8 @@ class Governor:
     def interval(self, name, base):
         eff = base * self.multiplier(name)
         if name in CRITICAL:
-            return eff
+            return eff                        # real-time sensors keep their cadence on every machine
+        eff *= self.scale
         return eff * self.rng.uniform(0.9, 1.1)
 
     def should_defer(self, name, now=None):
@@ -144,5 +146,5 @@ class Governor:
         return True
 
     def snapshot(self):
-        return {"mode": self.mode(), "load": None if self.load is None else round(self.load, 1), **self.power,
+        return {"mode": self.mode(), "scale": self.scale, "load": None if self.load is None else round(self.load, 1), **self.power,
                 "deferred": sorted(self.deferred_since)}

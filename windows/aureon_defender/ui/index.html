@@ -370,12 +370,47 @@ body{grid-template-columns:216px minmax(0,1fr)}main,.page,.grid,.card,.card>.bd,
 @media(min-width:821px) and (max-width:950px){body{grid-template-columns:180px minmax(0,1fr)}}
 @media(max-width:820px){body{grid-template-columns:minmax(0,1fr)}#nav .nav-search{display:grid;width:170px;min-width:170px;padding:0 5px}#nav .nav-search>span{display:none}#nav input{font-size:12px;min-height:38px}#nav{align-items:center}.grid,.grid.g2,.grid.g3,.grid.g4{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:540px){#p-controls #cbody>.grid.g3{grid-template-columns:minmax(0,1fr)}.card>.hd{gap:12px}.field{flex-wrap:wrap}.hstat{flex-wrap:wrap}.page{padding-inline:14px}.card>.bd{padding-inline:14px}.ph h1{overflow-wrap:anywhere}.btns>.btn{flex:1 1 auto}body[data-dock=bottom] #nav .nav-search{display:none}}
+</style><style id="autopilot-design">/* 0.4.7 autopilot: living orbit + one calm panel that says what was removed and what the hardware keeps. */
+.signal-orbit{isolation:isolate}
+.signal-orbit::after{display:none}
+.signal-orbit::before{z-index:0}
+.signal-orbit .sweep{position:absolute;inset:-1px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 78%,color-mix(in srgb,var(--accent) 22%,transparent) 96%,color-mix(in srgb,var(--accent) 55%,transparent) 100%);
+  -webkit-mask:radial-gradient(circle,transparent 0 56%,#000 57%);mask:radial-gradient(circle,transparent 0 56%,#000 57%);animation:ap-spin 6s linear infinite;z-index:-1}
+.signal-orbit .sat{position:absolute;inset:0;animation:ap-spin 14s linear infinite}
+.signal-orbit .sat::before{content:"";position:absolute;top:9px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent),0 0 18px var(--accent)}
+.signal-orbit .sat.b{animation-duration:23s;animation-direction:reverse;inset:26px}
+.signal-orbit .sat.b::before{width:4px;height:4px;margin-left:-2px;top:-2px;box-shadow:none;opacity:.7}
+.signal-orbit svg{border-radius:50%;animation:ap-breathe 4.2s ease-in-out infinite}
+.signal-orbit .halo{position:absolute;inset:44px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 20%,transparent),transparent 70%);animation:ap-breathe 4.2s ease-in-out infinite;z-index:-1}
+body.ap-danger .signal-orbit{--accent:var(--danger)}
+@keyframes ap-spin{to{transform:rotate(360deg)}}
+@keyframes ap-breathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.045);opacity:.82}}
+.autopilot{display:grid;grid-template-columns:minmax(0,1.1fr) repeat(3,minmax(0,1fr));gap:0;overflow:hidden;position:relative}
+.autopilot>div{padding:20px 22px;border-left:1px solid var(--line);min-width:0}
+.autopilot>div:first-child{border-left:0}
+.autopilot .k{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.autopilot .v{font:450 27px/1.15 var(--display);letter-spacing:-.8px;margin:9px 0 4px;font-variant-numeric:tabular-nums;color:var(--fg)}
+.autopilot .h{font-size:11.5px;color:var(--muted);line-height:1.5}
+.autopilot .live{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent);animation:ap-ping 2.4s cubic-bezier(.2,.7,.2,1) infinite}
+.autopilot .live.off{background:var(--faint);animation:none}
+.autopilot .bar{height:3px;border-radius:3px;background:var(--line);margin-top:12px;overflow:hidden}
+.autopilot .bar i{display:block;height:100%;background:var(--accent);border-radius:3px;transform-origin:left;animation:ap-grow .9s cubic-bezier(.2,.7,.2,1) both}
+.autopilot::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 70%,transparent),transparent);animation:ap-scan 5.5s ease-in-out infinite}
+.autopilot .last{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);padding:12px 22px;font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center;min-width:0}
+.autopilot .last b{color:var(--fg);font-weight:450;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes ap-ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 55%,transparent)}80%,100%{box-shadow:0 0 0 9px transparent}}
+@keyframes ap-grow{from{transform:scaleX(0)}}
+@keyframes ap-scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.stat{transition:transform .25s cubic-bezier(.2,.7,.2,1),background .25s}.stat:hover{transform:translateY(-2px)}
+@media (max-width:1100px){.autopilot{grid-template-columns:1fr 1fr}.autopilot>div:nth-child(3){border-left:0}.autopilot>div:nth-child(n+3){border-top:1px solid var(--line)}}
+@media (max-width:620px){.autopilot{grid-template-columns:1fr}.autopilot>div{border-left:0;border-top:1px solid var(--line)}.autopilot>div:first-child{border-top:0}}
+@media (prefers-reduced-motion:reduce){.signal-orbit .sweep,.signal-orbit .sat,.autopilot::after{animation:none!important}}
 </style></head>
 <body>
 <header><div class="breadcrumb"><span>Workspace</span><span>/</span><strong id="crumbtitle">Overview</strong></div><div class="hstat"><span aria-live="polite" class="signal-action-state" role="status"><i class="signal-spinner"></i><span id="action-label">Working</span></span><span class="state" id="hstate"><span class="dot off"></span>Connecting</span><span class="eng" id="heng"></span><span class="clock" id="clock"></span></div></header>
 <nav aria-label="Sections" id="nav"></nav>
 <main id="main"><section aria-labelledby="signal-title" class="page on" id="p-overview"><div class="signal-eyebrow">PERSONAL WORKSPACE <span>/</span> OVERVIEW</div>
-<div class="signal-hero"><div><h1 id="signal-title">Everything in view.<br/>Nothing in the way.</h1><p>Your hardware, privacy and protection.<br/>One considered place to keep watch.</p><div class="btns"><button class="btn primary" data-go="scan">Start a scan <span aria-hidden="true">→</span></button><button class="btn" data-go="activity">View activity</button></div></div><div class="signal-visual"><div aria-hidden="true" class="signal-orbit"><svg fill="none" stroke-width="1.4" viewbox="0 0 24 24"><path d="M12 2 4 5v7c0 5 8 10 8 10s8-5 8-10V5z"></path><path d="m8 15 4-8 4 8m-6-3h4"></path></svg></div><div><div id="mfam"></div><b id="mname">This laptop</b><br/><span class="state" id="mstate">Connecting</span></div></div></div><div class="grid g4" id="stats"></div><div class="vitalgrid" id="vitals"></div><div class="signal-overview-grid"><div class="card"><div class="hd"><h2>Recorded activity</h2><span class="muted">Last 24 hours</span></div><div class="bd"><div id="signal-history"></div><div class="signal-history-note">Event counts from loaded local history. This is not a scan-progress estimate.</div></div></div><div class="card"><div class="hd"><h2>Feed coverage</h2><button class="btn sm" data-go="settings">Configure</button></div><div class="bd" id="signal-feeds"></div></div></div>
+<div class="signal-hero"><div><h1 id="signal-title">Everything in view.<br/>Nothing in the way.</h1><p>Your hardware, privacy and protection.<br/>One considered place to keep watch.</p><div class="btns"><button class="btn primary" data-go="scan">Start a scan <span aria-hidden="true">→</span></button><button class="btn" data-go="activity">View activity</button></div></div><div class="signal-visual"><div aria-hidden="true" class="signal-orbit"><span class="sweep"></span><span class="halo"></span><span class="sat"></span><span class="sat b"></span><svg fill="none" stroke-width="1.4" viewbox="0 0 24 24"><path d="M12 2 4 5v7c0 5 8 10 8 10s8-5 8-10V5z"></path><path d="m8 15 4-8 4 8m-6-3h4"></path></svg></div><div><div id="mfam"></div><b id="mname">This laptop</b><br/><span class="state" id="mstate">Connecting</span></div></div></div><div class="card autopilot" id="autopilot" aria-live="polite"></div><div class="grid g4" id="stats"></div><div class="vitalgrid" id="vitals"></div><div class="signal-overview-grid"><div class="card"><div class="hd"><h2>Recorded activity</h2><span class="muted">Last 24 hours</span></div><div class="bd"><div id="signal-history"></div><div class="signal-history-note">Event counts from loaded local history. This is not a scan-progress estimate.</div></div></div><div class="card"><div class="hd"><h2>Feed coverage</h2><button class="btn sm" data-go="settings">Configure</button></div><div class="bd" id="signal-feeds"></div></div></div>
 <div class="card" id="sentrycard"><div class="hd"><h2>Privacy sentry</h2><span class="sw" title="Hide this window from screen recording"><input aria-label="Hide window from screen recording" id="hidecap" type="checkbox"/><span></span></span></div><div class="bd flush rows" id="sentry"></div></div>
 <div class="card banner" id="banner"><div class="glyph" id="bglyph"></div><div><div class="t" id="t-overview">Starting…</div><div class="s" id="bsub"></div></div>
 <div class="act"><button class="btn" data-go="scan">Scan</button><button class="btn" data-post="/api/radar">Sweep radar</button></div></div>
@@ -585,16 +620,16 @@ $("#signal-reduced").onchange=e=>{uiPrefs.reduced=e.target.checked;saveUi();};
 const MOD={realtime:"Real-time file protection",canary:"Ransomware tripwires",hid:"USB keyboard guard",network:"Network watch",devices_live:"Device log",
   wifi:"WiFi impersonation watch",persistence:"Autostart watch",defender:"Defender engine",defender_relay:"Defender alerts",radar:"Hidden-software radar",
   leaks:"Leak audit",posture:"Security settings",feeds:"Threat feeds",hosts:"DNS shield",report:"Daily report",vitals:"System vitals"};
-function renderOverview(){const e=S.engine,alive=e.alive,c=e.counts||{},now=Date.now()/1000;
-  const day=S.events.filter(x=>x.t>now-86400&&(x.severity==="high"||x.severity==="medium"));
-  const open=day.filter(x=>!x.quarantine_id&&x.severity==="high");
+function renderOverview(){const e=S.engine||{},alive=e.alive,c=e.counts||{},now=Date.now()/1000;S.events=S.events||[];
+  const day=S.events.filter(x=>x.t>now-86400&&!x.blocked&&(x.severity==="high"||x.severity==="medium"));
+  const open=day.filter(x=>!x.quarantine_id&&!x.blocked&&x.severity==="high");
   const state=!alive?"off":open.length?"danger":day.length?"warn":"ok";
   $("#banner").className="card banner "+state;$("#bglyph").innerHTML=svg(state==="ok"?"check":"alert");
   $("#t-overview").textContent=!alive?"Protection engine isn't running":open.length?`${open.length} alert${open.length>1?"s":""} need you`:day.length?`Protected · ${day.length} thing${day.length>1?"s":""} to look at`:"Monitoring active";
   $("#bsub").textContent=!alive?"Start aureon.defender from the Start menu, or run aureon.defender.exe install.":`${e.online?"Online":"Offline, using local rules and signatures"} · watching since ${new Date(e.started*1000).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}`;
   $("#hstate").innerHTML=`<span class="dot ${state==="ok"?"":state}"></span>${state==="ok"?"Engine active":state==="off"?"Engine off":state==="danger"?"Needs you":"Attention"}`;
   $("#heng").textContent=alive?(e.online?"Online":"Offline mode"):"";
-  $("#stats").innerHTML=[["Files scanned",c.scanned??0,"since the engine started"],["Threats blocked",c.quarantined??0,"moved to the Vault"],["Alerts",c.alerts??0,"medium or high"],
+  $("#stats").innerHTML=[["Files scanned",c.scanned??0,"since the engine started"],["In the vault",(S.quarantine||[]).length,"encrypted, deleted on schedule"],["Alerts",c.alerts??0,"medium or high"],
     ["Known-bad hashes",(e.reputation??0).toLocaleString(),e.feeds_age&&e.feeds_age.malwarebazaar!=null?`feeds ${Math.round(e.feeds_age.malwarebazaar)} h old`:"feeds not fetched yet"]]
     .map(([l,v,h])=>`<div class="card stat"><div class="l">${l}</div><div class="v num">${v}</div><div class="h">${h}</div></div>`).join("");
   const att=S.events.filter(x=>x.severity==="high"||x.severity==="medium").slice(0,6);
@@ -710,7 +745,7 @@ function renderStudio(){const st=S.studio,w=S.widget;
   const ws=$("#wsw");if(ws&&S.theme.name==="Wallpaper")ws.innerHTML=S.theme.palette.map(c=>`<i style="background:${c}"></i>`).join("")}
 
 /* ---------- settings ---------- */
-const TOG=[["Protection",[["realtime","Real-time file protection","New files in Downloads, Desktop, Temp and Startup, as soon as they finish arriving."],["silent_mode","quiet mode","runs quietly. you're only notified when something is blocked or deleted, with the reason. everything else waits in activity."],["auto_wipe_confirmed","delete confirmed malware right away","files matching known malware or microsoft defender are permanently deleted when found (no undo). uncertain matches go to the vault instead. windows system files are left alone."],["auto_quarantine","Quarantine threats automatically","Malicious files go to the Vault; suspicious ones only raise an alert."],["scrub_download_source","Forget where downloads came from","Removes the website and page address Windows saves with every download. The safety zone stays, so Windows still warns before running it."],["use_defender_engine","Microsoft Defender engine","Microsoft's offline signatures as one more scanner."],["defender_relay","Show Defender's detections in Aureon","Everything Defender catches appears here and as an Aureon notification."],["use_clamav","Optional ClamAV engine","Uses a separately installed local clamscan. No automatic download or install; disabled by default."],["use_yara","YARA rules","Aureon's and noah.shield's pattern rules."],["canary","Ransomware tripwires","Hidden decoy documents; touching them is an instant alert."],["canary_suspend_writer","Freeze ransomware automatically","Suspend the unsigned program writing the most when a tripwire fires."]]],
+const TOG=[["Protection",[["realtime","Real-time file protection","New files in Downloads, Desktop, Temp and Startup, as soon as they finish arriving."],["silent_mode","quiet mode","runs quietly. you're only notified when something is blocked or deleted, with the reason. everything else waits in activity."],["auto_wipe_confirmed","delete confirmed malware right away","files matching known malware or microsoft defender are permanently deleted when found (no undo). uncertain matches go to the vault instead. windows system files are left alone."],["auto_quarantine","remove threats automatically","anything that can't be deleted outright goes to the encrypted vault, which empties itself after the trash period."],["auto_quarantine_suspicious","remove suspicious files too","suspicious, unsigned files are removed without asking. signed programs and anything a driver, device or the boot chain needs are left in place."],["auto_remove_autostart","undo bad autostarts","when a flagged program sets itself to start with windows, the program and its autostart entry are removed. services are reported, never deleted."],["hardware_adaptive","tune to this machine","sweeps run more often on strong hardware and gentler on small or battery machines. real-time protection keeps the same pace everywhere."],["scrub_download_source","Forget where downloads came from","Removes the website and page address Windows saves with every download. The safety zone stays, so Windows still warns before running it."],["use_defender_engine","Microsoft Defender engine","Microsoft's offline signatures as one more scanner."],["defender_relay","Show Defender's detections in Aureon","Everything Defender catches appears here and as an Aureon notification."],["use_clamav","Optional ClamAV engine","Uses a separately installed local clamscan. No automatic download or install; disabled by default."],["use_yara","YARA rules","Aureon's and noah.shield's pattern rules."],["canary","Ransomware tripwires","Hidden decoy documents; touching them is an instant alert."],["canary_suspend_writer","stop ransomware automatically","when a tripwire fires, the unsigned program rewriting your files is stopped and removed."]]],
   ["Network and devices",[["network_monitor","Network watch","Botnet servers, new open ports, hosts-file and DNS hijacks."],["dns_shield_hosts","Block malware domains","URLhaus malware-distribution domains, for every app."],["block_trackers","Block trackers for every app","noah.shield's tracker list, applied system-wide."],["wifi_watch","WiFi impersonation watch","Fake copies of networks you trust."],["hid_guard","USB keyboard guard","Fake-keyboard USB sticks."],["hid_lock","Lock the screen on new keyboards","Injected keystrokes land on the lock screen."],["device_history","Device log","Record every device that connects. Local only; clear it any time."]]],
   ["Discovery",[["radar","Hidden-software radar","Every 30 minutes: programs, services, tasks, extensions, camera/mic/screen use."],["persistence_monitor","Autostart watch","Anything that sets itself to start with Windows."],["leak_audit","Leak audit","Privacy settings and registered security products, every 6 hours."],["phone_watch","Scan phones when plugged in","Android over USB debugging, iPhone with libimobiledevice."]]],
   ["Privacy and updates",[["clipboard_guard","Clipboard guard","Warn when a key, card number or wallet phrase is on the clipboard, then clear it."],["feeds_online","Threat feeds","Free abuse.ch lists when online. Nothing about you is sent."],["daily_report","Daily report","A plain-English summary, by a local AI model if one is installed."]]]];
@@ -764,6 +799,18 @@ function renderMachine(){const L=S.live||{},v=S.engine.vitals||{},inv=S.hardware
     ["activity","Processor",v.cpu!=null?Math.round(v.cpu)+"%":"Unavailable",inv?.cpu?.[0]?.name||"Live utilization"],
     ["hardware","Memory",v.ram!=null?Math.round(v.ram)+"%":"Unavailable",inv?.system?.memory_gb?inv.system.memory_gb+" GiB installed":"Live utilization"]];
   $("#vitals").innerHTML=cells.map(([ico,l,val,h])=>`<div class="vital"><div class="l">${svg(ico)} ${l}</div><div class="v">${esc(val)}</div><div class="h" title="${esc(h)}">${esc(h)}</div></div>`).join("");
+}
+function renderAutopilot(){const e=S.engine||{},st=S.settings||{},hw=e.hardware_profile||{},c=e.counts||{},alive=!!e.alive;
+  const removed=(S.events||[]).filter(x=>x.blocked);const last=removed[0];
+  const on=alive&&st.auto_quarantine!==false;const tier={lite:"light",standard:"balanced",performance:"full"}[hw.tier]||"measuring";
+  const cap=Math.max(.06,Math.min(1.5,+hw.capacity||0));const pct=Math.round(cap/1.5*100);
+  const ram=hw.ram_gb?`${hw.ram_gb} GB`:"";const cpus=hw.cpus?`${hw.cpus} threads`:"";
+  document.body.classList.toggle("ap-danger",(S.events||[]).some(x=>x.severity==="high"&&!x.blocked&&x.t>Date.now()/1000-86400));
+  $("#autopilot").innerHTML=`<div><div class="k"><span class="live ${on?"":"off"}"></span>autopilot</div><div class="v">${on?"on, silent":"waiting"}</div><div class="h">${on?"finds it, removes it, tells you why. nothing to approve.":"starts with the protection engine."}</div></div>
+  <div><div class="k">removed automatically</div><div class="v">${(c.quarantined??0).toLocaleString()}</div><div class="h">since start · vault copies delete after ${st.trash_days??30} days</div></div>
+  <div><div class="k">hardware kept safe</div><div class="v">${hw.guarded_drivers!=null?hw.guarded_drivers.toLocaleString():"all"}</div><div class="h">registered drivers, firmware and boot files are never removed</div></div>
+  <div><div class="k">tuned to this machine</div><div class="v">${tier}</div><div class="h">${[cpus,ram,hw.disk&&hw.disk!=="unknown"?hw.disk:""].filter(Boolean).join(" · ")||"profile appears once the engine runs"}</div><div class="bar" title="measured capacity"><i style="width:${hw.tier?pct:0}%"></i></div></div>
+  <div class="last">${last?`<span class="dot"></span>last removal <b>${esc(last.title)}</b><span class="muted">${new Date(last.t*1000).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</span>`:`<span class="dot"></span>nothing has needed removing. it stays quiet until something does.`}</div>`;
 }
 function renderSignal(){
   $("#signal-version").textContent=S.version||"";
@@ -884,12 +931,13 @@ function renderNetPower(){const N=S.netpower;const box=$("#netpower");if(!box)re
 /* ---------- render + events ---------- */
 function notifyNew(){const fresh=S.events.filter(x=>!seenEv.has(x.id));fresh.forEach(x=>seenEv.add(x.id));if(firstLoad)return;
   fresh.filter(x=>x.severity==="high"||x.severity==="medium").slice(0,3).forEach(x=>toast(x.title,x.detail||"",x.severity,x.severity==="high"?9000:6000))}
-function renderCore(){if(S.ui_appearance&&!uiSaving&&["signal","frost","studio"].includes(S.ui_appearance.palette)&&typeof S.ui_appearance.reduced==="boolean")uiPrefs={...S.ui_appearance};applyTheme(S.theme);notifyNew();renderMachine();renderScanJob();renderOverview();renderHarden();renderHardware();renderFeeds();renderCalendar();renderVault2();renderControls();renderCatalog();renderSentry();renderAssets();renderNetPower();
-  const ac=$("#autoclean");if(ac&&document.activeElement!==ac)ac.checked=!!S.settings.auto_clean_downloads;const acm=$("#autocleanmode");if(acm&&document.activeElement!==acm)acm.value=S.settings.auto_clean_mode||"copy";renderActivity();renderVault();renderRadar();renderDevices();renderLeaks();renderPhones();renderBrowsers();renderStudio();renderSettings()}
+function safe(f){try{f()}catch(err){console.error((f.name||"render")+": "+err.message)}}
+function renderCore(){if(S.ui_appearance&&!uiSaving&&["signal","frost","studio"].includes(S.ui_appearance.palette)&&typeof S.ui_appearance.reduced==="boolean")uiPrefs={...S.ui_appearance};safe(()=>applyTheme(S.theme));safe(notifyNew);safe(renderMachine);safe(renderScanJob);safe(renderOverview);safe(renderHarden);safe(renderHardware);safe(renderFeeds);safe(renderCalendar);safe(renderVault2);safe(renderControls);safe(renderCatalog);safe(renderSentry);safe(renderAssets);safe(renderNetPower);
+  const ac=$("#autoclean");if(ac&&document.activeElement!==ac)ac.checked=!!S.settings.auto_clean_downloads;const acm=$("#autocleanmode");if(acm&&document.activeElement!==acm)acm.value=S.settings.auto_clean_mode||"copy";safe(renderActivity);safe(renderVault);safe(renderRadar);safe(renderDevices);safe(renderLeaks);safe(renderPhones);safe(renderBrowsers);safe(renderStudio);renderSettings()}
 function render(){
   const active=document.activeElement;const fields=$$("input[id]").filter(i=>["text","password","search"].includes(i.type)).map(i=>({id:i.id,value:i.value,focused:i===active,start:i.selectionStart,end:i.selectionEnd}));
   const scrolls=$$(".page.on .scroll").map(e=>e.scrollTop);
-  renderCore();renderSignal();
+  renderCore();safe(renderSignal);safe(renderAutopilot);
   fields.forEach(f=>{const i=document.getElementById(f.id);if(!i)return;i.value=f.value;if(f.focused){i.focus({preventScroll:true});try{i.setSelectionRange(f.start,f.end);}catch(_){}}});
   $$(".page.on .scroll").forEach((e,i)=>{if(scrolls[i]!=null)e.scrollTop=scrolls[i];});
 }

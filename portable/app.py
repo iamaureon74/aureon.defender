@@ -30,10 +30,10 @@ def snapshot():
         memory=psutil.virtual_memory();storage=psutil.disk_usage(str(Path.home()));specs.update(ram_total_bytes=memory.total,ram_available_bytes=memory.available,home_volume_total_bytes=storage.total,home_volume_free_bytes=storage.free)
         fn=getattr(psutil,'sensors_temperatures',None);specs['temperature_c']={group:[{'label':v.label,'value':v.current} for v in values] for group,values in (fn() if fn else {}).items()}
     except (NameError,AttributeError,OSError):pass
-    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.4.5-preview',
+    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.4.7-preview',
                 observed_at=time.time(),vitals=vitals,
                 usb=usb_inventory() if platform.system()=='Linux' else None,
-                scope='Read-only posture, local USB descriptors on Linux, browser-local file hashes, and while open: clean copies of new downloads, emptying old trash and a rough battery picture. No quarantine, process blocking, VPN, or Windows Defender.')
+                scope='While open: every download and desktop file is scanned, anything found is removed on its own unless the hardware needs it, new downloads get clean copies, old trash is emptied. Read-only posture checks and local USB descriptors on Linux. No process blocking, VPN or Windows Defender.')
 
 
 def handler(token,state,lock,port,auto=None):
@@ -57,7 +57,7 @@ def handler(token,state,lock,port,auto=None):
             if not self.authorized():return self.send(403,{'error':'Invalid token'})
             if u.path=='/api/state':
                 with lock:value={**state}
-                if auto is not None:value['activity']=list(auto.log[:50]);value['automation']={'clean_downloads':auto.clean,'trash_days':auto.trash_days,'downloads':str(auto.downloads)}
+                if auto is not None:value['activity']=list(auto.log[:50]);value['automation']={'clean_downloads':auto.clean,'trash_days':auto.trash_days,'downloads':str(auto.downloads),**auto.status()}
                 return self.send(200,value)
             if u.path=='/api/drain':
                 if auto is None:return self.send(404,{'error':'Not running'})
@@ -92,6 +92,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--no-browser',action='store_true');parser.add_argument('--self-test',action='store_true')
     parser.add_argument('--no-auto-clean',action='store_true',help='do not make clean copies of new downloads')
+    parser.add_argument('--no-protect',action='store_true',help='do not scan and remove threats from downloads and desktop')
     parser.add_argument('--trash-days',type=int,default=30,help='empty trash items older than this many days (0 = never)')
     args=parser.parse_args()
     if args.self_test:
@@ -103,7 +104,7 @@ def main():
         return 0
     state={'device':snapshot(),'posture':None,'busy':False};lock=threading.Lock();port=[0];token=secrets.token_urlsafe(32)
     from portable.automation import Automation
-    auto=Automation(clean=not args.no_auto_clean,trash_days=max(0,args.trash_days))
+    auto=Automation(clean=not args.no_auto_clean,trash_days=max(0,args.trash_days),protect=not args.no_protect)
     threading.Thread(target=auto.run,name='aureon-auto',daemon=True).start()
     server=ThreadingHTTPServer(('127.0.0.1',0),handler(token,state,lock,port,auto));port[0]=server.server_port
     if not args.no_browser:webbrowser.open(f'http://127.0.0.1:{port[0]}/?t={token}')

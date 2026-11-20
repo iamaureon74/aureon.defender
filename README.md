@@ -17,6 +17,17 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
 
+## What is new in 0.4.7 (source; installers still 0.4.6 until rebuilt)
+
+Every edition now runs on autopilot: it finds something, removes it, and says why in one line. Nothing to approve.
+
+- **Hardware guard** (`windows/aureon_defender/hwguard.py`, mirrored in Android `ShieldRules`): before anything is removed it checks whether a device, driver or the boot chain needs it. Drivers the OS registered (Windows service registry, any folder), `System32\drivers`, DriverStore, EFI/boot files, `/lib/modules`, `/lib/firmware`, `/boot`, macOS `/System` and `/Library/Extensions`, Android `Android/` and firmware folders are never touched. A stray `.sys` dropped in Downloads is not "needed" (bring-your-own-vulnerable-driver), so it stays removable.
+- **Adapts to any machine**: a fixed formula over threads, RAM, battery and disk type picks light / balanced / full. Small or battery machines sweep less often; strong ones sweep more. Real-time protection keeps the same pace everywhere. No AI, no learned model: the same hardware always gets the same budget.
+- **Windows**: suspicious unsigned files are now removed too (encrypted vault, deleted after the trash period); confirmed malware is still wiped at once. A flagged program that sets itself to autostart loses both the program and the entry. The ransomware tripwire now stops and removes the unsigned writer by default. Microsoft's vulnerable-driver blocklist joins "Protect this PC". Dashboard: animated orbit, autopilot panel, and each section now fails on its own instead of blanking the page.
+- **Mac / Linux companion**: scans Downloads and Desktop (plus one sweep of what is already there) and removes disguised ELF/Mach-O programs, rogue `.desktop` launchers, shell droppers, reverse shells and miners. Redesigned dashboard.
+- **Android**: with one "all files access" switch, shared storage is checked every 15 minutes and after installs; disguised APKs, double extensions, programs posing as documents and blocklisted hashes are deleted with one quiet notification. Without the switch it guards folders you pick. Android still does not allow silent uninstalls of other apps.
+- **Web edition**: redesigned tools page.
+
 ## What is new in 0.4.3
 
 The borderless landing header, themed scrollbars, original Signal footer and full ink/lime app artwork now share the same identity. Site-local download endpoints start the actual file transfer without opening a GitHub release page; GitHub still hosts the binary bytes. The header uses the full **aureon.defender** name at narrow widths.

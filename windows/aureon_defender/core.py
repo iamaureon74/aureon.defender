@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.4.6"
+VERSION = "0.4.7"
 APP = "aureon.defender"
 
 
@@ -45,7 +45,10 @@ def user_dir() -> Path:
 
 DEFAULTS = {
     "realtime": True,
-    "auto_quarantine": True,            # malicious verdicts only; suspicious = alert
+    "auto_quarantine": True,            # anything removed goes through the vault when it can't be wiped outright
+    "auto_quarantine_suspicious": True, # suspicious + unsigned + not needed by hardware: removed silently (vault, then deleted)
+    "auto_remove_autostart": True,      # a new autostart entry whose program is flagged is removed along with the program
+    "hardware_adaptive": True,          # cadence and sweep size follow this machine's measured capacity
     "auto_wipe_confirmed": True,        # confirmed malware (known hash / Defender / ClamAV) is deleted at once, no undo
     "silent_mode": True,                # notify only when something was blocked or deleted, with the reason
     "trash_days": 30,
@@ -54,7 +57,7 @@ DEFAULTS = {
     "use_yara": True,
     "use_clamav": False,
     "canary": True,
-    "canary_suspend_writer": False,     # opt-in: suspend the top unsigned writer on canary hit
+    "canary_suspend_writer": True,      # ransomware tripwire: stop the unsigned program encrypting files and remove it
     "network_monitor": True,
     "persistence_monitor": True,
     "wifi_watch": True,

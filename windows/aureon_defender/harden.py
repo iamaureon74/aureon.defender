@@ -18,6 +18,9 @@ HKLM, HKCU = "HKLM", "HKCU"
 MACHINE = [
     ("autorun", "Devices", "AutoRun off for every drive", "USB sticks and discs can't start programs by themselves.",
      HKLM, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer", "NoDriveTypeAutoRun", 255, "reg"),
+    ("driver_blocklist", "Devices", "Microsoft vulnerable-driver blocklist on",
+     "Windows refuses to load signed drivers known to be abused to switch off security (bring-your-own-vulnerable-driver).",
+     HKLM, r"SYSTEM\CurrentControlSet\Control\CI\Config", "VulnerableDriverBlocklistEnable", 1, "reg"),
     ("smb1", "Network", "SMBv1 off", "The protocol WannaCry spread through.", None, None, "EnableSMB1Protocol", False, "smb"),
     ("llmnr", "Network", "LLMNR broadcasts off", "Stops attackers on the same WiFi answering name lookups to steal password hashes.",
      HKLM, r"SOFTWARE\Policies\Microsoft\Windows NT\DNSClient", "EnableMulticast", 0, "reg"),

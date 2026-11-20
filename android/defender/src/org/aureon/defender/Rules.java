@@ -8,7 +8,7 @@ public final class Rules {
         return "";
     }
     public static String scope() {
-        return "Permission combinations are review prompts, not malware verdicts. Android limits visibility into other apps, USB hardware and network traffic. No root access, VPN interception or automatic removal.";
+        return "Permission combinations are review prompts, not malware verdicts. Files on shared storage that match a rule or your blocklist are deleted automatically; Android/, hidden and firmware folders are never touched. Android does not let an ordinary app uninstall other apps silently, read their private data, or intercept traffic without root or a VPN.";
     }
     /** Assistants and on-device AI known to keep a wake-word or ambient-audio model running. */
     public static final String[][] LISTENERS = {

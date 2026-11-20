@@ -201,6 +201,8 @@ def heuristics(path: Path, head: bytes):
         except (zipfile.BadZipFile, OSError):
             pass
 
+    hits += posix_heuristics(path, head, ext, low)
+
     if head[:2] == b"MZ":
         if ext not in EXEC_EXT | {".sys", ".ocx", ".efi", ".node", ".pyd"}:
             hits.append((60, f"Windows program disguised as {ext or 'no extension'}"))
@@ -212,6 +214,38 @@ def heuristics(path: Path, head: bytes):
                 hits.append((25 if from_net else 10, "program is not digitally signed"))
                 if entropy(head[:262144]) > 7.4:
                     hits.append((15, "packed/encrypted program body"))
+    return hits
+
+
+# Linux / macOS programs and droppers. Plain byte and text patterns; same scoring scale as above.
+POSIX_MAGIC = (b"\x7fELF", b"\xcf\xfa\xed\xfe", b"\xce\xfa\xed\xfe", b"\xca\xfe\xba\xbe", b"\xfe\xed\xfa\xcf")
+POSIX_EXEC_EXT = {"", ".bin", ".run", ".elf", ".so", ".dylib", ".o", ".out", ".app", ".appimage", ".command", ".sh", ".x86_64", ".aarch64"}
+SHELL_IOC = [
+    (r"(curl|wget)\s[^|;]*\|\s*(ba|z|da)?sh\b", 45, "downloads a script and pipes it straight into a shell"),
+    (r"base64\s+(-d|--decode)[^|]*\|\s*(ba|z)?sh", 50, "decodes hidden base64 and runs it"),
+    (r"/dev/tcp/\d{1,3}(\.\d{1,3}){3}/\d+", 70, "opens a reverse shell over /dev/tcp"),
+    (r"\bnc(at)?\b[^\n]*\s-e\s*/bin/(ba)?sh", 70, "netcat reverse shell"),
+    (r"chmod\s+\+x\s+/tmp/\S+\s*(;|&&)\s*/tmp/", 40, "drops a program in /tmp and runs it"),
+    (r"(crontab\s+-|/etc/cron\.d/|launchctl\s+load|~/library/launchagents)", 30, "installs itself to start automatically"),
+    (r"xmrig|stratum\+tcp://|minerd\b", 60, "cryptocurrency miner"),
+    (r"history\s+-c|unset\s+histfile|rm\s+-rf\s+~?/?\.bash_history", 30, "erases shell history to hide its tracks"),
+    (r"osascript\s+-e\s+['\"]?.*(password|keychain)", 50, "asks for your password through a fake system dialog"),
+    (r"security\s+(find-generic-password|dump-keychain)", 55, "reads passwords from the macOS keychain"),
+]
+
+
+def posix_heuristics(path, head, ext, low):
+    """Disguised ELF/Mach-O programs, shell droppers and rogue launchers (Linux .desktop, macOS .command)."""
+    hits = []
+    if head[:4] in POSIX_MAGIC and ext not in POSIX_EXEC_EXT and not low.endswith((".so", ".dylib")) and ".so." not in low:
+        hits.append((60, f"Linux/macOS program disguised as {ext or 'no extension'}"))
+    if ext in {".sh", ".command", ".bash", ".zsh", ".desktop", ".py", ".pl"} or head[:2] == b"#!":
+        text = head[:262144].decode("utf-8", errors="ignore").lower()
+        for pat, score, why in SHELL_IOC:
+            if re.search(pat, text):
+                hits.append((score, why))
+        if ext == ".desktop" and re.search(r"^exec\s*=.*(curl|wget|bash\s+-c|sh\s+-c|python3?\s+-c|base64)", text, re.M):
+            hits.append((55, "desktop launcher runs a hidden command instead of an app"))
     return hits
 
 

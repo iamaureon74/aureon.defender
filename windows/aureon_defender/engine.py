@@ -104,11 +104,23 @@ class Engine:
         self.next = {name: 0 for name, *_ in self.tasks}
         self.errors = {}                 # module name -> last error text (shown in the dashboard)
         self.alerted = {}                # alert key -> time last raised (dedupe memory, kept separate from errors)
-        self.gov = Governor()
+        self.hw = self._hardware_profile()
+        self.gov = Governor(scale=self.hw.get("interval_scale", 1.0) if self.s.get("hardware_adaptive", True) else 1.0)
+        self.state["hardware_profile"] = self.hw
         self._removable_lock = threading.Lock()
         self._scan_queue = []
         self._scan_lock = threading.Lock()
         self._scan_thread = None
+
+    @staticmethod
+    def _hardware_profile():
+        try:
+            from .hwguard import WIN, profile, registered_drivers
+            p = dict(profile())
+            p["guarded_drivers"] = len(registered_drivers()) if WIN else None
+            return p
+        except Exception as ex:                      # never let a hardware probe stop protection starting
+            return {"tier": "standard", "interval_scale": 1.0, "sweep_files": 5000, "error": str(ex)}
 
     # ---------------- reactions ----------------
     def alert_once(self, key, e, cool=0):
@@ -157,47 +169,61 @@ class Engine:
         if r["verdict"] == "clean" and in_downloads and self.download_cleanup_enabled(path):
             self.auto_clean(path)
 
-        if r["verdict"] == "malicious":
-            eng = r.get("engines", {})
-            confirmed = eng.get("reputation") == "bad" or eng.get("defender") == "threat" or eng.get("clamav") == "threat"
-            why = "; ".join(r["reasons"])
-            if confirmed and self.s.get("auto_wipe_confirmed", True):
-                from .quarantine import wipe
-                try:
-                    w = wipe(path, r)
-                    self.state["counts"]["quarantined"] += 1
-                    later = w["removal"] != "removed"
-                    return {"severity": "high", "kind": "threat", "blocked": True,
-                            "title": f"removed {path.name}",
-                            "detail": f"why: {why}." + (" it was in use, so it was moved aside and should be gone after the"
-                                                        " next restart." if later else " it was permanently deleted."),
-                            "path": str(path), "sha256": w["sha256"]}
-                except ProtectedPath as ex:
-                    return {"severity": "high", "kind": "threat", "title": f"possible threat in a windows system file: {path.name}",
-                            "detail": f"{why}. left in place so windows keeps working: {ex}", "path": str(path)}
-                except (OSError, ValueError):
-                    pass                                    # fall back to quarantine below
-            if self.s["auto_quarantine"]:
-                try:
-                    m = self.vault.put(path, r)
-                    self.state["counts"]["quarantined"] += 1
-                    later = m.get("removal", "removed") != "removed"
-                    return {"severity": "high", "kind": "threat", "blocked": True,
-                            "title": f"moved {path.name} to the vault (quarantined)",
-                            "detail": "; ".join(r["reasons"]) + (" | it was in use, so it was moved aside and should be"
-                                      " fully removed at the next restart." if later else ""), "path": str(path), "quarantine_id": m["id"], "sha256": r.get("sha256")}
-                except ProtectedPath as ex:
-                    return {"severity": "high", "kind": "threat", "title": f"Threat in a Windows system file: {path.name}",
-                            "detail": f"{'; '.join(r['reasons'])}. Not moved automatically: {ex}", "path": str(path)}
-                except (OSError, ValueError) as ex:
-                    return {"severity": "high", "kind": "threat", "title": f"Threat found but could not be moved: {path.name}",
-                            "detail": f"{'; '.join(r['reasons'])} ({ex})", "path": str(path)}
-            return {"severity": "high", "kind": "threat", "title": f"Threat found: {path.name}", "detail": "; ".join(r["reasons"]),
-                    "path": str(path)}
-        if r["verdict"] == "suspicious":
-            return {"severity": "medium", "kind": "suspicious", "title": f"Suspicious file: {path.name}",
-                    "detail": "; ".join(r["reasons"]), "path": str(path), "sha256": r.get("sha256"), "score": r["score"]}
+        if r["verdict"] in ("malicious", "suspicious"):
+            return self.react(path, r)
         return None
+
+    def react(self, path, r):
+        """Autopilot: remove what was found unless the hardware needs it. Silent; one journal line says why."""
+        from .hwguard import decide
+        from .quarantine import wipe
+        from .scanner import authenticode
+        why = "; ".join(r["reasons"])
+        if r["verdict"] == "suspicious" and not self.s.get("auto_quarantine_suspicious", True):
+            return {"severity": "medium", "kind": "suspicious", "title": f"suspicious file: {path.name}",
+                    "detail": why, "path": str(path), "sha256": r.get("sha256"), "score": r["score"]}
+        def signature(p):
+            try:
+                return authenticode(Path(p)) if r["verdict"] == "suspicious" else None
+            except Exception:                           # no signature tool here: treat as unsigned
+                return None
+        d = decide(r, path, signature=signature)
+        if d["action"] == "keep":
+            return {"severity": "high" if r["verdict"] == "malicious" else "medium", "kind": "threat" if r["verdict"] == "malicious" else "suspicious",
+                    "title": f"{'possible threat' if r['verdict'] == 'malicious' else 'suspicious file'} kept: {path.name}",
+                    "detail": f"{why}. {d['why']}.", "path": str(path), "sha256": r.get("sha256")}
+        if d["action"] == "wipe" and self.s.get("auto_wipe_confirmed", True):
+            try:
+                w = wipe(path, r)
+                self.state["counts"]["quarantined"] += 1
+                later = w["removal"] != "removed"
+                return {"severity": "high", "kind": "threat", "blocked": True, "title": f"removed {path.name}",
+                        "detail": f"why: {why}." + (" it was in use, so it was moved aside and will be gone after the"
+                                                    " next restart." if later else " it was permanently deleted."),
+                        "path": str(path), "sha256": w["sha256"]}
+            except ProtectedPath as ex:
+                return {"severity": "high", "kind": "threat", "title": f"possible threat in a windows system file: {path.name}",
+                        "detail": f"{why}. left in place so windows keeps working: {ex}", "path": str(path)}
+            except (OSError, ValueError):
+                pass                                    # fall back to the vault below
+        if self.s["auto_quarantine"]:
+            try:
+                m = self.vault.put(path, r)
+                self.state["counts"]["quarantined"] += 1
+                later = m.get("removal", "removed") != "removed"
+                days = self.s.get("trash_days", 30)
+                return {"severity": "high" if r["verdict"] == "malicious" else "medium", "kind": "threat", "blocked": True,
+                        "title": f"removed {path.name} (quarantined)",
+                        "detail": f"why: {why} ({d['why']}). an encrypted copy is held in the vault for {days} days, then deleted."
+                                  + (" it was in use, so it finishes leaving at the next restart." if later else ""),
+                        "path": str(path), "quarantine_id": m["id"], "sha256": r.get("sha256")}
+            except ProtectedPath as ex:
+                return {"severity": "high", "kind": "threat", "title": f"threat in a windows system file: {path.name}",
+                        "detail": f"{why}. not moved automatically: {ex}", "path": str(path)}
+            except (OSError, ValueError) as ex:
+                return {"severity": "high", "kind": "threat", "title": f"threat found but could not be removed: {path.name}",
+                        "detail": f"{why} ({ex})", "path": str(path)}
+        return {"severity": "high", "kind": "threat", "title": f"threat found: {path.name}", "detail": why, "path": str(path)}
 
     def _downloads_root(self, path):
         return next((p for p in path.parents if p.name.lower() == "downloads"), None)
@@ -294,19 +320,55 @@ class Engine:
         return {"_module_status": "partial"} if res["failed"] else None
 
     def on_canary(self, e):
+        """Ransomware tripwire fired: stop the unsigned heavy writer, then remove its program (unless hardware needs it)."""
         if not self.s["canary_suspend_writer"]:
             return
         import psutil
+        from .hwguard import needed_by_hardware
         from .scanner import authenticode
         for pid, name, exe in e.get("writers", []):
             try:
-                if exe and authenticode(Path(exe)) != "Valid" and pid != os.getpid():
-                    psutil.Process(pid).suspend()
-                    self.j.add("high", "ransomware", f"Suspended {name} (pid {pid})",
-                               "Unsigned program writing heavily while the tripwire fired. Resume or kill it from Task Manager.")
-                    return
+                if not exe or pid == os.getpid() or authenticode(Path(exe)) == "Valid" or needed_by_hardware(exe):
+                    continue
+                proc = psutil.Process(pid)
+                proc.suspend()
+                proc.kill()
+                try:
+                    proc.wait(5)
+                except Exception:
+                    pass
+                r = self.scanner.scan(exe)
+                r["verdict"] = "malicious" if r["verdict"] == "malicious" else "suspicious"
+                r["reasons"] = ["unsigned program encrypting or rewriting many files while the ransomware tripwire fired"] + r["reasons"]
+                ev = self.react(Path(exe), r) or {}
+                self.j.add("high", "ransomware", f"stopped {name} and removed it",
+                           f"pid {pid} was writing over your files while the tripwire fired. " + ev.get("detail", ""))
+                return
             except Exception:
                 continue
+
+    def remove_autostart(self, key, target):
+        """Delete an autostart entry (Run key value, startup shortcut or scheduled task). Services are left alone."""
+        import subprocess
+        from .governor import child_flags
+        if key.startswith("startup:"):
+            Path(key[8:]).unlink(missing_ok=True)
+            return True
+        if key.startswith("task:"):
+            r = subprocess.run(["schtasks", "/delete", "/tn", key[5:], "/f"], capture_output=True, timeout=30,
+                               creationflags=child_flags())
+            return r.returncode == 0
+        if key.startswith(("HKLM\\", "HKU\\")):
+            import winreg
+            hive, rest = key.split("\\", 1)
+            if hive == "HKU":
+                rest = rest.split("\\", 1)[1]               # drop the label's sid; the path already starts with it
+            sub, name = rest.rsplit("\\", 1)
+            root = winreg.HKEY_LOCAL_MACHINE if hive == "HKLM" else winreg.HKEY_USERS
+            with winreg.OpenKey(root, sub, 0, winreg.KEY_SET_VALUE) as k:
+                winreg.DeleteValue(k, name)
+            return True
+        return False
 
     # ---------------- tasks ----------------
     def t_realtime(self):
@@ -353,15 +415,26 @@ class Engine:
                             "title": f"WiFi impersonation risk: {ssid}", "detail": detail}, cool=24 * 3600)
 
     def t_persistence(self):
+        from .hwguard import needed_by_hardware
         for e in self.persist.tick():
             t = e.get("target")
             if t:
                 exe = t.strip('"').split('"')[0].split(" -")[0].split(" /")[0]
-                if exe.lower().endswith(".exe") and Path(exe).exists():
+                if exe.lower().endswith((".exe", ".dll", ".ps1", ".vbs", ".js", ".bat", ".cmd", ".lnk", ".hta")) and Path(exe).exists():
                     r = self.scanner.scan(exe)
                     if r["verdict"] != "clean":
                         e["severity"] = "high"
                         e["detail"] += f" | scanner: {r['verdict']} ({'; '.join(r['reasons'])})"
+                        key = e.get("key") or ""
+                        if self.s.get("auto_remove_autostart", True) and not key.startswith("service:") and not needed_by_hardware(exe):
+                            gone = self.react(Path(exe), r) or {}
+                            try:
+                                unhooked = self.remove_autostart(key, t)
+                            except Exception:
+                                unhooked = False
+                            if gone.get("blocked"):
+                                e.update(blocked=True, title=f"removed a program that set itself to start automatically: {Path(exe).name}",
+                                         detail=gone.get("detail", "") + (" its autostart entry was deleted too." if unhooked else ""))
             self.emit(e)
 
     def t_devices_live(self):
@@ -418,13 +491,14 @@ class Engine:
             seen.append(part.mountpoint)
             root = Path(part.mountpoint)
             files = []
+            cap = self.hw.get("sweep_files", 5000)
             for dirpath, dirs, names in os.walk(root):
                 dirs[:] = [d for d in dirs if d not in ("System Volume Information", "$RECYCLE.BIN")]
                 files += [Path(dirpath) / n for n in names]
-                if len(files) >= 5000:
+                if len(files) >= cap:
                     break
             found = 0
-            for f in files[:5000]:
+            for f in files[:cap]:
                 if self.stop.is_set():
                     return
                 ev = self.on_file(f)
@@ -432,7 +506,7 @@ class Engine:
                     found += 1
                     self.emit(ev)
             self.emit({"severity": "medium" if found else "info", "kind": "device",
-                       "title": f"Scanned the drive in {part.mountpoint}: {len(files[:5000])} files, {found} finding{'s' if found != 1 else ''}",
+                       "title": f"Scanned the drive in {part.mountpoint}: {len(files[:cap])} files, {found} finding{'s' if found != 1 else ''}",
                        "detail": "Autorun is ignored; nothing on the drive was opened."})
 
     def t_devices(self):
@@ -705,6 +779,8 @@ class Engine:
         now = time.time()
         if not hasattr(self, "gov"):
             self.gov = Governor()
+        if not hasattr(self, "hw"):
+            self.hw = {}
         self.gov.sample(now)
         for name, every, fn, setting in self.tasks:
             if which == "fast" and name in self.SLOW or which == "slow" and name not in self.SLOW:

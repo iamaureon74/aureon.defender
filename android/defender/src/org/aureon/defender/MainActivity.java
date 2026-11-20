@@ -86,15 +86,59 @@ public class MainActivity extends Activity {
 
     }
     private void overview(JSONObject r){
-        boolean active=running();text(body,active?"MONITORING ACTIVE":"YOUR SECURITY, AT A GLANCE",11,active?GREEN:AMBER,true).setLetterSpacing(.12f);gap(body,12);
-        text(body,"Your phone.\nIn clearer focus.",38,TEXT,false);gap(body,12);
-        text(body,"Private checks. Understandable findings.\nDesigned to stay out of your way.",15,MUTED,false);gap(body,24);
-        LinearLayout stats=new LinearLayout(this);stat(stats,r.has("visible_package_count")?String.valueOf(r.optInt("visible_package_count")):"—","apps visible");stat(stats,r.has("permission_reviews")?String.valueOf(r.optJSONArray("permission_reviews").length()):"—","permission reviews");body.addView(stats);gap(body,14);
-        LinearLayout status=card("Protection");text(status,active?"Local watch is running":"Start your local watch",20,TEXT,true);gap(status,8);text(status,"Package changes and scheduled security checks work with or without a connection.",14,MUTED,false);
-        button(status,busy?"Checking…":"Run an audit",true,()->audit());button(status,active?"Pause monitoring":"Start monitoring",false,()->toggle(!active));
+        boolean active=running();SharedPreferences g=prefs();
+        boolean allFiles=Build.VERSION.SDK_INT>=30&&Environment.isExternalStorageManager();
+        int guarded=g.getStringSet("guard_trees",Collections.<String>emptySet()).size();
+        boolean on=active&&(allFiles||guarded>0);
+        TextView eye=text(body,on?"AUTOPILOT · ON, SILENT":active?"MONITORING · NEEDS ONE SWITCH":"YOUR PHONE, AT A GLANCE",11,on?GREEN:AMBER,true);eye.setLetterSpacing(.14f);gap(body,14);
+        LinearLayout hero=new LinearLayout(this);hero.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout words=column();TextView h=text(words,"quiet guard.\nnothing to approve.",32,TEXT,false);h.setLetterSpacing(-.02f);gap(words,10);
+        text(words,"finds it, removes it, tells you why. leaves what your phone needs.",14,MUTED,false);
+        hero.addView(words,new LinearLayout.LayoutParams(0,-2,1));
+        Orbit orbit=new Orbit(this,AMBER,LINE,BG,!g.getBoolean("signal_reduced",false)&&android.animation.ValueAnimator.areAnimatorsEnabled());orbit.setContentDescription(on?"protection active":"protection waiting");
+        LinearLayout.LayoutParams op=new LinearLayout.LayoutParams(dp(118),dp(118));op.leftMargin=dp(10);hero.addView(orbit,op);body.addView(hero);gap(body,22);
+        LinearLayout ap=card("Autopilot");
+        LinearLayout nums=new LinearLayout(this);
+        stat(nums,String.valueOf(g.getLong("shield_removed",0)),"removed automatically");stat(nums,String.valueOf(g.getLong("shield_checked",0)),"files checked");ap.addView(nums);gap(ap,12);
+        int[] bud=Shield.budget(this);
+        row(ap,"Tuned to this phone",ShieldRules.tierName(bud[0])+(bud[3]==1?" · gentle (hot, low or saving battery)":"")+" · "+bud[1]+" files per pass");
+        row(ap,"Reach",allFiles?"all shared storage":guarded>0?guarded+" granted folder"+(guarded>1?"s":""):"not yet granted");
+        row(ap,"Kept safe","Android/, hidden and firmware folders");
+        row(ap,"Last pass",date(g.getLong("shield_last",0)));
+        if(!allFiles){gap(ap,4);text(ap,"Android needs one switch before anything can be removed for you. After that it runs on its own.",13,MUTED,false);
+            button(ap,"Allow all files access (one time)",true,()->{try{startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,android.net.Uri.parse("package:"+getPackageName())));}catch(RuntimeException e){startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));}});
+            button(ap,"Or guard one folder",false,()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE),45));}
+        if(!active)button(ap,"Start protection",allFiles,()->toggle(true));
+        JSONArray log;try{log=new JSONArray(g.getString("shield_log","[]"));}catch(JSONException e){log=new JSONArray();}
+        if(log.length()>0){LinearLayout l=card("Removed recently");for(int i=log.length()-1;i>=Math.max(0,log.length()-5);i--){JSONObject x=log.optJSONObject(i);if(x==null)continue;text(l,x.optString("title"),15,TEXT,true);text(l,x.optString("detail")+" · "+date(x.optLong("t")),12,MUTED,false);gap(l,10);}}
+        LinearLayout status=card("Protection");text(status,active?"Local watch is running":"Local watch is paused",18,TEXT,true);gap(status,6);text(status,"Checks run every 15 minutes, after app installs and at start-up, with or without a connection.",14,MUTED,false);
+        button(status,busy?"Checking…":"Check now",!allFiles&&active?false:true,()->audit());if(active)button(status,"Pause protection",false,()->toggle(false));
         LinearLayout health=card("Device posture");row(health,"Screen lock",r.has("secure_lock")?(r.optBoolean("secure_lock")?"Secure lock set":"Needs review"):"Not checked");row(health,"Connection",r.has("validated_network")?(r.optBoolean("validated_network")?"Internet validated":"Offline / unvalidated"):"Not checked");row(health,"Last audit",date(r.optLong("generated_at_ms",0)));
-        String error=prefs().getString("last_error","");if(!error.isEmpty()){LinearLayout err=card("Needs attention");text(err,error,14,AMBER,false);}
-        text(body,"Quiet, not hidden. Android shows a monitoring notification and may defer or stop background work.",12,MUTED,false);
+        String error=g.getString("last_error","");if(!error.isEmpty()){LinearLayout err=card("Needs attention");text(err,error,14,AMBER,false);}
+        text(body,"Quiet, not hidden. Android shows one low monitoring notification. It cannot uninstall other apps silently; those stay as review prompts.",12,MUTED,false);
+    }
+    /** Living shield: a sweep that circles the ring, two satellites, a breathing core. One 42 s loop (7 sweeps, 3 and 2 orbits, 10 breaths) so it never jumps; runs only while attached. */
+    private static class Orbit extends View {
+        private final Paint ring=new Paint(Paint.ANTI_ALIAS_FLAG),sweep=new Paint(Paint.ANTI_ALIAS_FLAG),dot=new Paint(Paint.ANTI_ALIAS_FLAG),glow=new Paint(Paint.ANTI_ALIAS_FLAG),core=new Paint(Paint.ANTI_ALIAS_FLAG),pen=new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final int accent,line,bg;private final boolean motion;private float t;private android.animation.ValueAnimator anim;
+        Orbit(Context c,int accent,int line,int bg,boolean motion){super(c);this.accent=accent;this.line=line;this.bg=bg;this.motion=motion;
+            ring.setStyle(Paint.Style.STROKE);ring.setColor(line);ring.setStrokeWidth(2f);sweep.setStyle(Paint.Style.STROKE);sweep.setStrokeCap(Paint.Cap.ROUND);
+            dot.setColor(accent);glow.setColor(accent);pen.setColor(accent);pen.setStyle(Paint.Style.STROKE);pen.setStrokeJoin(Paint.Join.ROUND);pen.setStrokeCap(Paint.Cap.ROUND);setLayerType(LAYER_TYPE_HARDWARE,null);}
+        @Override protected void onAttachedToWindow(){super.onAttachedToWindow();if(!motion)return;anim=android.animation.ValueAnimator.ofFloat(0f,1f);anim.setDuration(42000);anim.setRepeatCount(android.animation.ValueAnimator.INFINITE);anim.setInterpolator(new android.view.animation.LinearInterpolator());anim.addUpdateListener(a->{t=(float)a.getAnimatedValue();invalidate();});anim.start();}
+        @Override protected void onDetachedFromWindow(){if(anim!=null)anim.cancel();super.onDetachedFromWindow();}
+        @Override protected void onDraw(Canvas cv){float w=getWidth(),h=getHeight(),cx=w/2,cy=h/2,r=Math.min(w,h)/2-3,inner=r*0.72f;
+            cv.drawCircle(cx,cy,r,ring);cv.drawCircle(cx,cy,inner,ring);
+            float sweepDeg=(t*7f*360f)%360f;sweep.setStrokeWidth(r*0.12f);
+            sweep.setShader(new SweepGradient(cx,cy,new int[]{Color.TRANSPARENT,Color.TRANSPARENT,(accent&0x00ffffff)|0x55000000,accent},new float[]{0f,.7f,.97f,1f}));
+            cv.save();cv.rotate(sweepDeg-90,cx,cy);cv.drawArc(cx-r+r*0.06f,cy-r+r*0.06f,cx+r-r*0.06f,cy+r-r*0.06f,0,359,false,sweep);cv.restore();
+            double a1=t*Math.PI*2*3-Math.PI/2,a2=-t*Math.PI*2*2;
+            float x1=cx+(float)Math.cos(a1)*r*0.9f,y1=cy+(float)Math.sin(a1)*r*0.9f;glow.setShader(new RadialGradient(x1,y1,r*0.16f,(accent&0x00ffffff)|0x66000000,Color.TRANSPARENT,Shader.TileMode.CLAMP));cv.drawCircle(x1,y1,r*0.16f,glow);cv.drawCircle(x1,y1,r*0.045f,dot);
+            dot.setAlpha(170);cv.drawCircle(cx+(float)Math.cos(a2)*inner,cy+(float)Math.sin(a2)*inner,r*0.025f,dot);dot.setAlpha(255);
+            float breathe=1f+0.045f*(float)Math.sin(t*Math.PI*2*10),cr=r*0.36f*breathe;
+            core.setShader(new RadialGradient(cx,cy,cr,(accent&0x00ffffff)|0x30000000,bg,Shader.TileMode.CLAMP));cv.drawCircle(cx,cy,cr,core);
+            float s=r*0.30f/12f;cv.save();cv.translate(cx-12*s,cy-12*s);cv.scale(s,s);pen.setStrokeWidth(1.6f);
+            Path p=new Path();p.moveTo(12,2);p.lineTo(4,5);p.lineTo(4,12);p.cubicTo(4,17,12,22,12,22);p.cubicTo(12,22,20,17,20,12);p.lineTo(20,5);p.close();cv.drawPath(p,pen);
+            Path a=new Path();a.moveTo(8,15);a.lineTo(12,7);a.lineTo(16,15);a.moveTo(10,12);a.lineTo(14,12);cv.drawPath(a,pen);cv.restore();}
     }
     private void stat(LinearLayout row,String value,String label){LinearLayout s=column();s.setBackground(box(CARD,7));s.setPadding(dp(16),dp(16),dp(12),dp(16));text(s,value,30,TEXT,true);text(s,label,12,MUTED,false);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-1,1);p.rightMargin=dp(8);row.addView(s,p);}
     private void row(LinearLayout c,String label,String value){LinearLayout l=new LinearLayout(this);l.setPadding(0,dp(8),0,dp(8));TextView a=new TextView(this);a.setText(label);a.setTextColor(MUTED);a.setTextSize(13);l.addView(a,new LinearLayout.LayoutParams(0,-2,1));TextView b=new TextView(this);b.setText(value);b.setTextColor(TEXT);b.setTextSize(13);b.setGravity(Gravity.END);l.addView(b,new LinearLayout.LayoutParams(0,-2,1));c.addView(l);}
@@ -124,8 +168,8 @@ public class MainActivity extends Activity {
         else for(int i=history.length()-1;i>=Math.max(0,history.length()-20);i--){JSONObject event=history.optJSONObject(i);if(event!=null){text(log,event.optString("kind")+" · "+event.optString("package"),13,TEXT,false);text(log,date(event.optLong("time_ms",0)),11,MUTED,false);gap(log,10);}}
         button(c,"Export local report",false,()->{Intent i=new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json").putExtra(Intent.EXTRA_TITLE,"aureon-phone-report.json");startActivityForResult(i,44);});
     }
-    private void tools(){title("Less noise. Useful tools.","Useful checks, with honest boundaries.");LinearLayout scan=card("Offline file check");text(scan,"Check a selected file",19,TEXT,true);gap(scan,8);text(scan,"Calculate SHA-256 and compare with a blocklist you import. No hash match is not a clean verdict. Files stay on this phone.",14,MUTED,false);button(scan,"Choose a file to check",true,()->pick(41));button(scan,"Import trusted SHA-256 blocklist",false,()->pick(42));button(scan,"Scan all files in a selected folder",false,()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE),45));
-        text(scan,"Android permits only folders you explicitly grant. Folder scan compares SHA-256 with your imported list; it is not Windows Defender or system-wide antivirus. Limits: 2,000 files, 256 MiB per file. No automatic deletion.",12,MUTED,false);
+    private void tools(){title("Less noise. Useful tools.","Useful checks, with honest boundaries.");LinearLayout scan=card("Offline file check");text(scan,"Check a selected file",19,TEXT,true);gap(scan,8);text(scan,"Calculate SHA-256 and compare with a blocklist you import. No hash match is not a clean verdict. Files stay on this phone.",14,MUTED,false);button(scan,"Choose a file to check",true,()->pick(41));button(scan,"Import trusted SHA-256 blocklist",false,()->pick(42));button(scan,"Guard a folder automatically",false,()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE),45));
+        text(scan,"Android permits only folders you explicitly grant. A guarded folder is checked on every pass against built-in rules and your imported list; matches are deleted automatically. It is not Windows Defender or system-wide antivirus.",12,MUTED,false);
         button(scan,"Create metadata-clean image copy",false,()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("image/*"),46));
         text(scan,"JPEG/PNG only, up to 24 megapixels. Creates a new PNG without copying source EXIF/XMP/comments and keeps the original. Visible names, watermarks and all fingerprints cannot be guaranteed removed.",12,MUTED,false);text(scan,prefs().getString("file_result","No file checked yet."),13,MUTED,false);
         LinearLayout style=card("Your Aureon interface");text(style,frost?"Frost":"Signal",22,TEXT,false);gap(style,8);text(style,"Choose a clear light surface or quiet ink and lime. These preferences affect Aureon only.",14,MUTED,false);
@@ -145,7 +189,9 @@ public class MainActivity extends Activity {
     private void audit(){if(busy)return;busy=true;render();new Thread(()->{Audit.attempt(this);runOnUiThread(()->{busy=false;render();});},"aureon-manual-audit").start();}
     @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(result!=RESULT_OK||data==null||data.getData()==null)return;final android.net.Uri uri=data.getData();if(request==46){cleanSource=uri;startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("image/png").putExtra(Intent.EXTRA_TITLE,"aureon-clean-copy.png"),47);return;}new Thread(()->{String message;try{
         if(request==47){if(cleanSource==null)throw new IOException("Choose the source image again");message=LocalTools.cleanImage(this,cleanSource,uri);cleanSource=null;}
-        else if(request==45){message=LocalTools.folder(this,uri,new HashSet<>(prefs().getStringSet("hashes",Collections.emptySet())));}
+        else if(request==45){try{getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);}catch(SecurityException ignored){}
+            Set<String> trees=new HashSet<>(prefs().getStringSet("guard_trees",Collections.<String>emptySet()));trees.add(uri.toString());prefs().edit().putStringSet("guard_trees",trees).putLong("shield_since",0).apply();
+            JSONObject res=Shield.sweep(this);message="This folder is now guarded automatically.\n"+res.optInt("checked")+" checked, "+res.optInt("removed")+" removed just now. New files are checked on every pass and anything found is deleted without asking. Android/ and hidden folders are never touched.";}
         else if(request==44){try(OutputStream out=getContentResolver().openOutputStream(uri)){if(out==null)throw new IOException("Cannot open export");out.write(Audit.latest(this).getBytes("UTF-8"));}message="Report exported to your selected location.";}
         else if(request==42){Set<String> hashes;try(InputStream in=getContentResolver().openInputStream(uri)){hashes=FileChecks.blocklist(in);}prefs().edit().putStringSet("hashes",hashes).apply();message="Imported "+hashes.size()+" operator-supplied hashes. Their source is not independently verified.";}
         else {String hex;try(InputStream in=getContentResolver().openInputStream(uri)){hex=FileChecks.hash(in,256L*1024*1024);}boolean match=prefs().getStringSet("hashes",Collections.emptySet()).contains(hex);message=(match?"MATCH in imported blocklist. Review the source and avoid opening the file.":"No imported blocklist match. This does not establish safety.")+"\n\nSHA-256\n"+hex;}
