@@ -21,3 +21,6 @@ local.properties
 *.pem
 *.key
 *signing-password*
+
+# test runs on linux without AUREON_DATA create a literal windows-path folder
+C:*/
