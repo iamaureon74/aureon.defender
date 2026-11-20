@@ -6,18 +6,18 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 | Device | Direct distribution | Scope |
 |---|---|---|
-| Windows 10/11 x64 | [Windows Setup · 0.4.6](https://github.com/shep95/aureon.defender/releases/download/v0.4.6/aureon-defender-windows-x64-setup-0.4.6.exe) | Windows engine and 15-tab Signal dashboard; unsigned publisher |
-| Android 12+ | [Android APK · 0.4.6](https://github.com/shep95/aureon.defender/releases/download/v0.4.6/aureon-defender-android-0.4.6.apk) | Native local monitor; floating navigation; Android limits apply |
+| Windows 10/11 x64 | [Windows Setup · 0.5.1](https://github.com/iamaureon74/aureon.defender/releases/download/v0.5.1/aureon-defender-windows-x64-setup-0.5.1.exe) | Autopilot engine, 3-day scans, media cleaning, network and capture guards, memory; unsigned publisher |
+| Android 12+ | [Android APK · 0.4.6](https://github.com/shep95/aureon.defender/releases/download/v0.4.6/aureon-defender-android-0.4.6.apk) | 0.4.6 until the 0.5.1 APK is signed; build it with `scripts/windows/build-and-install-all.ps1` or add the signing secrets for automatic releases |
 | iPhone / iPad | [Installable web edition](https://defender.asherin.com/) | Safari → Share → Add to Home Screen; local file/hash and report tools only |
 | macOS Apple silicon / Intel | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
 | Linux x64 / ARM64 | [Portable source preview](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/aureon-defender-portable-source-0.4.3-preview.zip) | Source preview only; native builds blocked before execution by GitHub account billing lock |
 | Other laptops | [Source archive](https://github.com/shep95/aureon.defender/archive/refs/tags/v0.4.3.zip) | Python 3.12 portable companion where supported; no promise of every OS/device |
 
-[Release notes and all downloads](https://github.com/shep95/aureon.defender/releases/tag/v0.4.3) · [SHA-256 checksums](https://github.com/shep95/aureon.defender/releases/download/v0.4.3/SHA256SUMS.txt)
+[0.5.1 release and checksums](https://github.com/iamaureon74/aureon.defender/releases/tag/v0.5.1) · [SHA-256 checksums](https://github.com/iamaureon74/aureon.defender/releases/download/v0.5.1/SHA256SUMS.txt) · [earlier releases](https://github.com/shep95/aureon.defender/releases)
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
 
-## What is new in 0.5.1 (source; installers on the release page are still 0.4.6 until rebuilt)
+## What is new in 0.5.1 (Windows download published; Android APK waits for its signing key)
 
 - **Scan and clean that actually finishes**: the full scan, folder scans and quick scans now run inside the 24/7 protection engine instead of the dashboard process, so switching tabs, closing the window or the dashboard restarting no longer stops them. Progress (files, rate, current file) shows live on the scan page. Findings go through autopilot (removed unless hardware needs them). A full scan runs on its own every 3 days when plugged in or above 50% battery, user folders first.
 - **Every branch of a media file**: on top of EXIF/XMP/IPTC/ID3/MP4 metadata, the cleaner now removes motion-photo videos and anything else appended after a JPEG, multi-picture (MPF) indexes, PNG content credentials (C2PA), signatures and vendor chunks, data after a PNG's end, and C2PA/vendor boxes in MP4/MOV. The colour profile is kept, so colours don't shift.
