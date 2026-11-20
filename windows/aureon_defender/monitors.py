@@ -328,7 +328,6 @@ class Canary:
         self.dirs = [x for d in (dirs or CANARY_DIRS) for x in expand_all(d)]
         self.top_writers = top_writers or self._top_writers
         self.on_hit = on_hit
-        self._sig = {}                  # path -> ((size, mtime), sha256): skip re-hashing unchanged tripwires
         self._locked = {}
 
     def _paths(self):
@@ -372,14 +371,9 @@ class Canary:
         for path, h in state.items():
             p = Path(path)
             try:
-                st = p.stat()
-                sig = (st.st_size, st.st_mtime_ns)
-                cached = self._sig.get(path)
-                if cached and cached[0] == sig:
-                    cur = cached[1]
-                else:
-                    cur = hashlib.sha256(p.read_bytes()).hexdigest()
-                    self._sig[path] = (sig, cur)
+                # Always hash: decoys are a few KB, and ransomware can overwrite in place and put the old size and
+                # timestamp back, so a (size, mtime) shortcut would miss exactly the attack this is here for.
+                cur = hashlib.sha256(p.read_bytes()).hexdigest()
                 self._locked.pop(path, None)
             except FileNotFoundError:
                 cur = None
