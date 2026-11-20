@@ -226,7 +226,17 @@ class Api:
                 "ui_appearance": load_json(user_dir() / "interface.json"),
                 "quarantine": self.vault.list(), "studio": self.studio.current(), "presets": {k: {"mode": v["mode"], "accent": v["accent"], "palette": v["palette"], "font": v["widget"]["font"],
                 "group": next((g for g, names in PRESET_GROUPS.items() if k in names), "")} for k, v in PRESETS.items()},
-                "widget": self.widget_cfg(), "settings": {**self.settings.load(), "auto_clean_downloads": self.cleanup_enabled(), "auto_clean_mode": self.cleanup_mode()}, "winmap": caps}
+                "widget": self.widget_cfg(), "memory": self.memory_state(), "settings": {**self.settings.load(), "auto_clean_downloads": self.cleanup_enabled(), "auto_clean_mode": self.cleanup_mode()}, "winmap": caps}
+
+    def memory_state(self):
+        k = getattr(self, "keeper", None)
+        if k is not None:
+            return k.status()
+        try:
+            from .memory import Keeper
+            return Keeper(folders=[], hw={"interval_scale": 1}).status()
+        except Exception:
+            return {}
 
     def cleanup_enabled(self):
         from .core import load_json
@@ -1011,6 +1021,39 @@ def phone_watch(api, interval=20):
         time.sleep(interval)
 
 
+def memory_watch(api, keeper=None, interval=60):
+    """Silent memory: fold Documents, Desktop and Pictures on the hardware budget; runs in the user's session."""
+    from .memory import Keeper
+    keeper = keeper or Keeper(settings=Settings().load())
+    api.keeper = keeper
+    while True:
+        try:
+            keeper.s = Settings().load()
+            keeper.tick()
+        except Exception as ex:                      # never let one bad pass stop the agent
+            keeper._save({**keeper.status(), "error": f"{type(ex).__name__}: {ex}"})
+        time.sleep(interval)
+
+
+def on_ransomware(api, events):
+    """The engine's tripwire fired: put back what was encrypted since just before it, then say what came back."""
+    keeper = getattr(api, "keeper", None)
+    for e in events:
+        if e.get("kind") != "ransomware" or keeper is None:
+            continue
+        try:
+            res = keeper.rollback(e["t"] - 1800, before=e["t"] + 1)
+        except Exception as ex:
+            api.uj.add("high", "ransomware", "couldn't roll files back", f"{type(ex).__name__}: {ex}")
+            continue
+        n = len(res["restored"])
+        if n:
+            api.uj.add("high", "ransomware", f"put back {n} file{'s' if n != 1 else ''} from memory",
+                       "the versions from before the attack were restored, checked against their fingerprints. "
+                       "encrypted copies were deleted. " + ", ".join(Path(p).name for p in res["restored"][:8]),
+                       blocked=True)
+
+
 def clipboard_watch(api):
     from .noah import ClipboardGuard
     def found(hits):
@@ -1045,12 +1088,13 @@ def run_agent(with_widget=True, open_ui=False):
         while True:
             for f in followers:
                 try:
-                    f.poll()
+                    on_ransomware(api, f.poll())
                 except Exception:
                     pass
             time.sleep(2)
     threading.Thread(target=follow, daemon=True).start()
     threading.Thread(target=phone_watch, args=(api,), daemon=True).start()
+    threading.Thread(target=memory_watch, args=(api,), name="aureon-memory", daemon=True).start()
     if api.lan_info()["enabled"]:
         ro = Api(readonly=True)
         api.lan = ro.lan = serve_lan(ro)

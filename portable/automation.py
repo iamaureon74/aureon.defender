@@ -7,6 +7,8 @@
   autostart   user autostart entries (~/.config/autostart, systemd user units, macOS LaunchAgents) are read
               every minute; a new or changed entry whose program or own command is flagged is removed together
               with that program. system folders are never touched (the companion runs as you, not root).
+  memory      documents, desktop and pictures are folded into a deduplicated, versioned store (fold-memory)
+              on the hardware budget, so any earlier version can be put back. skipped on low battery or disk.
   downloads   new files that passed the scan get a metadata-clean copy (name.clean.ext); originals are never
               changed here.
   trash       freedesktop trash items deleted more than N days ago are emptied (linux); 0 turns it off.
@@ -86,6 +88,7 @@ class Automation:
         self._scanner = self._vault = None
         self.swept = False
         self.autostart_seen = None
+        self.keeper = None
         self.next_autostart = 0
         self.trash_days = trash_days
         self.now = now
@@ -242,6 +245,17 @@ class Automation:
                 except (OSError, ValueError) as ex:
                     self.note(f"found autostart entry {entry.name} but couldn't remove it", f"{why} ({ex})".lower())
 
+    def tick_memory(self):
+        if not self.protect:
+            return
+        if self.keeper is None:
+            from aureon_defender.memory import Keeper
+            self.keeper = Keeper(hw=self.hw)
+        res = self.keeper.tick()
+        if res and res.get("new"):
+            self.note(f"kept {res['new']} new or changed file{'s' if res['new'] != 1 else ''} in memory",
+                      f"{res['files_held']} files held, earlier versions included. nothing left this device.")
+
     def tick_trash(self):
         if not self.trash_days or self.now() < self.next_trash:
             return
@@ -258,7 +272,7 @@ class Automation:
     def run(self):
         last_drain = 0
         while not self.stop.is_set():
-            for job in (self.tick_protect, self.tick_autostart, self.tick_downloads, self.tick_trash):
+            for job in (self.tick_protect, self.tick_autostart, self.tick_downloads, self.tick_trash, self.tick_memory):
                 try:
                     job()
                 except Exception as ex:
@@ -274,7 +288,8 @@ class Automation:
     def status(self):
         return {"protect": self.protect, "counts": dict(self.counts), "hardware": {k: self.hw.get(k) for k in
                 ("tier", "capacity", "cpus", "ram_gb", "disk", "arch", "os", "interval_scale", "sweep_files")},
-                "watching": [str(w) for w in self.watch if w.is_dir()], "vault": len(self.vault().list())}
+                "watching": [str(w) for w in self.watch if w.is_dir()], "vault": len(self.vault().list()),
+                "memory": self.keeper.status() if self.keeper else {}}
 
     def report(self):
         return {"drain_24h": self.meter.top(), "silent": drain.silent(), "listening": drain.listeners(),

@@ -30,7 +30,7 @@ def snapshot():
         memory=psutil.virtual_memory();storage=psutil.disk_usage(str(Path.home()));specs.update(ram_total_bytes=memory.total,ram_available_bytes=memory.available,home_volume_total_bytes=storage.total,home_volume_free_bytes=storage.free)
         fn=getattr(psutil,'sensors_temperatures',None);specs['temperature_c']={group:[{'label':v.label,'value':v.current} for v in values] for group,values in (fn() if fn else {}).items()}
     except (NameError,AttributeError,OSError):pass
-    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.4.8-preview',
+    return dict(specs=specs,platform=platform.system(),architecture=platform.machine(),version='0.4.9-preview',
                 observed_at=time.time(),vitals=vitals,
                 usb=usb_inventory() if platform.system()=='Linux' else None,
                 scope='While open: every download and desktop file is scanned, anything found is removed on its own unless the hardware needs it, new downloads get clean copies, old trash is emptied. Read-only posture checks and local USB descriptors on Linux. No process blocking, VPN or Windows Defender.')
@@ -88,7 +88,25 @@ def handler(token,state,lock,port,auto=None):
     return H
 
 
+def memory_cli(argv):
+    """python -m portable.app memory status|now|versions|restore|dupes [path] [--version N] [--out FILE]"""
+    import portable.automation  # noqa: F401  (sets the data folders, puts the shared engine on the path)
+    from aureon_defender.memory import Keeper,fm
+    p=argparse.ArgumentParser(prog='memory');p.add_argument('action',choices=['status','now','versions','restore','dupes']);p.add_argument('path',nargs='?')
+    p.add_argument('--version',type=int,default=1);p.add_argument('--out');a=p.parse_args(argv)
+    k=Keeper()
+    if a.action=='status':print(json.dumps(k.status(),indent=1));return 0
+    if a.action=='now':print(json.dumps(k.run_once(),indent=1));return 0
+    if a.action=='dupes':print(json.dumps(k.dupes(),indent=1));return 0
+    if not a.path:print('give the path of the file');return 2
+    with fm.FoldMemory(k.store) as m:
+        if a.action=='versions':print(json.dumps(m.versions(a.path),indent=1));return 0
+        r=m.unfold(a.path,dest=a.out or a.path+'.restored',version=a.version);print(json.dumps(r,indent=1));return 0 if r.get('ok') else 1
+
+
 def main():
+    import sys
+    if len(sys.argv)>1 and sys.argv[1]=='memory':return memory_cli(sys.argv[2:])
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--no-browser',action='store_true');parser.add_argument('--self-test',action='store_true')
     parser.add_argument('--no-auto-clean',action='store_true',help='do not make clean copies of new downloads')

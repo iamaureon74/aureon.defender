@@ -8,8 +8,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 [assembly: AssemblyTitle("aureon.defender Setup")]
-[assembly: AssemblyVersion("0.4.8.0")]
-[assembly: AssemblyFileVersion("0.4.8.0")]
+[assembly: AssemblyVersion("0.4.9.0")]
+[assembly: AssemblyFileVersion("0.4.9.0")]
 internal static class Setup {
     // Filled by the build from the exact published ZIP.
     const string PayloadDigest="__PAYLOAD_SHA256__";

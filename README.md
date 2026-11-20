@@ -17,7 +17,14 @@ Signal interface, local security observations and direct downloads. **No app sto
 
 Only assets actually attached to the release are downloadable builds. Mac/Linux packages are previews, not ports of the full Windows security engine. iOS web installation is **not** a native IPA or a 24/7 system antivirus.
 
-## What is new in 0.4.8 (source; installers on the release page are still 0.4.6 until rebuilt)
+## What is new in 0.4.9 (source; installers on the release page are still 0.4.6 until rebuilt)
+
+- **Silent memory, powered by [aureon.fold-memory](https://github.com/iamaureon74/aureon.fold-memory)**: Documents, Desktop and Pictures are kept on the machine itself with every earlier version, identical bytes stored once and every file checked against its SHA-256 before it comes back. It starts at login (Windows agent, mac/linux companion), runs hourly on the hardware budget, skips its turn on battery below 40% or when under 10% of the disk is free, and stays under 15% of the free disk (50 GB max) by keeping fewer old versions. Nothing leaves the device.
+- **Ransomware undo**: when the tripwire fires, every watched file that was overwritten with encrypted-looking bytes, or renamed and encrypted, since just before the alarm is put back from the last trustworthy version, and the encrypted copy is deleted. Normal edits in that window are left alone. Folding pauses while this happens so encrypted junk is not stored.
+- **Put any version back**: `aureon.defender memory versions <file>` and `aureon.defender memory restore <file> --version 2` on Windows; `python -m portable.app memory ...` on mac/linux. `memory dupes` lists the copies still taking space on your disk (reported, never deleted).
+- Android and the web edition do not run Python, so they do not have memory yet.
+
+## 0.4.8
 
 - **Vulnerable-driver protection**: the LOLDrivers list (loldrivers.io, public, no key) now feeds the same reputation database as MalwareBazaar. A known-vulnerable driver dropped anywhere is removed like any other threat. One the OS has registered for a device is checked twice a day and reported with the fix (vendor update, Windows' blocklist), never deleted, because the hardware needs it.
 - **Mac / Linux autostart guard**: user autostart entries (`~/.config/autostart`, systemd user units, macOS LaunchAgents) are read every minute. A new or changed entry that launches a flagged program, or pipes a download into a shell, is removed together with that program. System programs are never touched.
@@ -88,6 +95,7 @@ Open the [web edition](https://defender.asherin.com/) in Safari and choose **Add
 
 ## Verification
 
+- 0.4.9 source (Linux container): 7 memory tests pass, covering folding, unchanged-file skips, duplicates, the size cap, battery and disk skips, and ransomware rollback (in-place encryption, rename-and-encrypt, an encrypted version already folded before the alarm, a normal edit left alone, and the agent hook). Both dashboards were screenshot-checked with the memory panel.
 - 0.4.8 source (Linux container): 28 new autopilot tests (hardware budget, hardware guard, removal policy, engine reactions, autostart removal, ransomware stop, driver audit) and the extended feed test (LOLDrivers parsing) pass; the remaining Windows suite failures on Linux are Windows-only tests that also failed before these changes. Portable: 5 tests pass, including live removal of planted threats and bad autostart entries. Android: sources compile against the Android 14 framework and 22 rule/file-check assertions pass. The Windows and portable dashboards and the web tools page were screenshot-checked at desktop and phone widths.
 - Not yet run for 0.4.8: Windows installer build and install, Android APK build and device instrumentation, a live LOLDrivers download (the build container's proxy blocks loldrivers.io; the parser follows its documented `KnownVulnerableSamples` format).
 - 0.4.6 release: Windows 111 tests plus eight workflow tests, 15 installed tabs checked with no JavaScript errors; Android 10 rule assertions and 35 Pixel 9 instrumentation assertions.

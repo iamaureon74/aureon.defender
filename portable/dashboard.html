@@ -27,7 +27,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .card{background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:12px;min-width:0;animation:rise .6s var(--ease) both}
 .card .hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
 .card h2{margin:0;font-size:15px;font-weight:500;letter-spacing:-.1px}.card .bd{padding:18px 22px}.card p{color:var(--muted);margin:0 0 14px}
-.autopilot{display:grid;grid-template-columns:1.15fr repeat(3,1fr);overflow:hidden;position:relative;margin-bottom:20px}
+.autopilot#memory{margin-top:-6px}.autopilot{display:grid;grid-template-columns:1.15fr repeat(3,1fr);overflow:hidden;position:relative;margin-bottom:20px}
 .autopilot>div{padding:20px 22px;border-left:1px solid var(--line);min-width:0}.autopilot>div:first-child{border-left:0}
 .autopilot::after{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 70%,transparent),transparent);animation:scan 5.5s ease-in-out infinite}
 .k{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
@@ -65,6 +65,10 @@ footer{color:var(--faint);font-size:12px;margin-top:28px;max-width:70ch}
 <div><div class="k">tuned to this machine</div><div class="v" id="tier">measuring</div><div class="h" id="hwline"></div><div class="bar"><i id="cap"></i></div></div>
 <div class="last" id="last"><span class="dot"></span>nothing has needed removing. it stays quiet until something does.</div></section>
 
+<section class="card autopilot" id="memory" aria-live="polite"><div><div class="k"><span class="dot off" id="memdot"></span>memory</div><div class="v" id="memstate">starting</div><div class="h" id="memh">documents, desktop and pictures, every version, on this device only</div></div>
+<div><div class="k">files held</div><div class="v" id="memfiles">0</div><div class="h" id="memvers">earlier versions you can put back</div></div>
+<div><div class="k">space</div><div class="v" id="memdisk">–</div><div class="h" id="memsaved">identical bytes are stored once</div></div>
+<div><div class="k">put a file back</div><div class="v" style="font-size:12.5px;margin-top:14px;letter-spacing:0;line-height:1.5"><code class="keep">python -m portable.app memory restore &lt;path&gt; --version 2</code></div><div class="h">or any older version</div></div></section>
 <div class="grid"><section class="card"><div class="hd"><h2>this device</h2><span class="h" id="obs"></span></div><div class="bd"><div class="facts" id="device"><div><span>status</span><b>loading local observations…</b></div></div></div></section>
 <section class="card"><div class="hd"><h2>activity</h2><span class="h">newest first</span></div><div class="bd"><div class="feed" id="activity"><div class="empty">nothing yet.</div></div></div></section></div>
 
@@ -88,12 +92,17 @@ function autopilot(a){if(!a)return;const c=a.counts||{},hw=a.hardware||{};const 
   qs('#tier').textContent={lite:'light',standard:'balanced',performance:'full'}[hw.tier]||'measuring';
   qs('#hwline').textContent=[hw.cpus&&hw.cpus+' threads',hw.ram_gb&&hw.ram_gb+' gb',hw.disk&&hw.disk!=='unknown'&&hw.disk].filter(Boolean).join(' · ');
   qs('#cap').style.width=Math.round(Math.min(1.5,hw.capacity||0)/1.5*100)+'%'}
+function memory(M){M=M||{};const gbs=b=>b==null?'–':b>=2**30?(b/2**30).toFixed(1)+' gb':b>=2**20?Math.round(b/2**20)+' mb':Math.round((b||0)/1024)+' kb';
+  qs('#memdot').className='dot'+(M.files_held!=null&&!M.skipped?'':' off');qs('#memstate').textContent=M.skipped?'waiting':M.files_held!=null?'kept':'starting';
+  if(M.skipped)qs('#memh').textContent=M.skipped+', trying again soon';qs('#memfiles').textContent=(M.files_held||0).toLocaleString();
+  qs('#memvers').textContent=(M.old_versions||0).toLocaleString()+' earlier versions you can put back';qs('#memdisk').textContent=gbs(M.disk_bytes);
+  if(M.saved_bytes)qs('#memsaved').textContent=gbs(M.saved_bytes)+' saved by sharing copies'}
 function activity(list){const a=list||[];const last=a.find(x=>x.blocked);
   qs('#last').innerHTML=last?`<span class="dot"></span>last removal <b>${esc(last.title)}</b><span>${when(last.t)}</span>`:'<span class="dot"></span>nothing has needed removing. it stays quiet until something does.';
   qs('#activity').innerHTML=a.length?a.slice(0,12).map(x=>`<div class="row ${x.blocked?'blocked':''}"><i></i><div><b>${esc(x.title)}</b><small>${esc(x.detail)}</small></div><time>${when(x.t)}</time></div>`).join(''):'<div class="empty">nothing yet. new downloads are checked as they arrive.</div>'}
 async function refresh(){try{const r=await fetch('/api/state',{headers:{'X-Aureon-Token':token}});if(!r.ok)throw Error('local connection unavailable');const s=await r.json();
   qs('#live').innerHTML=`<span class="dot"></span>${s.automation&&s.automation.protect!==false?'protecting':'watching'}`;qs('#scope').textContent=s.device.scope;qs('#eyebrow').textContent=`${s.device.platform||'mac · linux'} companion · ${s.device.version||''}`;
-  device(s.device);autopilot(s.automation);activity(s.activity);
+  device(s.device);autopilot(s.automation);memory(s.automation&&s.automation.memory);activity(s.activity);
   qs('#audit').disabled=s.busy;qs('#progress').textContent=s.busy?'checking os settings…':s.error||'';
   if(s.posture)qs('#posture').innerHTML='<table><tr><th>state</th><th>check</th><th>evidence</th></tr>'+s.posture.results.map(r=>`<tr><td><span class="st ${esc(String(r.status).toLowerCase())}">${esc(r.status)}</span></td><td>${esc(r.check)}</td><td class="keep">${esc(r.detail)}</td></tr>`).join('')+'</table>';}
   catch(e){qs('#live').innerHTML='<span class="dot off"></span>offline';qs('#progress').textContent=e.message;}}

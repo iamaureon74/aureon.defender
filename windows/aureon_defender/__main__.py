@@ -56,6 +56,9 @@ def main(argv=None):
     ct = sub.add_parser("controls"); ct.add_argument("action", choices=["telemetry-close", "telemetry-open", "usb-block", "usb-allow", "wifi-on", "wifi-off"])
     hd = sub.add_parser("harden"); hd.add_argument("--apply", action="store_true"); hd.add_argument("--undo", action="store_true")
     hw = sub.add_parser("hardware"); hw.add_argument("--report", action="store_true")
+    me = sub.add_parser("memory", help="silent memory: status, fold now, versions, put a file back, duplicates")
+    me.add_argument("action", choices=["status", "now", "versions", "restore", "dupes"]); me.add_argument("path", nargs="?")
+    me.add_argument("--version", type=int, default=1, help="1 = newest held, 2 = the one before, ..."); me.add_argument("--out")
     args = ap.parse_args(argv)
     cmd = args.cmd or "open"
 
@@ -122,6 +125,23 @@ def main(argv=None):
         if not args.json:
             print(f"{len(files)} files scanned, {bad} findings")
         return 3 if bad else 0
+    if cmd == "memory":
+        from .core import Settings
+        from .memory import Keeper, fm
+        k = Keeper(settings=Settings().load())
+        if args.action == "status":
+            print(json.dumps(k.status(), indent=1)); return 0
+        if args.action == "now":
+            print(json.dumps(k.run_once(), indent=1)); return 0
+        if args.action == "dupes":
+            print(json.dumps(k.dupes(), indent=1)); return 0
+        if not args.path:
+            print("give the path of the file"); return 2
+        with fm.FoldMemory(k.store) as m:
+            if args.action == "versions":
+                print(json.dumps(m.versions(args.path), indent=1)); return 0
+            res = m.unfold(args.path, dest=args.out or args.path + ".restored", version=args.version)
+            print(json.dumps(res, indent=1)); return 0 if res.get("ok") else 1
     if cmd == "status":
         return _status()
     if cmd == "update":

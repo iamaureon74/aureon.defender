@@ -6,7 +6,7 @@ import time
 import uuid
 from pathlib import Path
 
-VERSION = "0.4.8"
+VERSION = "0.4.9"
 APP = "aureon.defender"
 
 
@@ -49,6 +49,9 @@ DEFAULTS = {
     "auto_quarantine_suspicious": True, # suspicious + unsigned + not needed by hardware: removed silently (vault, then deleted)
     "auto_remove_autostart": True,      # a new autostart entry whose program is flagged is removed along with the program
     "hardware_adaptive": True,
+    "memory": True,                     # silent memory: deduplicated versions of documents, desktop, pictures (fold-memory)
+    "memory_cap_percent": 15,           # never more than this share of the free disk
+    "memory_max_gb": 50,
     "driver_audit": True,               # flag registered drivers that match LOLDrivers / known-bad hashes (reported, never removed)          # cadence and sweep size follow this machine's measured capacity
     "auto_wipe_confirmed": True,        # confirmed malware (known hash / Defender / ClamAV) is deleted at once, no undo
     "silent_mode": True,                # notify only when something was blocked or deleted, with the reason
@@ -95,7 +98,7 @@ DEFAULTS = {
 
 CHOICES = {"auto_clean_mode": ("copy", "replace")}
 RANGES = {"wipe_device_traces_days": (0, 3650), "trash_days": (0, 3650), "clean_backup_days": (1, 90), "clipboard_clear_seconds": (5, 3600), "device_history_days": (1, 3650),
-          "bt_limit": (0, 64)}
+          "bt_limit": (0, 64), "memory_cap_percent": (1, 60), "memory_max_gb": (1, 4096)}
 
 
 def _valid(k, v):
