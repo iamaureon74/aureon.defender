@@ -90,6 +90,7 @@ class EngineScan(unittest.TestCase):
         os.environ["AUREON_DATA"] = tempfile.mkdtemp()
         from aureon_defender.engine import Engine
         e = Engine()
+        e.s = {**e.s, "use_defender_engine": False, "use_yara": False}   # keep the test about the engine, not defender's speed
         root = Path(tempfile.mkdtemp())
         (root / "notes.txt").write_text("hello")
         bad = root / "invoice.pdf.exe"
@@ -99,7 +100,7 @@ class EngineScan(unittest.TestCase):
             self.assertTrue(e.start_scan([root], kind="folder"))
             self.assertFalse(e.start_scan([root], kind="folder"))     # second request waits its turn
             self.assertEqual(len(e._scan_requests), 1)
-            for _ in range(200):
+            for _ in range(1200):
                 if e.jobs.snapshot()["status"] not in ("running", "cancelling") and not e._scan_requests:
                     break
                 time.sleep(0.05)

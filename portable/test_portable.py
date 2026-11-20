@@ -76,7 +76,7 @@ class AutomationTests(unittest.TestCase):
         self.assertFalse((auto/'updater.desktop').exists())
         self.assertFalse(drop.exists())
         self.assertTrue((auto/'editor.desktop').exists())
-        self.assertTrue(pathlib.Path('/bin/sh').exists())                     # system program never touched
+        if os.name!='nt':self.assertTrue(pathlib.Path('/bin/sh').exists())    # system program never touched
         titles=[x['title'] for x in a.log]
         self.assertIn('removed autostart entry updater.desktop',titles)
         self.assertFalse((agents/'com.helper.plist').exists())                # launch agent that pipes curl into sh
